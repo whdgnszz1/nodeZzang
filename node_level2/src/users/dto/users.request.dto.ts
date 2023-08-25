@@ -6,3 +6,8 @@ export class UsersRequestDto extends PickType(Users, [
   'password',
   'confirmPassword',
 ] as const) {}
+
+export class LoginRequestDto extends PickType(Users, [
+  'nickname',
+  'password',
+] as const) {}
