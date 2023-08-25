@@ -2,7 +2,8 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Post } from '../posts.schema';
 
 export class ReadOnlyPostDto extends PickType(Post, [
-  'user',
+  'userId',
+  'nickname',
   'title',
   'content',
 ] as const) {

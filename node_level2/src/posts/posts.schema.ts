@@ -11,7 +11,7 @@ const options: SchemaOptions = {
 export class Post extends Document {
   @ApiProperty({
     example: 'Developer',
-    description: 'user',
+    description: 'nickname',
     required: true,
   })
   @Prop({
@@ -19,11 +19,11 @@ export class Post extends Document {
   })
   @IsString()
   @IsNotEmpty()
-  user: string;
+  nickname: string;
 
   @ApiProperty({
-    example: '1234',
-    description: 'password',
+    example: '64e83ca6d4f86dbc78018a9b',
+    description: 'userId',
     required: true,
   })
   @Prop({
@@ -31,7 +31,7 @@ export class Post extends Document {
   })
   @IsString()
   @IsNotEmpty()
-  password: string;
+  userId: Types.ObjectId;
 
   @ApiProperty({
     example: '제목입니다.',
@@ -60,7 +60,8 @@ export class Post extends Document {
 
   readonly readOnlyData: {
     postId: Types.ObjectId;
-    user: string;
+    userId: Types.ObjectId;
+    nickname: string;
     title: string;
     content: string;
     createdAt: Date;
@@ -72,7 +73,8 @@ export const PostSchema = SchemaFactory.createForClass(Post);
 PostSchema.virtual('readOnlyData').get(function (this: Post) {
   return {
     postId: this._id,
-    user: this.user,
+    userId: this.userId,
+    nickname: this.nickname,
     title: this.title,
     content: this.content,
     createdAt: this.createdAt,
