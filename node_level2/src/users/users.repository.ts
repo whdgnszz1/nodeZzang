@@ -10,7 +10,7 @@ export class UsersRepository {
     @InjectModel(Users.name) private readonly usersModel: Model<Users>,
   ) {}
 
-  async existsByNickname(nickname: string): Promise<Users> {
+  async existsByNickname(nickname: string): Promise<Users | null> {
     try {
       const result = await this.usersModel.findOne({ nickname });
       return result;

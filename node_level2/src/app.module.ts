@@ -7,6 +7,7 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 import * as mongoose from 'mongoose';
 
 @Module({
@@ -16,6 +17,7 @@ import * as mongoose from 'mongoose';
     PostsModule,
     CommentsModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
