@@ -44,7 +44,7 @@ export class PostsController {
 
   @ApiOperation({ summary: '게시글 삭제' })
   @Delete(':id')
-  deletePost() {
-    return 'delete post';
+  deletePost(@Param() id: string, @Body() body: any) {
+    return this.postsService.deletePost(id, body);
   }
 }

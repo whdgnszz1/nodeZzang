@@ -34,7 +34,6 @@ export class PostsService {
   }
 
   async updateOnePost(id: string, body: any) {
-    console.log(body);
     const { password, title, content } = body;
     const objectId = new Types.ObjectId(id);
     const post = await this.postModel.findById(objectId);
@@ -52,5 +51,23 @@ export class PostsService {
     await post.save();
 
     return { message: '게시글을 수정하였습니다.' };
+  }
+
+  async deletePost(id: string, body: any) {
+    const { password } = body;
+    const objectId = new Types.ObjectId(id);
+    const post = await this.postModel.findById(objectId);
+    console.log(post)
+    if (!post) {
+      throw new HttpException('존재하지 않는 게시글입니다.', 404);
+    }
+    const validatePassword = bcrypt.compare(password, post.password);
+    if (!validatePassword) {
+      throw new HttpException('비밀번호가 일치하지 않습니다', 403);
+    }
+
+    await this.postModel.deleteOne(objectId);
+
+    return { message: '게시글을 삭제하였습니다.' };
   }
 }
