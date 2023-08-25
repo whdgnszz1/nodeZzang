@@ -38,8 +38,8 @@ export class PostsController {
 
   @ApiOperation({ summary: '게시글 수정' })
   @Put(':id')
-  updateOnePost() {
-    return 'update one post';
+  updateOnePost(@Param() id: string, @Body() body: any) {
+    return this.postsService.updateOnePost(id, body);
   }
 
   @ApiOperation({ summary: '게시글 삭제' })
