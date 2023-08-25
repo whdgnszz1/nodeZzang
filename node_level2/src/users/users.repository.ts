@@ -10,6 +10,11 @@ export class UsersRepository {
     @InjectModel(Users.name) private readonly usersModel: Model<Users>,
   ) {}
 
+  async findUserByWithoutPassword(userId: string): Promise<Users | null> {
+    const user = await this.usersModel.findById(userId).select('-password');
+    return user;
+  }
+
   async existsByNickname(nickname: string): Promise<Users | null> {
     try {
       const result = await this.usersModel.findOne({ nickname });
