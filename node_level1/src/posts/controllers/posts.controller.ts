@@ -21,7 +21,7 @@ export class PostsController {
   @ApiOperation({ summary: '전체 게시글 조회' })
   @Get()
   getAllPosts() {
-    return 'get all posts';
+    return this.postsService.getAllPosts();
   }
 
   @ApiOperation({ summary: '게시글 작성' })

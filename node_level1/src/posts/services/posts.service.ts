@@ -11,6 +11,12 @@ export class PostsService {
     @InjectModel(Post.name) private readonly postModel: Model<Post>,
   ) {}
 
+  async getAllPosts() {
+    const posts = await this.postModel.find({}).select('-content');
+    const result = posts.map((post) => post.readOnlyData);
+    return result;
+  }
+
   async createPost(body: PostRequestDto) {
     const { user, password, title, content } = body;
     const hashedPassword = await bcrypt.hash(password, 10);
