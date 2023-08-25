@@ -36,10 +36,9 @@ export class Users extends Document {
   @ApiProperty({
     example: '1234',
     description: 'confirmPassword',
-    required: true,
   })
   @Prop({
-    required: true,
+    required: false,
   })
   @IsString()
   @IsNotEmpty()
