@@ -19,25 +19,25 @@ export class CommentsController {
 
   @ApiOperation({ summary: '전체 댓글 조회' })
   @Get()
-  getAllPosts() {
-    return 'get all comments';
+  getAllPostComment(@Param('postId') postId: string) {
+    return this.commentsService.getAllPostComment(postId);
   }
 
   @ApiOperation({ summary: '댓글 작성' })
   @Post()
-  createPost(@Param('postId') postId: string, @Body() body: any) {
+  createComment(@Param('postId') postId: string, @Body() body: any) {
     return this.commentsService.createComment(postId, body);
   }
 
   @ApiOperation({ summary: '댓글 상세 조회' })
   @Get(':id')
-  getOnePost(@Param('postId') postId: string, @Param() id: string) {
+  getOneComment(@Param('postId') postId: string, @Param() id: string) {
     return this.commentsService.getOneComment(postId, id);
   }
 
   @ApiOperation({ summary: '댓글 수정' })
   @Put(':id')
-  updateOnePost(
+  updateOneComment(
     @Param('postId') postId: string,
     @Param() id: string,
     @Body() body: any,
@@ -47,7 +47,7 @@ export class CommentsController {
 
   @ApiOperation({ summary: '댓글 삭제' })
   @Delete(':id')
-  deletePost(
+  deleteComment(
     @Param('postId') postId: string,
     @Param() id: string,
     @Body() body: any,
