@@ -1,6 +1,7 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, SchemaOptions, Types } from 'mongoose';
+import { Document, SchemaOptions } from 'mongoose';
 
 const options: SchemaOptions = {
   timestamps: true,
@@ -8,13 +9,11 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class Post extends Document {
-  @Prop({
-    type: Types.ObjectId,
+  @ApiProperty({
+    example: 'Developer',
+    description: 'user',
     required: true,
   })
-  @IsNotEmpty()
-  postId: Types.ObjectId;
-
   @Prop({
     required: true,
   })
@@ -22,6 +21,11 @@ export class Post extends Document {
   @IsNotEmpty()
   user: string;
 
+  @ApiProperty({
+    example: '1234',
+    description: 'password',
+    required: true,
+  })
   @Prop({
     required: true,
   })
@@ -29,6 +33,11 @@ export class Post extends Document {
   @IsNotEmpty()
   password: string;
 
+  @ApiProperty({
+    example: '제목입니다.',
+    description: 'title',
+    required: true,
+  })
   @Prop({
     required: true,
   })
@@ -36,13 +45,17 @@ export class Post extends Document {
   @IsNotEmpty()
   title: string;
 
+  @ApiProperty({
+    example: '내용입니다.',
+    description: 'content',
+    required: true,
+  })
   @Prop()
   @IsString()
   @IsNotEmpty()
   content: string;
 
   readonly readOnlyData: {
-    postId: Types.ObjectId;
     user: string;
     title: string;
   };
@@ -52,7 +65,6 @@ export const PostSchema = SchemaFactory.createForClass(Post);
 
 PostSchema.virtual('readOnlyData').get(function (this: Post) {
   return {
-    postId: this.postId,
     user: this.user,
     title: this.title,
   };
