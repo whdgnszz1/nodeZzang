@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { PostsModule } from './posts/posts.module';
+import * as mongoose from 'mongoose';
 
 @Module({
   imports: [
@@ -16,7 +17,9 @@ import { PostsModule } from './posts/posts.module';
   providers: [AppService],
 })
 export class AppModule implements NestModule {
+  private readonly isDev: boolean = process.env.MODE === 'dev' ? true : false;
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
+    mongoose.set('debug', this.isDev);
   }
 }
