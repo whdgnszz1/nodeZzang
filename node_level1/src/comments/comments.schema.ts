@@ -9,12 +9,12 @@ const options: SchemaOptions = {
 @Schema(options)
 export class Comments extends Document {
   @Prop({
-    type: Types.ObjectId,
     required: true,
     ref: 'posts',
   })
+  @IsString()
   @IsNotEmpty()
-  user: Types.ObjectId;
+  user: string;
 
   @Prop({
     required: true,
@@ -30,19 +30,19 @@ export class Comments extends Document {
   @IsNotEmpty()
   password: string;
 
-  @Prop({
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  info: string;
+  // @Prop({
+  //   required: true,
+  // })
+  // @IsString()
+  // @IsNotEmpty()
+  // info: string;
 
   _id: Types.ObjectId;
   createdAt: Date;
 
   readonly readOnlyData: {
     commentId: Types.ObjectId;
-    user: Types.ObjectId;
+    user: string;
     content: string;
     createdAt: Date;
   };
