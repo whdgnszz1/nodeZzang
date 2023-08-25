@@ -2,12 +2,12 @@ import { PickType } from '@nestjs/swagger';
 import { Comments } from '../comments.schema';
 
 export class CommentsRequestDto extends PickType(Comments, [
-  'user',
-  'password',
   'content',
 ] as const) {}
 
-export class PutRequestDto extends PickType(Comments, [
-  'password',
+export class CreateCommentDto extends PickType(Comments, [
+  'userId',
+  'nickname',
   'content',
+  'postId',
 ] as const) {}
