@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
+import { ObjectIdValidationPipe } from 'src/common/pipes/objectIdValidation.pipe';
 import { PostRequestDto } from '../dto/posts.request.dto';
 import { PostsService } from '../services/posts.service';
 
@@ -32,19 +33,25 @@ export class PostsController {
 
   @ApiOperation({ summary: '게시글 상세 조회' })
   @Get(':id')
-  getOnePost(@Param() id: string) {
+  getOnePost(@Param('id', new ObjectIdValidationPipe()) id: string) {
     return this.postsService.getOnePost(id);
   }
 
   @ApiOperation({ summary: '게시글 수정' })
   @Put(':id')
-  updateOnePost(@Param() id: string, @Body() body: any) {
+  updateOnePost(
+    @Param('id', new ObjectIdValidationPipe()) id: string,
+    @Body() body: any,
+  ) {
     return this.postsService.updateOnePost(id, body);
   }
 
   @ApiOperation({ summary: '게시글 삭제' })
   @Delete(':id')
-  deletePost(@Param() id: string, @Body() body: any) {
+  deletePost(
+    @Param('id', new ObjectIdValidationPipe()) id: string,
+    @Body() body: any,
+  ) {
     return this.postsService.deletePost(id, body);
   }
 }
