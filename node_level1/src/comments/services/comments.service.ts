@@ -10,6 +10,12 @@ export class CommentsService {
     @InjectModel(Comments.name) private readonly commentsModel: Model<Comments>,
   ) {}
 
+  async getAllPostComment(postId: string) {
+    const allPostComments = await this.commentsModel.find({ postId });
+    const result = allPostComments.map((comment) => comment.readOnlyData);
+    return result;
+  }
+
   async createComment(postId: string, body: any) {
     const { user, password, content } = body;
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -22,8 +28,15 @@ export class CommentsService {
     console.log(comment.readOnlyData);
     return { message: '댓글을 생성하였습니다.' };
   }
+
   async getOneComment(postId, id) {
-    return;
+    const objectId = new Types.ObjectId(id);
+    const comment = await this.commentsModel.findById(objectId);
+    if (!comment) {
+      throw new HttpException('존재하지 않는 게시글입니다.', 404);
+    }
+
+    return comment.readOnlyData;
   }
 
   async updateOneComment(postId, id, body) {

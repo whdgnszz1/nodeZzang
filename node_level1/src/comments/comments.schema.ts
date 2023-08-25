@@ -30,6 +30,13 @@ export class Comments extends Document {
   @IsNotEmpty()
   password: string;
 
+  @Prop({
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  postId: string;
+
   // @Prop({
   //   required: true,
   // })
