@@ -11,7 +11,7 @@ import {
 import { ApiOperation } from '@nestjs/swagger';
 import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
 import { ObjectIdValidationPipe } from 'src/common/pipes/objectIdValidation.pipe';
-import { PostRequestDto } from '../dto/posts.request.dto';
+import { PostRequestDto, PutRequestDto } from '../dto/posts.request.dto';
 import { PostsService } from '../services/posts.service';
 
 @Controller('posts')
@@ -41,7 +41,7 @@ export class PostsController {
   @Put(':id')
   updateOnePost(
     @Param('id', new ObjectIdValidationPipe()) id: string,
-    @Body() body: any,
+    @Body() body: PutRequestDto,
   ) {
     return this.postsService.updateOnePost(id, body);
   }

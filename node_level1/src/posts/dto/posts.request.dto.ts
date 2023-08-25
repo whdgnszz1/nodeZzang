@@ -7,3 +7,9 @@ export class PostRequestDto extends PickType(Post, [
   'title',
   'content',
 ] as const) {}
+
+export class PutRequestDto extends PickType(Post, [
+  'password',
+  'title',
+  'content',
+] as const) {}

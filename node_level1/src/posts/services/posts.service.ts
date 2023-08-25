@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { PostRequestDto } from '../dto/posts.request.dto';
+import { PostRequestDto, PutRequestDto } from '../dto/posts.request.dto';
 import { Post } from '../posts.schema';
 import * as bcrypt from 'bcrypt';
 
@@ -20,13 +20,13 @@ export class PostsService {
   async createPost(body: PostRequestDto) {
     const { user, password, title, content } = body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const post = await this.postModel.create({
+    await this.postModel.create({
       user,
       title,
       content,
       password: hashedPassword,
     });
-    return post.readOnlyData;
+    return { message: '게시글을 생성하였습니다.' };
   }
 
   async getOnePost(id: string) {
@@ -39,7 +39,7 @@ export class PostsService {
     return post.readOnlyData;
   }
 
-  async updateOnePost(id: string, body: any) {
+  async updateOnePost(id: string, body: PutRequestDto) {
     const { password, title, content } = body;
     const objectId = new Types.ObjectId(id);
     const post = await this.postModel.findById(objectId);
