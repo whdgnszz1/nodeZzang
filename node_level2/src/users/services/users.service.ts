@@ -1,19 +1,17 @@
 import { Injectable, HttpException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { LoginRequestDto, UsersRequestDto } from '../dto/users.request.dto';
-import { Users } from '../users.schema';
 import * as bcrypt from 'bcrypt';
+import { UsersRepository } from '../users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(Users.name) private readonly usersModel: Model<Users>,
-  ) {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
   async signUp(body: UsersRequestDto) {
     const { nickname, password, confirmPassword } = body;
-    const isNicknameExist = await this.usersModel.findOne({ nickname });
+    const isNicknameExist = await this.usersRepository.existsByNickname(
+      nickname,
+    );
     const nicknameRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{3,}$/;
     const isValidNickname = nicknameRegExp.exec(nickname);
     if (!isValidNickname) {
@@ -34,7 +32,7 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await this.usersModel.create({
+    const user = await this.usersRepository.create({
       nickname,
       password: hashedPassword,
     });
@@ -44,7 +42,7 @@ export class UsersService {
 
   async login(body: LoginRequestDto) {
     const { nickname, password } = body;
-    const user = await this.usersModel.findOne({ nickname });
+    const user = await this.usersRepository.existsByNickname(nickname);
     if (!user) {
       throw new HttpException('닉네임 또는 패스워드를 확인해주세요', 412);
     }

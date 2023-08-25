@@ -14,7 +14,7 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: '로그인' })
-  @Post('signup')
+  @Post('login')
   login(@Body() body: LoginRequestDto) {
     return this.usersService.login(body);
   }
