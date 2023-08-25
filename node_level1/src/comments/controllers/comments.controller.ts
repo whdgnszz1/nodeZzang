@@ -11,6 +11,10 @@ import {
 import { ApiOperation } from '@nestjs/swagger';
 import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
 import { ObjectIdValidationPipe } from 'src/common/pipes/objectIdValidation.pipe';
+import {
+  CommentsRequestDto,
+  PutRequestDto,
+} from '../dto/\bcomments.request.dto';
 import { CommentsService } from '../services/comments.service';
 
 @Controller('posts/:postId/comments')
@@ -18,7 +22,7 @@ import { CommentsService } from '../services/comments.service';
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @ApiOperation({ summary: '전체 댓글 조회' })
+  @ApiOperation({ summary: '특정 게시글에 달린 댓글 조회' })
   @Get()
   getAllPostComment(
     @Param('postId', new ObjectIdValidationPipe()) postId: string,
@@ -30,7 +34,7 @@ export class CommentsController {
   @Post()
   createComment(
     @Param('postId', new ObjectIdValidationPipe()) postId: string,
-    @Body() body: any,
+    @Body() body: CommentsRequestDto,
   ) {
     return this.commentsService.createComment(postId, body);
   }
@@ -49,7 +53,7 @@ export class CommentsController {
   updateOneComment(
     @Param('postId', new ObjectIdValidationPipe()) postId: string,
     @Param('id', new ObjectIdValidationPipe()) id: string,
-    @Body() body: any,
+    @Body() body: PutRequestDto,
   ) {
     return this.commentsService.updateOneComment(postId, id, body);
   }

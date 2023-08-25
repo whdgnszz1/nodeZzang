@@ -3,6 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Comments } from '../comments.schema';
 import * as bcrypt from 'bcrypt';
+import {
+  CommentsRequestDto,
+  PutRequestDto,
+} from '../dto/\bcomments.request.dto';
 
 @Injectable()
 export class CommentsService {
@@ -16,7 +20,7 @@ export class CommentsService {
     return result;
   }
 
-  async createComment(postId: string, body: any) {
+  async createComment(postId: string, body: CommentsRequestDto) {
     const { user, password, content } = body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const comment = await this.commentsModel.create({
@@ -29,7 +33,7 @@ export class CommentsService {
     return { message: '댓글을 생성하였습니다.' };
   }
 
-  async getOneComment(postId, id) {
+  async getOneComment(postId: string, id: string) {
     const objectId = new Types.ObjectId(id);
     const comment = await this.commentsModel.findById(objectId);
     if (!comment) {
@@ -39,7 +43,7 @@ export class CommentsService {
     return comment.readOnlyData;
   }
 
-  async updateOneComment(postId, id, body) {
+  async updateOneComment(postId: string, id: string, body: PutRequestDto) {
     const { password, content } = body;
     const objectId = new Types.ObjectId(id);
     const comment = await this.commentsModel.findById(objectId);
@@ -58,7 +62,7 @@ export class CommentsService {
     return { message: '댓글을 수정하였습니다.' };
   }
 
-  async deleteComment(postId, id, body) {
+  async deleteComment(postId: string, id: string, body: any) {
     const { password } = body;
     const objectId = new Types.ObjectId(id);
     const comment = await this.commentsModel.findById(objectId);
