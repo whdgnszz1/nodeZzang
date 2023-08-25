@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { PostsModule } from './posts/posts.module';
+import { CommentsModule } from './comments/comments.module';
 import * as mongoose from 'mongoose';
 
 @Module({
@@ -12,6 +13,7 @@ import * as mongoose from 'mongoose';
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     PostsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
