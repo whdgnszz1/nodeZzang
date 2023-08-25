@@ -37,9 +37,14 @@ export class Comments extends Document {
   @IsNotEmpty()
   info: string;
 
+  _id: Types.ObjectId;
+  createdAt: Date;
+
   readonly readOnlyData: {
+    commentId: Types.ObjectId;
     user: Types.ObjectId;
     content: string;
+    createdAt: Date;
   };
 }
 
@@ -47,7 +52,9 @@ export const CommentsSchema = SchemaFactory.createForClass(Comments);
 
 CommentsSchema.virtual('readOnlyData').get(function (this: Comments) {
   return {
+    commentId: this._id,
     user: this.user,
     content: this.content,
+    createdAt: this.createdAt,
   };
 });
