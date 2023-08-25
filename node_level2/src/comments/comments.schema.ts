@@ -11,7 +11,19 @@ const options: SchemaOptions = {
 export class Comments extends Document {
   @ApiProperty({
     example: '종훈',
-    description: 'user',
+    description: 'nickname',
+    required: true,
+  })
+  @Prop({
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  nickname: string;
+
+  @ApiProperty({
+    example: '64e8b0b6a3c531048e25830a',
+    description: 'userId',
     required: true,
   })
   @Prop({
@@ -20,11 +32,11 @@ export class Comments extends Document {
   })
   @IsString()
   @IsNotEmpty()
-  user: string;
+  userId: string;
 
   @ApiProperty({
     example: '내용',
-    description: 'content',
+    description: 'comment',
     required: true,
   })
   @Prop({
@@ -33,18 +45,6 @@ export class Comments extends Document {
   @IsString()
   @IsNotEmpty()
   content: string;
-
-  @ApiProperty({
-    example: '1234',
-    description: 'password',
-    required: true,
-  })
-  @Prop({
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  password: string;
 
   @ApiProperty({
     example: '64e85e457953b4b0ffe9223c',
@@ -58,21 +58,17 @@ export class Comments extends Document {
   @IsNotEmpty()
   postId: string;
 
-  // @Prop({
-  //   required: true,
-  // })
-  // @IsString()
-  // @IsNotEmpty()
-  // info: string;
-
   _id: Types.ObjectId;
   createdAt: Date;
+  updatedAt: Date;
 
   readonly readOnlyData: {
     commentId: Types.ObjectId;
-    user: string;
+    userId: string;
+    nickname: string;
     content: string;
     createdAt: Date;
+    updatedAt: Date;
   };
 }
 
@@ -81,8 +77,10 @@ export const CommentsSchema = SchemaFactory.createForClass(Comments);
 CommentsSchema.virtual('readOnlyData').get(function (this: Comments) {
   return {
     commentId: this._id,
-    user: this.user,
+    nickname: this.nickname,
     content: this.content,
     createdAt: this.createdAt,
+    userId: this.userId,
+    updatedAt: this.updatedAt,
   };
 });
