@@ -42,9 +42,24 @@ export class CommentsService {
 
     await comment.save();
 
-    return { message: '댓글을 수정하였습니다.' };  }
+    return { message: '댓글을 수정하였습니다.' };
+  }
 
   async deleteComment(postId, id, body) {
-    return;
+    const { password } = body;
+    const objectId = new Types.ObjectId(id);
+    const comment = await this.commentsModel.findById(objectId);
+    if (!comment) {
+      throw new HttpException('존재하지 않는 게시글입니다.', 404);
+    }
+
+    const validatePassword = bcrypt.compare(password, comment.password);
+    if (!validatePassword) {
+      throw new HttpException('비밀번호가 일치하지 않습니다', 403);
+    }
+
+    await this.commentsModel.deleteOne(objectId);
+
+    return { message: '댓글을 삭제하였습니다.' };
   }
 }
