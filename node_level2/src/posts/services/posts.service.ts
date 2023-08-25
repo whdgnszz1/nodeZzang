@@ -1,5 +1,6 @@
+import { CreatePostDto } from './../dto/posts.request.dto';
 import { HttpException, Injectable } from '@nestjs/common';
-import { PostRequestDto, PutRequestDto } from '../dto/posts.request.dto';
+import { PutRequestDto } from '../dto/posts.request.dto';
 import { PostsRepository } from '../posts.repository';
 
 @Injectable()
@@ -12,7 +13,7 @@ export class PostsService {
     return result;
   }
 
-  async createPost(body: PostRequestDto) {
+  async createPost(body: CreatePostDto) {
     await this.postsRepository.create(body);
     return { message: '게시글을 생성하였습니다.' };
   }

@@ -57,6 +57,7 @@ export class Post extends Document {
 
   _id: Types.ObjectId;
   createdAt: Date;
+  updatedAt: Date;
 
   readonly readOnlyData: {
     postId: Types.ObjectId;
@@ -65,6 +66,7 @@ export class Post extends Document {
     title: string;
     content: string;
     createdAt: Date;
+    updatedAt: Date;
   };
 }
 
@@ -78,5 +80,6 @@ PostSchema.virtual('readOnlyData').get(function (this: Post) {
     title: this.title,
     content: this.content,
     createdAt: this.createdAt,
+    updatedAt: this.updatedAt,
   };
 });

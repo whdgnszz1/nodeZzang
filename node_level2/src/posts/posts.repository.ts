@@ -2,7 +2,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Injectable, HttpException } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { Post } from './posts.schema';
-import { PostRequestDto } from './dto/posts.request.dto';
+import { CreatePostDto } from './dto/posts.request.dto';
 
 @Injectable()
 export class PostsRepository {
@@ -20,7 +20,7 @@ export class PostsRepository {
     }
   }
 
-  async create(post: PostRequestDto): Promise<Post> {
+  async create(post: CreatePostDto): Promise<Post> {
     try {
       const result = await this.postsModel.create(post);
       return result;
