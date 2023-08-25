@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   UseInterceptors,
@@ -31,8 +32,8 @@ export class PostsController {
 
   @ApiOperation({ summary: '게시글 상세 조회' })
   @Get(':id')
-  getOnePost() {
-    return 'get one post';
+  getOnePost(@Param() id: string) {
+    return this.postsService.getOnePost(id);
   }
 
   @ApiOperation({ summary: '게시글 수정' })

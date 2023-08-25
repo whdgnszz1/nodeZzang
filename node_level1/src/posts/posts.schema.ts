@@ -62,6 +62,7 @@ export class Post extends Document {
     postId: Types.ObjectId;
     user: string;
     title: string;
+    content: string;
     createdAt: Date;
   };
 }
@@ -73,6 +74,7 @@ PostSchema.virtual('readOnlyData').get(function (this: Post) {
     postId: this._id,
     user: this.user,
     title: this.title,
+    content: this.content,
     createdAt: this.createdAt,
   };
 });
