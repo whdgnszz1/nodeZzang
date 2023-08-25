@@ -57,7 +57,6 @@ export class PostsService {
     const { password } = body;
     const objectId = new Types.ObjectId(id);
     const post = await this.postModel.findById(objectId);
-    console.log(post)
     if (!post) {
       throw new HttpException('존재하지 않는 게시글입니다.', 404);
     }
