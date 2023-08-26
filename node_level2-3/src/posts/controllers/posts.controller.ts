@@ -53,14 +53,22 @@ export class PostsController {
   updateOnePost(
     @Param('id', new ObjectIdValidationPipe()) id: string,
     @Body() body: PutRequestDto,
+    @Req() req: Request,
   ) {
-    return this.postsService.updateOnePost(id, body);
+    const user = req.user as any;
+    const nickname = user.nickname;
+    return this.postsService.updateOnePost(id, body, nickname);
   }
 
   @ApiOperation({ summary: '게시글 삭제' })
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  deletePost(@Param('id', new ObjectIdValidationPipe()) id: string) {
-    return this.postsService.deletePost(id);
+  deletePost(
+    @Param('id', new ObjectIdValidationPipe()) id: string,
+    @Req() req: Request,
+  ) {
+    const user = req.user as any;
+    const nickname = user.nickname;
+    return this.postsService.deletePost(id, nickname);
   }
 }
