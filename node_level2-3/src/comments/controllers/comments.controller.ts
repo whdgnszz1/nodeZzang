@@ -67,8 +67,11 @@ export class CommentsController {
     @Param('postId', new ObjectIdValidationPipe()) postId: string,
     @Param('id', new ObjectIdValidationPipe()) id: string,
     @Body() body: CommentsRequestDto,
+    @Req() req: Request,
   ) {
-    return this.commentsService.updateOneComment(postId, id, body);
+    const user = req.user as any;
+    const nickname = user.nickname;
+    return this.commentsService.updateOneComment(postId, id, body, nickname);
   }
 
   @ApiOperation({ summary: '댓글 삭제' })
@@ -77,7 +80,10 @@ export class CommentsController {
   deleteComment(
     @Param('postId', new ObjectIdValidationPipe()) postId: string,
     @Param('id', new ObjectIdValidationPipe()) id: string,
+    @Req() req: Request,
   ) {
-    return this.commentsService.deleteComment(postId, id);
+    const user = req.user as any;
+    const nickname = user.nickname;
+    return this.commentsService.deleteComment(postId, id, nickname);
   }
 }
