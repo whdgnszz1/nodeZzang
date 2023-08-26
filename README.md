@@ -1,6 +1,6 @@
 # Sparta Node Assignment
 ## Level1.
-배포된 Swagger Url: http://3.34.192.1/docs
+배포된 Swagger Url: http://13.125.58.105/docs
 ![Swagger](https://velog.velcdn.com/images/whdgnszz1/post/b8622e58-bf82-439d-8897-c4412170a1ee/image.png)
 </br>
 ### 프로젝트의 기능은 다음과 같습니다.
