@@ -1,5 +1,5 @@
-import { UsersEntity } from '../users/users.entity';
-import { PostsEntity } from 'src/posts/posts.entity';
+import { Users } from '../users/users.entity';
+import { Posts } from 'src/posts/posts.entity';
 import {
   Column,
   Entity,
@@ -9,12 +9,15 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class CommentsEntity {
+export class Comments {
   @PrimaryGeneratedColumn('increment')
   commentId: number;
 
   @Column()
   userId: number;
+
+  @Column()
+  postId: number;
 
   @Column()
   nickname: string;
@@ -23,9 +26,9 @@ export class CommentsEntity {
   content: string;
 
   @JoinColumn()
-  @ManyToOne(() => UsersEntity)
-  users: UsersEntity;
+  @ManyToOne(() => Users)
+  users: Users;
 
-  @ManyToOne(() => PostsEntity)
-  posts: PostsEntity;
+  @ManyToOne(() => Posts)
+  posts: Posts;
 }
