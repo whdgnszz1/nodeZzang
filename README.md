@@ -69,6 +69,10 @@
   - 로그인, 인증이 완료된 사용자만 댓글 삭제가 가능합니다.
   - 본인이 작성한 댓글만 삭제가 가능합니다.
 
+11. DB Migration
+  - Mongoose -> TypeORM
+  - 로컬의 MongoDB에서 AWS의 RDS로 DB이전.(개발 중)
+
 ***
 
 ## Level 4-5
@@ -81,11 +85,8 @@
   - 처음 로그인 시 발급된 jwt토큰이 만료되면 Refresh token 발급 요청을 보내 Access Token을 발급받습니다.(개발 중)
   - 구글 계정, 카카오 계정으로 로그인이 가능합니다.(개발 중)
 
-3. DB Migration
-  - 로컬의 MongoDB에서 TypeORM을 사용하여 AWS의 RDS를 사용할 예정.(개발 중)
-
-4. CI/CD적용
+3. CI/CD적용
   - Git Actions를 이용한 자동 배포(개발 중)
 
-5. Dev / Prod 개발환경 분리
+4. Dev / Prod 개발환경 분리
   - 개발서버 / 배포서버를 따로 두어 개발이 완료된 기능들만 배포서버로 옮길 예정.(개발 중)
