@@ -3,7 +3,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { AuthService } from 'src/auth/services/auth.service';
-import { LoginRequestDto, UsersRequestDto } from '../dto/users.request.dto';
+import { LoginRequestDto, SignUpRequestDto } from '../dto/users.request.dto';
 import { UsersService } from '../services/users.service';
 
 @Controller()
@@ -23,7 +23,7 @@ export class UsersController {
 
   @ApiOperation({ summary: '회원가입' })
   @Post('signup')
-  signUp(@Body() body: UsersRequestDto) {
+  signUp(@Body() body: SignUpRequestDto) {
     return this.usersService.signUp(body);
   }
 

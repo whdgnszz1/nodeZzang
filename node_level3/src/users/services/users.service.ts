@@ -1,5 +1,5 @@
 import { Injectable, HttpException } from '@nestjs/common';
-import { UsersRequestDto } from '../dto/users.request.dto';
+import { SignUpRequestDto } from '../dto/users.request.dto';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from '../users.repository';
 
@@ -7,7 +7,7 @@ import { UsersRepository } from '../users.repository';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async signUp(body: UsersRequestDto) {
+  async signUp(body: SignUpRequestDto) {
     const { nickname, password, confirmPassword } = body;
     const isNicknameExist = await this.usersRepository.existsByNickname(
       nickname,
