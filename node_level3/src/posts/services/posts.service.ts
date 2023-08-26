@@ -1,10 +1,12 @@
-import { CreatePostDto } from './../dto/posts.request.dto';
+import {
+  CreatePostRequestDto,
+  PutPostRequestDto,
+} from './../dto/posts.request.dto';
 import {
   HttpException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PutRequestDto } from '../dto/posts.request.dto';
 import { PostsRepository } from '../posts.repository';
 
 @Injectable()
@@ -13,29 +15,25 @@ export class PostsService {
 
   async getAllPosts() {
     const posts = await this.postsRepository.getAllPosts();
-    const result = posts.map((post) => post.readOnlyData);
+    const result = posts.map((post) => post);
     return result;
   }
 
-  async createPost(body: CreatePostDto) {
+  async createPost(body: CreatePostRequestDto) {
     await this.postsRepository.create(body);
     return { message: '게시글을 생성하였습니다.' };
   }
 
-  async getOnePost(id: number | string) {
+  async getOnePost(id: number) {
     const post = await this.postsRepository.existsById(id);
     if (!post) {
       throw new HttpException('존재하지 않는 게시글입니다.', 404);
     }
 
-    return post.readOnlyData;
+    return post;
   }
 
-  async updateOnePost(
-    id: number | string,
-    body: PutRequestDto,
-    nickname: string,
-  ) {
+  async updateOnePost(id: number, body: PutPostRequestDto, nickname: string) {
     const { title, content } = body;
     const post = await this.postsRepository.existsById(id);
     if (!post) {
@@ -48,12 +46,10 @@ export class PostsService {
     post.title = title;
     post.content = content;
 
-    await post.save();
-
     return { message: '게시글을 수정하였습니다.' };
   }
 
-  async deletePost(id: number | string, nickname: string) {
+  async deletePost(id: number, nickname: string) {
     const post = await this.postsRepository.existsById(id);
     if (!post) {
       throw new HttpException('존재하지 않는 게시글입니다.', 404);

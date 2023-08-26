@@ -1,4 +1,4 @@
-import { UsersEntity } from 'src/users/users.entity';
+import { Users } from 'src/users/users.entity';
 import {
   Column,
   Entity,
@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class PostsEntity {
+export class Posts {
   @PrimaryGeneratedColumn('increment')
   postId: number;
 
@@ -25,6 +25,6 @@ export class PostsEntity {
   content: string;
 
   @JoinColumn()
-  @ManyToOne(() => UsersEntity)
-  users: UsersEntity;
+  @ManyToOne(() => Users)
+  users: Users;
 }
