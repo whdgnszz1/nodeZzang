@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, SchemaOptions, Types } from 'mongoose';
+import { Document, SchemaOptions } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 
 const options: SchemaOptions = {
@@ -32,7 +32,7 @@ export class Comments extends Document {
   })
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  userId: number;
 
   @ApiProperty({
     example: '내용',
@@ -56,14 +56,12 @@ export class Comments extends Document {
   })
   @IsString()
   @IsNotEmpty()
-  postId: string;
+  postId: number;
 
-  _id: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 
   readonly readOnlyData: {
-    commentId: Types.ObjectId;
     userId: string;
     nickname: string;
     content: string;
@@ -76,7 +74,6 @@ export const CommentsSchema = SchemaFactory.createForClass(Comments);
 
 CommentsSchema.virtual('readOnlyData').get(function (this: Comments) {
   return {
-    commentId: this._id,
     nickname: this.nickname,
     content: this.content,
     createdAt: this.createdAt,

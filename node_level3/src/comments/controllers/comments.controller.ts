@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
-import { ObjectIdValidationPipe } from 'src/common/pipes/objectIdValidation.pipe';
 import { CommentsRequestDto } from '../dto/\bcomments.request.dto';
 import { CommentsService } from '../services/comments.service';
 import { Request } from 'express';
@@ -24,24 +23,22 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @ApiOperation({ summary: '특정 게시글에 달린 댓글 조회' })
-  @Get()
-  getAllPostComment(
-    @Param('postId', new ObjectIdValidationPipe()) postId: string,
-  ) {
-    return this.commentsService.getAllPostComment(postId);
+  @Get('/')
+  getAllPostComment(@Param('postId') postId: number) {
+    return this.commentsService.getAllPostComment(Number(postId));
   }
 
   @ApiOperation({ summary: '댓글 작성' })
   @Post()
   @UseGuards(JwtAuthGuard)
   createComment(
-    @Param('postId', new ObjectIdValidationPipe()) postId: string,
+    @Param('postId') postId: number,
     @Body() body: CommentsRequestDto,
     @Req() req: Request,
   ) {
     const { content } = body;
     const user = req.user as any;
-    const userId = user._id.toString();
+    const userId = user.userId;
     const nickname = user.nickname;
     return this.commentsService.createComment({
       postId,
@@ -53,10 +50,7 @@ export class CommentsController {
 
   @ApiOperation({ summary: '댓글 상세 조회' })
   @Get(':id')
-  getOneComment(
-    @Param('postId', new ObjectIdValidationPipe()) postId: string,
-    @Param('id', new ObjectIdValidationPipe()) id: string,
-  ) {
+  getOneComment(@Param('postId') postId: number, @Param('id') id: number) {
     return this.commentsService.getOneComment(postId, id);
   }
 
@@ -64,8 +58,8 @@ export class CommentsController {
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   updateOneComment(
-    @Param('postId', new ObjectIdValidationPipe()) postId: string,
-    @Param('id', new ObjectIdValidationPipe()) id: string,
+    @Param('postId') postId: number,
+    @Param('id') id: number,
     @Body() body: CommentsRequestDto,
     @Req() req: Request,
   ) {
@@ -78,8 +72,8 @@ export class CommentsController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   deleteComment(
-    @Param('postId', new ObjectIdValidationPipe()) postId: string,
-    @Param('id', new ObjectIdValidationPipe()) id: string,
+    @Param('postId') postId: string,
+    @Param('id') id: number,
     @Req() req: Request,
   ) {
     const user = req.user as any;

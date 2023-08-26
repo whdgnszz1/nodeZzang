@@ -5,7 +5,7 @@ export class CommentsRequestDto extends PickType(Comments, [
   'content',
 ] as const) {}
 
-export class CreateCommentDto extends PickType(Comments, [
+export class CreateCommentRequestDto extends PickType(Comments, [
   'userId',
   'nickname',
   'content',

@@ -1,4 +1,4 @@
-import { CreateCommentDto } from './../dto/comments.request.dto';
+import { CreateCommentRequestDto } from './../dto/comments.request.dto';
 import {
   HttpException,
   Injectable,
@@ -11,29 +11,28 @@ import { CommentsRequestDto } from '../dto/\bcomments.request.dto';
 export class CommentsService {
   constructor(private readonly commentsRepository: CommentsRepository) {}
 
-  async getAllPostComment(postId: string) {
+  async getAllPostComment(postId: number) {
     const allPostComments = await this.commentsRepository.findByPostId(postId);
-    const result = allPostComments.map((comment) => comment.readOnlyData);
-    return result;
+    return allPostComments;
   }
 
-  async createComment(body: CreateCommentDto) {
+  async createComment(body: CreateCommentRequestDto) {
     await this.commentsRepository.create(body);
     return { message: '댓글을 생성하였습니다.' };
   }
 
-  async getOneComment(postId: string, id: string) {
+  async getOneComment(postId: number, id: number) {
     const comment = await this.commentsRepository.findByCommentId(id);
     if (!comment) {
       throw new HttpException('존재하지 않는 게시글입니다.', 404);
     }
 
-    return comment.readOnlyData;
+    return comment;
   }
 
   async updateOneComment(
-    postId: string,
-    id: string,
+    postId: number,
+    id: number,
     body: CommentsRequestDto,
     nickname: string,
   ) {
@@ -47,13 +46,12 @@ export class CommentsService {
     }
 
     comment.content = content;
-
-    await comment.save();
+    await this.commentsRepository.updateComment(comment);
 
     return { message: '댓글을 수정하였습니다.' };
   }
 
-  async deleteComment(postId: string, id: string, nickname: string) {
+  async deleteComment(postId: string, id: number, nickname: string) {
     const comment = await this.commentsRepository.findByCommentId(id);
     if (!comment) {
       throw new HttpException('존재하지 않는 게시글입니다.', 404);
