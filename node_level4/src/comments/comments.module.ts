@@ -3,8 +3,8 @@ import { CommentsService } from './services/comments.service';
 import { CommentsController } from './controllers/comments.controller';
 import { CommentsRepository } from './comments.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Comments } from '../common/entities/comments.entity';
 import { PostsModule } from 'src/posts/posts.module';
-import { Comments } from 'src/common/entities/comments.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Comments]), PostsModule],

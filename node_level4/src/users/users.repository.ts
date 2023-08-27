@@ -2,7 +2,7 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { LoginRequestDto } from './dto/users.request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Users } from 'src/common/entities/users.entity';
+import { Users } from '../common/entities/users.entity';
 
 @Injectable()
 export class UsersRepository {

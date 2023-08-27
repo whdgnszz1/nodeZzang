@@ -1,9 +1,9 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, HttpException } from '@nestjs/common';
 import { CreateCommentRequestDto } from './dto/\bcomments.request.dto';
+import { Comments } from '../common/entities/comments.entity';
 import { Repository } from 'typeorm';
 import { PostsRepository } from 'src/posts/posts.repository';
-import { Comments } from 'src/common/entities/comments.entity';
 
 @Injectable()
 export class CommentsRepository {

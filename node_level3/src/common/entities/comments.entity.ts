@@ -1,4 +1,4 @@
-import { Users } from 'src/users/users.entity';
+import { Users } from './users.entity';
 import {
   Column,
   Entity,
@@ -6,20 +6,21 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Posts } from './posts.entity';
 
 @Entity()
-export class Posts {
+export class Comments {
   @PrimaryGeneratedColumn('increment')
-  postId: number;
+  commentId: number;
 
   @Column()
   userId: number;
 
   @Column()
-  nickname: string;
+  postId: number;
 
   @Column()
-  title: string;
+  nickname: string;
 
   @Column()
   content: string;
@@ -27,4 +28,7 @@ export class Posts {
   @JoinColumn()
   @ManyToOne(() => Users)
   users: Users;
+
+  @ManyToOne(() => Posts)
+  posts: Posts;
 }

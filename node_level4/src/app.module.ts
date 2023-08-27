@@ -23,7 +23,7 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [__dirname + '/src/common/entities/*.entity.ts'],
+      entities: [__dirname + '/**/*.entity.*'],
       synchronize: true,
       logging: true,
     }),
