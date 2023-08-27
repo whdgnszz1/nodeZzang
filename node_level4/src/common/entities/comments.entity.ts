@@ -1,5 +1,5 @@
 import { Users } from './users.entity';
-import { Posts } from 'src/common/entities/posts.entity';
+import { Posts } from 'src/common/entities/posts.entity';
 import {
   Column,
   Entity,
