@@ -25,7 +25,10 @@ export class Posts {
   content: string;
 
   @Column({ default: 0 })
-  likeCount: number; // 좋아요 개수
+  likeCount: number;
+
+  @Column({ default: false })
+  isLike: boolean;
 
   @JoinColumn()
   @ManyToOne(() => Users)
