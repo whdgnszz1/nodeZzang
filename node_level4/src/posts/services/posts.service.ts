@@ -24,8 +24,8 @@ export class PostsService {
     return { message: '게시글을 생성하였습니다.' };
   }
 
-  async getOnePost(id: number) {
-    const post = await this.postsRepository.existsById(id);
+  async getOnePost(postId: number, userId: number) {
+    const post = await this.postsRepository.existsById(postId, userId);
     if (!post) {
       throw new HttpException('존재하지 않는 게시글입니다.', 404);
     }
@@ -35,7 +35,7 @@ export class PostsService {
 
   async updateOnePost(id: number, body: PutPostRequestDto, nickname: string) {
     const { title, content } = body;
-    const post = await this.postsRepository.existsById(id);
+    const post = await this.postsRepository.existsById(id, null);
     if (!post) {
       throw new HttpException('존재하지 않는 게시글입니다.', 404);
     }
@@ -50,7 +50,7 @@ export class PostsService {
   }
 
   async deletePost(id: number, nickname: string) {
-    const post = await this.postsRepository.existsById(id);
+    const post = await this.postsRepository.existsById(id, null);
     if (!post) {
       throw new HttpException('존재하지 않는 게시글입니다.', 404);
     }
@@ -61,5 +61,16 @@ export class PostsService {
     await this.postsRepository.deletePost(id);
 
     return { message: '게시글을 삭제하였습니다.' };
+  }
+
+  async toggleLike(postId: number, userId: number) {
+    const post = await this.postsRepository.existsById(postId, userId);
+    if (!post) {
+      throw new HttpException('존재하지 않는 게시글입니다.', 404);
+    }
+
+    const result = await this.postsRepository.toggleLike(postId, userId);
+
+    return { message: result };
   }
 }

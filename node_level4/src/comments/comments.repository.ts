@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, HttpException } from '@nestjs/common';
 import { CreateCommentRequestDto } from './dto/\bcomments.request.dto';
-import { Comments } from '../common/entities/comments.entity';
+import { Comments } from '../common/entities/comments.entity';
 import { Repository } from 'typeorm';
 import { PostsRepository } from 'src/posts/posts.repository';
 
@@ -39,7 +39,10 @@ export class CommentsRepository {
   }
 
   async create(comment: CreateCommentRequestDto): Promise<Comments> {
-    const post = await this.postsRepository.existsById(Number(comment.postId));
+    const post = await this.postsRepository.existsById(
+      Number(comment.postId),
+      null,
+    );
     if (!post) {
       throw new HttpException('해당 게시글이 존재하지 않습니다.', 404);
     }
