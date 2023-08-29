@@ -2,21 +2,29 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { LoginRequestDto } from './dto/users.request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Users } from '../common/entities/users.entity';
+import { Users } from '../common/entities/users.entity';
+import { Likes } from 'src/common/entities/like.entity';
 
 @Injectable()
 export class UsersRepository {
   constructor(
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
+    @InjectRepository(Likes)
+    private likesRepository: Repository<Likes>,
   ) {}
 
   async findUserByWithoutPassword(userId: number): Promise<Users | null> {
-    const user = await this.usersRepository.findOne({
+    const user: any = await this.usersRepository.findOne({
       where: { userId },
       select: ['nickname', 'userId'],
     });
-    console.log('dd', user);
+
+    const likePosts: any = await this.likesRepository.find({
+      where: { userId },
+    });
+
+    user.likePosts = likePosts.map((v) => v.postId);
     return user;
   }
 
