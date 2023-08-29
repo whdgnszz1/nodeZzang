@@ -2,7 +2,8 @@ import CommentsRepository from "../repositories/comments";
 import { Comment } from "../dtos/comments";
 
 class CommentService {
-  createComment = async (postId:number, comment: Comment) => {
+  // 의존성주입 해보기
+  createComment = async (postId: number, comment: Comment) => {
     try {
       const result = await CommentsRepository.createComment(postId, comment);
       return result;

@@ -1,4 +1,3 @@
-import { updateOnePost } from "./../controllers/posts";
 import { Post } from "../dtos/posts";
 import PostRepository from "../repositories/posts";
 

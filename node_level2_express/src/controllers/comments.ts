@@ -9,7 +9,7 @@ export const createComment = async (
 ) => {
   try {
     const postId = Number(req.params.postId);
-    console.log(req.params)
+    console.log(req.params);
     const newComment = req.body;
     await CommentsService.createComment(postId, newComment);
     res.send({ message: "댓글을 생성하였습니다." });

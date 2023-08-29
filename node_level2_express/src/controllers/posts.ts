@@ -9,7 +9,7 @@ export const createPost = async (
   next: NextFunction
 ) => {
   try {
-    const newPost = req.body;
+    const newPost: Post = req.body;
     await PostService.createPost(newPost);
     res.send({ message: "게시글을 생성하였습니다." });
   } catch (error) {
@@ -55,8 +55,13 @@ export const updateOnePost = async (
   try {
     const { password, title, content } = req.body;
     const postId: number = Number(req.params.postId);
-    const post: Post = await PostService.updateOnePost(postId, password, title, content);
-    res.json(post)
+    const post: Post = await PostService.updateOnePost(
+      postId,
+      password,
+      title,
+      content
+    );
+    res.json(post);
   } catch (error) {
     next(error);
   }
@@ -68,7 +73,7 @@ export const deleteOnePost = async (
   res: Response,
   next: NextFunction
 ) => {
-  const {password} = req.body
+  const { password } = req.body;
   const postId: number = Number(req.params.postId);
-  const post = await PostService.deleteOnePost(postId, password)
+  const post = await PostService.deleteOnePost(postId, password);
 };

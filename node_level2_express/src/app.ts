@@ -38,8 +38,8 @@ app.use("/posts/:postId/comments", [CommentsRouter]);
 // 404 NOT FOUND
 app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
   if (err.status === 404) {
-    res.status(404).send(err.message)
-  } 
+    res.status(404).send(err.message);
+  }
   const response = {
     message: err.message,
     ...(process.env.NODE_ENV !== "production" ? { stack: err.stack } : {}),
