@@ -5,6 +5,9 @@ import path from 'path';
 import session from 'express-session';
 import { config } from 'dotenv';
 
+import PostsRouter from './routes/posts.js'
+import CommentsRouter from './routes/comments.js'
+
 config(); // process.env
 
 const app = express();
@@ -27,6 +30,11 @@ app.use(
     },
   })
 );
+
+// router
+app.use('/posts', [PostsRouter])
+app.use('/posts/:postId/comments', [CommentsRouter])
+
 
 
 // 404 NOT FOUND
