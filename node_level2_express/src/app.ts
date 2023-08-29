@@ -7,6 +7,7 @@ import { config } from "dotenv";
 
 import PostsRouter from "./routes/posts";
 import CommentsRouter from "./routes/comments";
+import { CustomError } from "./errors/customError";
 
 config(); // process.env
 
@@ -22,7 +23,7 @@ app.use(
   session({
     resave: false,
     saveUninitialized: false,
-    secret: process.env.COOKIE_SECRET || 'defaultSecret',
+    secret: process.env.COOKIE_SECRET || "defaultSecret",
     cookie: {
       httpOnly: true,
       secure: false, // https적용할때 true로 변경
@@ -35,23 +36,16 @@ app.use("/posts", [PostsRouter]);
 app.use("/posts/:postId/comments", [CommentsRouter]);
 
 // 404 NOT FOUND
+app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
+  if (err.status === 404) {
+    res.status(404).send(err.message)
+  } 
+  const response = {
+    message: err.message,
+    ...(process.env.NODE_ENV !== "production" ? { stack: err.stack } : {}),
+  };
 
-interface CustomError extends Error {
-  status?: number;
-}
-
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const error: CustomError = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
-  error.status = 404;
-  next(error);
-});
-
-// error처리 미들웨어: 배포모드일때는 해커들이 error를 보고 서버를 공격할 수 있음
-app.use((err: CustomError, req: Request, res:Response, next:NextFunction) => {
-  res.locals.message = err.message;
-  res.locals.error = process.env.NODE_ENV !== "production" ? err : {};
-  res.status(err.status || 500);
-  res.render("error");
+  res.status(err.status || 500).json(response);
 });
 
 app.listen(app.get("port"), () => {
