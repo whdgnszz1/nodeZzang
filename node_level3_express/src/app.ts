@@ -7,6 +7,7 @@ import { config } from "dotenv";
 
 import PostsRouter from "./routes/posts";
 import CommentsRouter from "./routes/comments";
+import UsersRouter from "./routes/users";
 import { CustomError } from "./errors/customError";
 
 config(); // process.env
@@ -32,8 +33,9 @@ app.use(
 );
 
 // router
-app.use("/posts", [PostsRouter]);
-app.use("/posts/:postId/comments", [CommentsRouter]);
+app.use("/api/posts", [PostsRouter]);
+app.use("/api/posts/:postId/comments", [CommentsRouter]);
+app.use("/api", [UsersRouter]);
 
 // 404 NOT FOUND
 app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
