@@ -31,9 +31,16 @@
   - request의 body에 댓글을 작성할 때 사용했던 비밀번호로 게시글을 수정할 수 있습니다.
 
 ***
-## Level2.
+## Level2_Express
 
-### 레벨2에서 변경된 내용은 다음과 같습니다.
+### 레벨2_Express에서 변경된 내용은 다음과 같습니다.
+1. ODM을 사용했던 프로젝트를 ORM 프로젝트로 리팩토링 진행
+  - Mongoose -> Prisma
+
+***
+## Level2_Nest
+
+### 레벨2_Nest에서 변경된 내용은 다음과 같습니다.
 
 1. 회원가입
   - nickname과 password로 회원가입이 가능합니다.
