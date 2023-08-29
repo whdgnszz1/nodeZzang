@@ -1,21 +1,15 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const morgan = require("morgan");
-const path = require("path");
-const session = require("express-session");
-const nunjucks = require("nunjucks");
-const dotenv = require("dotenv");
+import express from 'express'
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+import path from 'path';
+import session from 'express-session';
+import { config } from 'dotenv';
 
-dotenv.config(); // process.env
-const pageRouter = require("./routes/page");
+config(); // process.env
 
 const app = express();
-app.set("port", process.env.PORT || 8001);
-app.set("view engine", "html");
-nunjucks.configure("views", {
-  express: app,
-  watch: true,
-});
+const __dirname = path.resolve();
+app.set("port", process.env.PORT || 8000);
 
 app.use(morgan("dev")); // 배포시엔 'combined'
 app.use(express.static(path.join(__dirname, "public"))); // 퍼블릭폴더를 프론트에서 접근 가능하게 함.
@@ -34,7 +28,6 @@ app.use(
   })
 );
 
-app.use("/", pageRouter);
 
 // 404 NOT FOUND
 app.use((req, res, next) => {
