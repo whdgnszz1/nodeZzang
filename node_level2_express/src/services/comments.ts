@@ -1,11 +1,11 @@
 import CommentsRepository from "../repositories/comments";
-import { Comment } from "../dtos/comments";
+import { AllCommentResponse, CreateCommentRequest, UpdateCommentRequest } from "../dtos/comments";
 
 class CommentService {
   // 의존성주입 해보기
-  createComment = async (postId: number, comment: Comment) => {
+  createComment = async (postId: number, newComment: CreateCommentRequest) => {
     try {
-      const result = await CommentsRepository.createComment(postId, comment);
+      const result = await CommentsRepository.createComment(postId, newComment);
       return result;
     } catch (error) {
       console.error(error);
@@ -15,7 +15,7 @@ class CommentService {
 
   getAllComments = async () => {
     try {
-      const result = await CommentsRepository.getAllComments();
+      const result: AllCommentResponse[] = await CommentsRepository.getAllComments();
       return result;
     } catch (error) {
       console.error(error);
@@ -35,14 +35,12 @@ class CommentService {
 
   updateOneComment = async (
     commentId: number,
-    password: string,
-    content: string
+    updateComment: UpdateCommentRequest
   ) => {
     try {
       const result = await CommentsRepository.updateOneComment(
         commentId,
-        password,
-        content
+        updateComment
       );
       return result;
     } catch (error) {

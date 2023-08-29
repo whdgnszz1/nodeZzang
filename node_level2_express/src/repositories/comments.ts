@@ -1,9 +1,13 @@
-import { Comment } from "../dtos/comments";
+import {
+  AllCommentResponse,
+  CreateCommentRequest,
+  UpdateCommentRequest,
+} from "../dtos/comments";
 import { CustomError } from "../errors/customError";
 import prisma from "../utils/prisma/index";
 
 class CommentsRepository {
-  createComment = async (postId: number, comment: Comment) => {
+  createComment = async (postId: number, comment: CreateCommentRequest) => {
     const newComment = await prisma.comments.create({
       data: { postId: postId, ...comment },
     });
@@ -11,7 +15,14 @@ class CommentsRepository {
   };
 
   getAllComments = async () => {
-    const allComments = await prisma.comments.findMany({});
+    const allComments: AllCommentResponse[] = await prisma.comments.findMany({
+      select: {
+        commentId: true,
+        user: true,
+        content: true,
+        createdAt: true,
+      },
+    });
     return allComments;
   };
 
@@ -29,22 +40,21 @@ class CommentsRepository {
 
   updateOneComment = async (
     commentId: number,
-    password: string,
-    content: string
+    updateComment: UpdateCommentRequest
   ) => {
     const comment = await prisma.comments.findFirst({
       where: { commentId: commentId },
     });
 
     if (!comment) {
-      throw new CustomError("해당하는 댓글을 찾을 수 없습니다.", 404);
+      throw new CustomError("댓글 조회에 실패하였습니다.", 404);
     }
 
-    if (password === comment.password) {
+    if (updateComment.password === comment.password) {
       const updatedComment = await prisma.comments.update({
         where: { commentId: commentId },
         data: {
-          content: content,
+          content: updateComment.content,
         },
       });
       return updatedComment;
@@ -59,7 +69,7 @@ class CommentsRepository {
     });
 
     if (!comment) {
-      throw new CustomError("해당하는 댓글을 찾을 수 없습니다.", 404);
+      throw new CustomError("댓글 조회에 실패하였습니다..", 404);
     }
 
     if (password === comment.password) {

@@ -1,4 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import {
+  AllCommentResponse,
+  CreateCommentRequest,
+  UpdateCommentRequest,
+} from "../dtos/comments";
 import CommentsService from "../services/comments";
 
 // 댓글 생성
@@ -9,8 +14,7 @@ export const createComment = async (
 ) => {
   try {
     const postId = Number(req.params.postId);
-    console.log(req.params);
-    const newComment = req.body;
+    const newComment: CreateCommentRequest = req.body;
     await CommentsService.createComment(postId, newComment);
     res.send({ message: "댓글을 생성하였습니다." });
   } catch (error) {
@@ -25,7 +29,8 @@ export const getAllComments = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const allComments = await CommentsService.getAllComments();
+    const allComments: AllCommentResponse[] =
+      await CommentsService.getAllComments();
     res.json(allComments);
   } catch (error) {
     next(error);
@@ -54,9 +59,9 @@ export const updateOneComment = async (
   next: NextFunction
 ) => {
   try {
-    const { password, content } = req.body;
+    const updateComment: UpdateCommentRequest = req.body;
     const commentId: number = Number(req.params.commentId);
-    await CommentsService.updateOneComment(commentId, password, content);
+    await CommentsService.updateOneComment(commentId, updateComment);
     res.send({ message: "댓글을 수정하였습니다." });
   } catch (error) {
     next(error);
