@@ -1,6 +1,8 @@
 # Sparta Node Assignment
-## Level1.
 ![Swagger](https://velog.velcdn.com/images/whdgnszz1/post/ad016204-417a-4907-afb7-9695c2d9a11c/image.png)
+
+## Level1.
+
 </br>
 
 ### 프로젝트의 기능은 다음과 같습니다.
