@@ -1,16 +1,26 @@
-import { Post } from '../dtos/posts';
-import PostRepository from '../repositories/posts'
+import { Post } from "../dtos/posts";
+import PostRepository from "../repositories/posts";
 
 class PostService {
-  createPost = (post: Post) => {
+  createPost = async (post: Post): Promise<Post> => {
     try {
-      const result = PostRepository.createPost(post);
-      return result
+      const result: Post  = await PostRepository.createPost(post);
+      return result;
     } catch (error) {
       console.error(error);
+      throw error
     }
   };
-  getAllPosts = () => {};
+
+  getAllPosts = async (): Promise<Post[]> => {
+    try {
+      const result: Post[] = await PostRepository.getAllPosts();
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
   getOnePost = () => {};
   updateOnePost = () => {};
   deleteOnePost = () => {};
