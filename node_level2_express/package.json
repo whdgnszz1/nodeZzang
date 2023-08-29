@@ -4,9 +4,10 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon app",
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
-  "type": "module",
   "dependencies": {
     "@prisma/client": "^5.2.0",
     "bcrypt": "^5.1.1",
@@ -26,6 +27,13 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express": "^4.17.17",
+    "@types/express-session": "^1.17.7",
+    "@types/morgan": "^1.9.5",
+    "@types/node": "^20.5.7",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   }
 }
