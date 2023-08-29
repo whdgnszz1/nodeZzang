@@ -12,6 +12,7 @@ datasource db {
 
 model Posts {
   postId    Int      @id @default(autoincrement()) @map("postId")
+  user      String   @map("user")
   title     String   @map("title")
   content   String   @map("content") @db.Text
   password  String   @map("password")
