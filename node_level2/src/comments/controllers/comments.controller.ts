@@ -14,7 +14,7 @@ import {
 import { ApiOperation } from '@nestjs/swagger';
 import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
 import { ObjectIdValidationPipe } from 'src/common/pipes/objectIdValidation.pipe';
-import { CommentsRequestDto } from '../dto/\bcomments.request.dto';
+import { CommentsRequestDto } from '../dto/comments.request.dto';
 import { CommentsService } from '../services/comments.service';
 import { Request } from 'express';
 

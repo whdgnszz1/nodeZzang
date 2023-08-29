@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
-import { CommentsRequestDto } from '../dto/\bcomments.request.dto';
+import { CommentsRequestDto } from '../dto/comments.request.dto';
 import { CommentsService } from '../services/comments.service';
 import { Request } from 'express';
 @ApiTags('COMMENT')

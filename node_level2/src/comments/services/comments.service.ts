@@ -1,11 +1,11 @@
-import { CreateCommentDto } from './../dto/comments.request.dto';
+import { CreateCommentDto } from '../dto/comments.request.dto';
 import {
   HttpException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CommentsRepository } from '../comments.repository';
-import { CommentsRequestDto } from '../dto/\bcomments.request.dto';
+import { CommentsRequestDto } from '../dto/comments.request.dto';
 
 @Injectable()
 export class CommentsService {

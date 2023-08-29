@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import {
   CommentsRequestDto,
   PutRequestDto,
-} from '../dto/\bcomments.request.dto';
+} from '../dto/comments.request.dto';
 
 @Injectable()
 export class CommentsService {

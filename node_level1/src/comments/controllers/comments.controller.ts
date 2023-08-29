@@ -11,10 +11,7 @@ import {
 import { ApiOperation } from '@nestjs/swagger';
 import { SuccessInterceptor } from 'src/common/interceptors/success.interceptor';
 import { ObjectIdValidationPipe } from 'src/common/pipes/objectIdValidation.pipe';
-import {
-  CommentsRequestDto,
-  PutRequestDto,
-} from '../dto/\bcomments.request.dto';
+import { CommentsRequestDto, PutRequestDto } from '../dto/comments.request.dto';
 import { CommentsService } from '../services/comments.service';
 
 @Controller('posts/:postId/comments')

@@ -2,7 +2,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Injectable, HttpException } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { Comments } from './comments.schema';
-import { CreateCommentDto } from './dto/\bcomments.request.dto';
+import { CreateCommentDto } from './dto/comments.request.dto';
 
 @Injectable()
 export class CommentsRepository {
