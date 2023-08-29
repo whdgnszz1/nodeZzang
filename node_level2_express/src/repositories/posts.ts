@@ -1,7 +1,8 @@
+import { Post } from "../dtos/posts";
 import prisma from "../utils/prisma/index";
 
 class PostRepository {
-  createPost = async (post:any) => {
+  createPost = async (post: Post) => {
     const newPost = await prisma.posts.create({ data: { ...post } });
     return newPost;
   };

@@ -1,7 +1,8 @@
+import { Post } from '../dtos/posts';
 import PostRepository from '../repositories/posts'
 
 class PostService {
-  createPost = (post: any) => {
+  createPost = (post: Post) => {
     try {
       const result = PostRepository.createPost(post);
       return result
