@@ -1,3 +1,4 @@
+import { updateOnePost } from "./../controllers/posts";
 import { Post } from "../dtos/posts";
 import PostRepository from "../repositories/posts";
 
@@ -22,7 +23,7 @@ class PostService {
     }
   };
 
-  getOnePost = async (postId: number): Promise<Post>  => {
+  getOnePost = async (postId: number): Promise<Post> => {
     try {
       const result: Post = await PostRepository.getOnePost(postId);
       return result;
@@ -31,7 +32,26 @@ class PostService {
       throw error;
     }
   };
-  updateOnePost = () => {};
+
+  updateOnePost = async (
+    postId: number,
+    password: string,
+    title: string,
+    content: string
+  ): Promise<Post> => {
+    try {
+      const result: Post = await PostRepository.updateOnePost(
+        postId,
+        password,
+        title,
+        content
+      );
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
   deleteOnePost = () => {};
 }
 

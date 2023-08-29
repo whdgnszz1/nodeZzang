@@ -13,8 +13,7 @@ class PostRepository {
     return allPosts;
   };
 
-
-  // 게시글을 찾지 못했을 때 null을 반환하려니 controller, service에 전부 타입지정을 해줘야해서 
+  // 게시글을 찾지 못했을 때 null을 반환하려니 controller, service에 전부 타입지정을 해줘야해서
   // repository에서 error를 throw
   // Error의 객체엔 status 프로터티가 없어서 CustomError을 만들어 throw
   // 일반적으로 사용하는 방식이 맞는지?
@@ -30,7 +29,35 @@ class PostRepository {
 
     return post;
   };
-  updateOnePost = () => {};
+
+  updateOnePost = async (
+    postId: number,
+    password: string,
+    title: string,
+    content: string
+  ): Promise<Post> => {
+    const post = await prisma.posts.findFirst({
+      where: { postId: postId },
+    });
+
+    if (!post) {
+      throw new CustomError("해당하는 게시글을 찾을 수 없습니다.", 404);
+    }
+
+    if (password === post.password) {
+      const updatedPost = await prisma.posts.update({
+        where: { postId: postId },
+        data: {
+          title: title,
+          content: content,
+        },
+      });
+      return updatedPost;
+    } else {
+      throw new CustomError("비밀번호가 일치하지 않습니다.", 401);
+    }
+  };
+  
   deleteOnePost = () => {};
 }
 

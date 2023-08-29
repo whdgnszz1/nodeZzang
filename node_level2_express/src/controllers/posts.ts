@@ -38,20 +38,28 @@ export const getOnePost = async (
   next: NextFunction
 ) => {
   try {
-    const postId: number = Number(req.params.postId)
-    const post: Post = await PostService.getOnePost(postId)
-    res.json(post)
+    const postId: number = Number(req.params.postId);
+    const post: Post = await PostService.getOnePost(postId);
+    res.json(post);
   } catch (error) {
     next(error);
   }
 };
 
 // 특정 게시글 수정
-export const updateOnePost = (
+export const updateOnePost = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    const { password, title, content } = req.body;
+    const postId: number = Number(req.params.postId);
+    const post: Post = await PostService.updateOnePost(postId, password, title, content);
+  } catch (error) {
+    next(error);
+  }
+};
 
 // 특정 게시글 삭제
 export const deleteOnePost = (
