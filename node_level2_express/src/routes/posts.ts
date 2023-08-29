@@ -5,7 +5,7 @@ import {
   getAllPosts,
   getOnePost,
   updateOnePost,
-} from "../controllers/posts.js";
+} from "../controllers/posts";
 const router = express.Router();
 
 // 게시글 작성
