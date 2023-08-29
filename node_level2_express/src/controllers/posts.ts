@@ -1,6 +1,11 @@
 import PostService from "../services/posts";
 import { Request, Response, NextFunction } from "express";
-import { Post } from "../dtos/posts";
+import {
+  AllPostResponse,
+  CreatePostRequest,
+  OnePostResponse,
+  UpdatePostRequest,
+} from "../dtos/posts";
 
 // 게시글 생성
 export const createPost = async (
@@ -9,7 +14,7 @@ export const createPost = async (
   next: NextFunction
 ) => {
   try {
-    const newPost: Post = req.body;
+    const newPost: CreatePostRequest = req.body;
     await PostService.createPost(newPost);
     res.send({ message: "게시글을 생성하였습니다." });
   } catch (error) {
@@ -24,7 +29,7 @@ export const getAllPosts = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const allPosts: Post[] = await PostService.getAllPosts();
+    const allPosts: AllPostResponse[] = await PostService.getAllPosts();
     res.json(allPosts);
   } catch (error) {
     next(error);
@@ -39,7 +44,7 @@ export const getOnePost = async (
 ) => {
   try {
     const postId: number = Number(req.params.postId);
-    const post: Post = await PostService.getOnePost(postId);
+    const post: OnePostResponse = await PostService.getOnePost(postId);
     res.json(post);
   } catch (error) {
     next(error);
@@ -53,14 +58,9 @@ export const updateOnePost = async (
   next: NextFunction
 ) => {
   try {
-    const { password, title, content } = req.body;
+    const updatePostRequest: UpdatePostRequest = req.body;
     const postId: number = Number(req.params.postId);
-    const post: Post = await PostService.updateOnePost(
-      postId,
-      password,
-      title,
-      content
-    );
+    const post = await PostService.updateOnePost(postId, updatePostRequest);
     res.json(post);
   } catch (error) {
     next(error);
@@ -73,7 +73,12 @@ export const deleteOnePost = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { password } = req.body;
-  const postId: number = Number(req.params.postId);
-  const post = await PostService.deleteOnePost(postId, password);
+  try {
+    const { password } = req.body;
+    const postId: number = Number(req.params.postId);
+    await PostService.deleteOnePost(postId, password);
+    res.send({ message: "게시글을 삭제하였습니다." });
+  } catch (error) {
+    next(error);
+  }
 };

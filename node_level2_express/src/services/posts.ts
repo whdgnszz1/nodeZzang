@@ -1,10 +1,15 @@
-import { Post } from "../dtos/posts";
+import {
+  AllPostResponse,
+  CreatePostRequest,
+  OnePostResponse,
+  UpdatePostRequest,
+} from "../dtos/posts";
 import PostRepository from "../repositories/posts";
 
 class PostService {
-  createPost = async (post: Post): Promise<Post> => {
+  createPost = async (post: CreatePostRequest) => {
     try {
-      const result: Post = await PostRepository.createPost(post);
+      const result = await PostRepository.createPost(post);
       return result;
     } catch (error) {
       console.error(error);
@@ -12,9 +17,9 @@ class PostService {
     }
   };
 
-  getAllPosts = async (): Promise<Post[]> => {
+  getAllPosts = async (): Promise<AllPostResponse[]> => {
     try {
-      const result: Post[] = await PostRepository.getAllPosts();
+      const result: AllPostResponse[] = await PostRepository.getAllPosts();
       return result;
     } catch (error) {
       console.error(error);
@@ -22,9 +27,10 @@ class PostService {
     }
   };
 
-  getOnePost = async (postId: number): Promise<Post> => {
+  getOnePost = async (postId: number): Promise<OnePostResponse> => {
     try {
-      const result: Post = await PostRepository.getOnePost(postId);
+      // 나중에 처리
+      const result: any = await PostRepository.getOnePost(postId);
       return result;
     } catch (error) {
       console.error(error);
@@ -34,16 +40,12 @@ class PostService {
 
   updateOnePost = async (
     postId: number,
-    password: string,
-    title: string,
-    content: string
-  ): Promise<Post> => {
+    updatePostRequest: UpdatePostRequest
+  ) => {
     try {
-      const result: Post = await PostRepository.updateOnePost(
+      const result = await PostRepository.updateOnePost(
         postId,
-        password,
-        title,
-        content
+        updatePostRequest
       );
       return result;
     } catch (error) {
@@ -51,6 +53,7 @@ class PostService {
       throw error;
     }
   };
+
   deleteOnePost = async (postId: number, password: string) => {
     try {
       const result = await PostRepository.deleteOnePost(postId, password);
