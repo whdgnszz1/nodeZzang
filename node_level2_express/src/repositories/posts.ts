@@ -57,8 +57,25 @@ class PostRepository {
       throw new CustomError("비밀번호가 일치하지 않습니다.", 401);
     }
   };
-  
-  deleteOnePost = () => {};
+
+  deleteOnePost = async (postId: number, password: string) => {
+    const post = await prisma.posts.findFirst({
+      where: { postId: postId },
+    });
+
+    if (!post) {
+      throw new CustomError("해당하는 게시글을 찾을 수 없습니다.", 404);
+    }
+
+    if (password === post.password) {
+      await prisma.posts.delete({
+        where: { postId: postId },
+      });
+      return { message: "게시글을 삭제하였습니다." };
+    } else {
+      throw new CustomError("비밀번호가 일치하지 않습니다.", 401);
+    }
+  };
 }
 
 export default new PostRepository();

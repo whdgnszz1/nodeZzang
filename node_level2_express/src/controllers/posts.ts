@@ -56,14 +56,19 @@ export const updateOnePost = async (
     const { password, title, content } = req.body;
     const postId: number = Number(req.params.postId);
     const post: Post = await PostService.updateOnePost(postId, password, title, content);
+    res.json(post)
   } catch (error) {
     next(error);
   }
 };
 
 // 특정 게시글 삭제
-export const deleteOnePost = (
+export const deleteOnePost = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  const {password} = req.body
+  const postId: number = Number(req.params.postId);
+  const post = await PostService.deleteOnePost(postId, password)
+};

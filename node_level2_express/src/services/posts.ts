@@ -52,7 +52,15 @@ class PostService {
       throw error;
     }
   };
-  deleteOnePost = () => {};
+  deleteOnePost = async (postId: number, password: string) => {
+    try {
+      const result = await PostRepository.deleteOnePost(postId, password);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
 }
 
 export default new PostService();
