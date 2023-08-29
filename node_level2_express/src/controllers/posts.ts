@@ -32,11 +32,19 @@ export const getAllPosts = async (
 };
 
 // 특정 게시글 조회
-export const getOnePost = (
+export const getOnePost = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+) => {
+  try {
+    const postId: number = Number(req.params.postId)
+    const post: Post = await PostService.getOnePost(postId)
+    res.json(post)
+  } catch (error) {
+    next(error);
+  }
+};
 
 // 특정 게시글 수정
 export const updateOnePost = (

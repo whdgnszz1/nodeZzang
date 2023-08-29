@@ -4,11 +4,11 @@ import PostRepository from "../repositories/posts";
 class PostService {
   createPost = async (post: Post): Promise<Post> => {
     try {
-      const result: Post  = await PostRepository.createPost(post);
+      const result: Post = await PostRepository.createPost(post);
       return result;
     } catch (error) {
       console.error(error);
-      throw error
+      throw error;
     }
   };
 
@@ -21,7 +21,16 @@ class PostService {
       throw error;
     }
   };
-  getOnePost = () => {};
+
+  getOnePost = async (postId: number): Promise<Post>  => {
+    try {
+      const result: Post = await PostRepository.getOnePost(postId);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
   updateOnePost = () => {};
   deleteOnePost = () => {};
 }
