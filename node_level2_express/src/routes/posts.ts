@@ -14,8 +14,8 @@ router.post("/", createPost);
 router.get("/", getAllPosts);
 router.get("/:postId", getOnePost);
 // 게시글 수정
-router.get("/:postId", updateOnePost);
+router.put("/:postId", updateOnePost);
 // 게시글 삭제
-router.get("/:postId", deleteOnePost);
+router.delete("/:postId", deleteOnePost);
 
 export default router;
