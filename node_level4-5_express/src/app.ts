@@ -1,16 +1,14 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import path from "path";
 import session from "express-session";
 import { config } from "dotenv";
 
-import PostsRouter from "./routes/posts";
-import CommentsRouter from "./routes/comments";
-import UsersRouter from "./routes/auth";
+import mainRouter from "./routes";
 
-import { CustomError } from "./errors/customError";
-
+import notFound from "./middlewares/notFound";
+import errorHandler from "./middlewares/errorHandler";
 
 config(); // process.env
 
@@ -34,24 +32,14 @@ app.use(
   })
 );
 
-
 // router
-app.use("/api/posts", [PostsRouter]);
-app.use("/api/posts/:postId/comments", [CommentsRouter]);
-app.use("/api", [UsersRouter]);
+app.use("/api", mainRouter);
 
-// 404 NOT FOUND
-app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
-  if (err.status === 404) {
-    res.status(404).send(err.message);
-  }
-  const response = {
-    message: err.message,
-    ...(process.env.NODE_ENV !== "production" ? { stack: err.stack } : {}),
-  };
+// 404 미들웨어
+app.use(notFound);
 
-  res.status(err.status || 500).json(response);
-});
+// 에러 처리 핸들러 미들웨어
+app.use(errorHandler);
 
 app.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트에서 실행");
