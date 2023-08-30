@@ -48,7 +48,7 @@ class PostRepository {
       },
     });
     if (!post) {
-      throw new CustomError("해당하는 게시글을 찾을 수 없습니다.", 404);
+      throw new CustomError(404,"해당하는 게시글을 찾을 수 없습니다.");
     }
 
     return post;
@@ -64,7 +64,7 @@ class PostRepository {
     });
 
     if (!post) {
-      throw new CustomError("해당하는 게시글을 찾을 수 없습니다.", 404);
+      throw new CustomError(404,"해당하는 게시글을 찾을 수 없습니다.");
     }
 
     if (user.userId === post.userId) {
@@ -77,21 +77,20 @@ class PostRepository {
       });
       return updatedPost;
     } else {
-      throw new CustomError("게시글 수정의 권한이 존재하지 않습니다.", 403);
+      throw new CustomError(403,"게시글 수정의 권한이 존재하지 않습니다.");
     }
   };
 
   deleteOnePost = async (
     user: Express.User,
     postId: number,
-    password: string
   ) => {
     const post = await prisma.posts.findFirst({
       where: { postId: postId },
     });
 
     if (!post) {
-      throw new CustomError("해당하는 게시글을 찾을 수 없습니다.", 404);
+      throw new CustomError(404, "해당하는 게시글을 찾을 수 없습니다.");
     }
 
     if (user.userId === post.userId) {
@@ -100,7 +99,7 @@ class PostRepository {
       });
       return { message: "게시글을 삭제하였습니다." };
     } else {
-      throw new CustomError("게시글 삭제의 권한이 존재하지 않습니다..", 403);
+      throw new CustomError(403,"게시글 삭제의 권한이 존재하지 않습니다..");
     }
   };
 }

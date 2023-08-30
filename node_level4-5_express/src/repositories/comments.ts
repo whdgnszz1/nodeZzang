@@ -43,7 +43,7 @@ class CommentsRepository {
     });
 
     if (!comment) {
-      throw new CustomError("해당하는 댓글을 찾을 수 없습니다.", 404);
+      throw new CustomError(404, "해당하는 댓글을 찾을 수 없습니다.");
     }
 
     return comment;
@@ -59,7 +59,7 @@ class CommentsRepository {
     });
 
     if (!comment) {
-      throw new CustomError("댓글 조회에 실패하였습니다.", 404);
+      throw new CustomError(404, "댓글 조회에 실패하였습니다.");
     }
 
     if (user.userId === comment.userId) {
@@ -71,20 +71,17 @@ class CommentsRepository {
       });
       return updatedComment;
     } else {
-      throw new CustomError("댓글의 수정 권한이 존재하지 않습니다.", 403);
+      throw new CustomError(403, "댓글의 수정 권한이 존재하지 않습니다.");
     }
   };
 
-  deleteOneComment = async (
-    user: Express.User,
-    commentId: number,
-  ) => {
+  deleteOneComment = async (user: Express.User, commentId: number) => {
     const comment = await prisma.comments.findFirst({
       where: { commentId: commentId },
     });
 
     if (!comment) {
-      throw new CustomError("댓글 조회에 실패하였습니다..", 404);
+      throw new CustomError(404, "댓글 조회에 실패하였습니다..");
     }
 
     if (user.userId === comment.userId) {
@@ -93,7 +90,7 @@ class CommentsRepository {
       });
       return { message: "댓글을 삭제하였습니다." };
     } else {
-      throw new CustomError("댓글의 삭제 권한이 존재하지 않습니다.", 403);
+      throw new CustomError(403, "댓글의 삭제 권한이 존재하지 않습니다.");
     }
   };
 }
