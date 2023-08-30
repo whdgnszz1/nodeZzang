@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import {
   createPost,
   deleteOnePost,
@@ -8,11 +8,6 @@ import {
 } from "../controllers/posts";
 import { isLoggedIn } from "../middlewares/auth";
 const router = express.Router();
-
-router.use((req: Request, res: Response, next: NextFunction) => {
-  res.locals.user = req.user;
-  next();
-});
 
 // 게시글 작성
 router.post("/", isLoggedIn, createPost);

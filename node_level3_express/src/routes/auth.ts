@@ -1,9 +1,7 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import { login, logout, signUp } from "../controllers/auth";
-import passport from "passport";
 import { isLoggedIn, isNotLoggedIn } from "../middlewares/auth";
 const router = express.Router();
-
 
 //회원가입
 router.post("/signup", isNotLoggedIn, signUp);

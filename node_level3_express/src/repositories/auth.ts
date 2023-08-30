@@ -1,4 +1,4 @@
-import { LoginRequest, SignUpRequest } from "../dtos/auth";
+import { SignUpRequest } from "../dtos/auth";
 import { CustomError } from "../errors/customError";
 import prisma from "../utils/prisma/index";
 import bcrypt from "bcrypt";
@@ -25,7 +25,7 @@ class UsersRepository {
     }
   };
 
-  login = (user: LoginRequest) => {};
+  // login = (user: LoginRequest) => {};
 }
 
 export default new UsersRepository();

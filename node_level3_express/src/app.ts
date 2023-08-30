@@ -26,7 +26,7 @@ app.use(morgan("dev")); // 배포시엔 'combined'
 app.use(express.static(path.join(__dirname, "public"))); // 퍼블릭폴더를 프론트에서 접근 가능하게 함.
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); // form 요청 받는 설정
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser(process.env.COOKIE_SECRET)); // { connect.sid : 123144359}
 app.use(
   session({
     resave: false,
@@ -40,7 +40,7 @@ app.use(
 );
 
 app.use(passport.initialize());
-app.use(passport.session()); // session.sid라는 이름으로 저장됨.
+app.use(passport.session()); // connect.sid라는 이름으로 저장됨.
 
 // router
 app.use("/api/posts", [PostsRouter]);
