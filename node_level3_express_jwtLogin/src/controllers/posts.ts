@@ -14,10 +14,7 @@ export const createPost = async (
   next: NextFunction
 ) => {
   try {
-    // User | undefined' 형식은 'User' 형식에 할당할 수 없습니다.
-    // 'undefined' 형식은 'User' 형식에 할당할 수 없습니다.
-    // isLoggedIn을 거친 유저라면 req.user, Express.User는 항상 존재함에도 불구하고 에러처리를 해줘야 하는지??
-    const user = req.user ?? undefined
+    const user = res.locals.decoded
     if(!user) {
       return res.status(401).send({message: '로그인이 필요한 기능입니다.'})
     }
@@ -65,7 +62,7 @@ export const updateOnePost = async (
   next: NextFunction
 ) => {
   try {
-    const user = req.user ?? undefined
+    const user = res.locals.decoded
     if(!user) {
       return res.status(401).send({message: '로그인이 필요한 기능입니다.'})
     }
@@ -85,7 +82,7 @@ export const deleteOnePost = async (
   next: NextFunction
 ) => {
   try {
-    const user = req.user ?? undefined
+    const user = res.locals.decoded
     if(!user) {
       return res.status(401).send({message: '로그인이 필요한 기능입니다.'})
     }
