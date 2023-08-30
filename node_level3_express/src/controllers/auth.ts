@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { LoginRequest, SignUpRequest } from "../dtos/users";
-import UsersService from "../services/users";
+import { LoginRequest, SignUpRequest } from "../dtos/auth";
+import UsersService from "../services/auth";
 
 export const signUp = async (
   req: Request,
@@ -30,3 +30,6 @@ export const login = async (
     next(error);
   }
 };
+
+export const logout = async () => {}
+

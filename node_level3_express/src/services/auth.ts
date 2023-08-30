@@ -1,5 +1,5 @@
-import { LoginRequest, SignUpRequest } from "../dtos/users";
-import UsersRepository from "../repositories/users";
+import { LoginRequest, SignUpRequest } from "../dtos/auth";
+import UsersRepository from "../repositories/auth";
 
 class UsersService {
   signUp = async (user: SignUpRequest) => {
