@@ -1,4 +1,4 @@
-import { SignUpRequest } from "../dtos/auth";
+import { LoginRequest, LoginResponse, SignUpRequest } from "../dtos/auth";
 import UsersRepository from "../repositories/auth";
 
 class UsersService {
@@ -7,10 +7,10 @@ class UsersService {
     return newUser;
   };
 
-  // login = async (user: LoginRequest) => {
-  //   await UsersRepository.login(user);
-  //   return;
-  // };
+  login = async (user: LoginRequest) => {
+    const result: LoginResponse = await UsersRepository.login(user);
+    return result;
+  };
 }
 
 export default new UsersService();

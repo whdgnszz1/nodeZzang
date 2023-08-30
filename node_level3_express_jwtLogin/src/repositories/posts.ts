@@ -9,7 +9,14 @@ import prisma from "../utils/prisma/index";
 
 class PostRepository {
   createPost = async (user: Express.User, post: CreatePostRequest) => {
-    const newPost = await prisma.posts.create({ data: { ...user, ...post } });
+    const { userId, nickname } = user;
+    const newPost = await prisma.posts.create({
+      data: {
+        userId: userId,
+        nickname: nickname,
+        ...post,
+      },
+    });
     return newPost;
   };
 
@@ -40,7 +47,6 @@ class PostRepository {
         updatedAt: true,
       },
     });
-    // null 처리 했고, return엔 null값이 없음에도 불구하고 service엔 null이 포함된 값으로 넘어가는 오류
     if (!post) {
       throw new CustomError("해당하는 게시글을 찾을 수 없습니다.", 404);
     }

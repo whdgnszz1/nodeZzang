@@ -1,11 +1,23 @@
 import CommentsRepository from "../repositories/comments";
-import { AllCommentResponse, CreateCommentRequest, UpdateCommentRequest } from "../dtos/comments";
+import {
+  AllCommentResponse,
+  CreateCommentRequest,
+  UpdateCommentRequest,
+} from "../dtos/comments";
 
 class CommentService {
   // 의존성주입 해보기
-  createComment = async (postId: number, newComment: CreateCommentRequest) => {
+  createComment = async (
+    user: Express.User,
+    postId: number,
+    newComment: CreateCommentRequest
+  ) => {
     try {
-      const result = await CommentsRepository.createComment(postId, newComment);
+      const result = await CommentsRepository.createComment(
+        user,
+        postId,
+        newComment
+      );
       return result;
     } catch (error) {
       console.error(error);
@@ -15,7 +27,8 @@ class CommentService {
 
   getAllComments = async () => {
     try {
-      const result: AllCommentResponse[] = await CommentsRepository.getAllComments();
+      const result: AllCommentResponse[] =
+        await CommentsRepository.getAllComments();
       return result;
     } catch (error) {
       console.error(error);
@@ -34,11 +47,13 @@ class CommentService {
   };
 
   updateOneComment = async (
+    user: Express.User,
     commentId: number,
     updateComment: UpdateCommentRequest
   ) => {
     try {
       const result = await CommentsRepository.updateOneComment(
+        user,
         commentId,
         updateComment
       );
@@ -49,12 +64,14 @@ class CommentService {
     }
   };
 
-  deleteOneComment = async (commentId: number, password: string) => {
+  deleteOneComment = async (
+    user: Express.User,
+    commentId: number,
+  ) => {
     try {
       const result = await CommentsRepository.deleteOneComment(
-        commentId,
-        password
-      );
+        user,
+        commentId,      );
       return result;
     } catch (error) {
       console.error(error);
