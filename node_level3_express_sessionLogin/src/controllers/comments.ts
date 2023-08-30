@@ -13,9 +13,10 @@ export const createComment = async (
   next: NextFunction
 ) => {
   try {
+    const user = req.user as Express.User
     const postId = Number(req.params.postId);
     const newComment: CreateCommentRequest = req.body;
-    await CommentsService.createComment(postId, newComment);
+    await CommentsService.createComment(user, postId, newComment);
     res.send({ message: "댓글을 생성하였습니다." });
   } catch (error) {
     next(error);
@@ -59,9 +60,10 @@ export const updateOneComment = async (
   next: NextFunction
 ) => {
   try {
+    const user = req.user as Express.User
     const updateComment: UpdateCommentRequest = req.body;
     const commentId: number = Number(req.params.commentId);
-    await CommentsService.updateOneComment(commentId, updateComment);
+    await CommentsService.updateOneComment(user, commentId, updateComment);
     res.send({ message: "댓글을 수정하였습니다." });
   } catch (error) {
     next(error);
@@ -75,9 +77,10 @@ export const deleteOneComment = async (
   next: NextFunction
 ) => {
   try {
+    const user = req.user as Express.User
     const { password } = req.body;
     const commentId: number = Number(req.params.commentId);
-    const comment = await CommentsService.deleteOneComment(commentId, password);
+    const comment = await CommentsService.deleteOneComment(user, commentId, password);
     res.send({ message: "댓글을 삭제하였습니다." });
   } catch (error) {
     next(error);
