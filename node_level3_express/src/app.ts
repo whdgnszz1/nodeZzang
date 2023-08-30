@@ -5,15 +5,22 @@ import path from "path";
 import session from "express-session";
 import { config } from "dotenv";
 
+import passport from "passport";
+import initializePassport from "./passport/index";
+
 import PostsRouter from "./routes/posts";
 import CommentsRouter from "./routes/comments";
-import UsersRouter from "./routes/users";
+import UsersRouter from "./routes/auth";
+
 import { CustomError } from "./errors/customError";
+
 
 config(); // process.env
 
 const app = express();
 app.set("port", process.env.PORT || 8000);
+
+initializePassport();
 
 app.use(morgan("dev")); // 배포시엔 'combined'
 app.use(express.static(path.join(__dirname, "public"))); // 퍼블릭폴더를 프론트에서 접근 가능하게 함.
@@ -31,6 +38,9 @@ app.use(
     },
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session()); // session.sid라는 이름으로 저장됨.
 
 // router
 app.use("/api/posts", [PostsRouter]);
