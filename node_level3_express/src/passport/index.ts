@@ -18,7 +18,6 @@ passport.deserializeUser((id: any, done: any) => {
 
 const initializePassport = () => {
   local();
-  kakao();
 };
 
 export default initializePassport;
