@@ -12,38 +12,23 @@ class CommentService {
     postId: number,
     newComment: CreateCommentRequest
   ) => {
-    try {
-      const result = await CommentsRepository.createComment(
-        user,
-        postId,
-        newComment
-      );
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const result = await CommentsRepository.createComment(
+      user,
+      postId,
+      newComment
+    );
+    return result;
   };
 
   getAllComments = async () => {
-    try {
-      const result: AllCommentResponse[] =
-        await CommentsRepository.getAllComments();
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const result: AllCommentResponse[] =
+      await CommentsRepository.getAllComments();
+    return result;
   };
 
   getOneComment = async (commentId: number) => {
-    try {
-      const result = await CommentsRepository.getOneComment(commentId);
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const result = await CommentsRepository.getOneComment(commentId);
+    return result;
   };
 
   updateOneComment = async (
@@ -51,32 +36,17 @@ class CommentService {
     commentId: number,
     updateComment: UpdateCommentRequest
   ) => {
-    try {
-      const result = await CommentsRepository.updateOneComment(
-        user,
-        commentId,
-        updateComment
-      );
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const result = await CommentsRepository.updateOneComment(
+      user,
+      commentId,
+      updateComment
+    );
+    return result;
   };
 
-  deleteOneComment = async (
-    user: Express.User,
-    commentId: number,
-  ) => {
-    try {
-      const result = await CommentsRepository.deleteOneComment(
-        user,
-        commentId,      );
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+  deleteOneComment = async (user: Express.User, commentId: number) => {
+    const result = await CommentsRepository.deleteOneComment(user, commentId);
+    return result;
   };
 }
 
