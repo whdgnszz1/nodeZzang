@@ -14,8 +14,15 @@ export const createPost = async (
   next: NextFunction
 ) => {
   try {
+    // User | undefined' 형식은 'User' 형식에 할당할 수 없습니다.
+    // 'undefined' 형식은 'User' 형식에 할당할 수 없습니다.
+    // isLoggedIn을 거친 유저라면 req.user, Express.User는 항상 존재함에도 불구하고 에러처리를 해줘야 하는지??
+    const user = req.user ?? undefined
+    if(!user) {
+      return res.status(401).send({message: '로그인이 필요한 기능입니다.'})
+    }
     const newPost: CreatePostRequest = req.body;
-    await PostService.createPost(newPost);
+    await PostService.createPost(user, newPost);
     res.send({ message: "게시글을 생성하였습니다." });
   } catch (error) {
     next(error);
@@ -58,9 +65,13 @@ export const updateOnePost = async (
   next: NextFunction
 ) => {
   try {
+    const user = req.user ?? undefined
+    if(!user) {
+      return res.status(401).send({message: '로그인이 필요한 기능입니다.'})
+    }
     const updatePostRequest: UpdatePostRequest = req.body;
     const postId: number = Number(req.params.postId);
-    const post = await PostService.updateOnePost(postId, updatePostRequest);
+    const post = await PostService.updateOnePost(user, postId, updatePostRequest);
     res.json(post);
   } catch (error) {
     next(error);
@@ -74,9 +85,13 @@ export const deleteOnePost = async (
   next: NextFunction
 ) => {
   try {
+    const user = req.user ?? undefined
+    if(!user) {
+      return res.status(401).send({message: '로그인이 필요한 기능입니다.'})
+    }
     const { password } = req.body;
     const postId: number = Number(req.params.postId);
-    await PostService.deleteOnePost(postId, password);
+    await PostService.deleteOnePost(user, postId, password);
     res.send({ message: "게시글을 삭제하였습니다." });
   } catch (error) {
     next(error);

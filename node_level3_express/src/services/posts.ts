@@ -7,9 +7,9 @@ import {
 import PostRepository from "../repositories/posts";
 
 class PostService {
-  createPost = async (post: CreatePostRequest) => {
+  createPost = async (user: Express.User, post: CreatePostRequest) => {
     try {
-      const result = await PostRepository.createPost(post);
+      const result = await PostRepository.createPost(user, post);
       return result;
     } catch (error) {
       console.error(error);
@@ -39,11 +39,13 @@ class PostService {
   };
 
   updateOnePost = async (
+    user: Express.User,
     postId: number,
     updatePostRequest: UpdatePostRequest
   ) => {
     try {
       const result = await PostRepository.updateOnePost(
+        user,
         postId,
         updatePostRequest
       );
@@ -54,9 +56,13 @@ class PostService {
     }
   };
 
-  deleteOnePost = async (postId: number, password: string) => {
+  deleteOnePost = async (
+    user: Express.User,
+    postId: number,
+    password: string
+  ) => {
     try {
-      const result = await PostRepository.deleteOnePost(postId, password);
+      const result = await PostRepository.deleteOnePost(user, postId, password);
       return result;
     } catch (error) {
       console.error(error);
