@@ -28,7 +28,7 @@ export const createPost = asyncHandler(
 export const getAllPosts = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const allPosts: AllPostResponse[] = await PostService.getAllPosts();
-    res.json(allPosts);
+    res.json({ data: allPosts });
   }
 );
 
@@ -37,7 +37,7 @@ export const getOnePost = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const postId: number = Number(req.params.postId);
     const post: OnePostResponse = await PostService.getOnePost(postId);
-    res.json(post);
+    res.json({ data: post });
   }
 );
 

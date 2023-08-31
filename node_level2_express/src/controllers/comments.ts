@@ -30,7 +30,7 @@ export const getAllComments = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const allComments: AllCommentResponse[] =
       await CommentsService.getAllComments();
-    res.json(allComments);
+    res.json({ data: allComments });
   }
 );
 
@@ -39,7 +39,7 @@ export const getOneComment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const commentId: number = Number(req.params.commentId);
     const comment = await CommentsService.getOneComment(commentId);
-    res.json(comment);
+    res.json({ data: comment });
   }
 );
 
@@ -73,7 +73,7 @@ export const deleteOneComment = asyncHandler(
         .status(400)
         .json({ message: "데이터 형식이 올바르지 않습니다." });
     }
-    
+
     const comment = await CommentsService.deleteOneComment(commentId, password);
     res.send({ message: "댓글을 삭제하였습니다." });
   }
