@@ -99,7 +99,28 @@ class PostRepository {
       });
       return { message: "게시글을 삭제하였습니다." };
     } else {
-      throw new CustomError(403,"게시글 삭제의 권한이 존재하지 않습니다..");
+      throw new CustomError(403, "게시글 삭제의 권한이 존재하지 않습니다..");
+    }
+  };
+
+  toggleLikePost = async (user: Express.User, postId: number) => {
+    const userId: number = user.userId;
+    const isExistLike = await prisma.likes.findFirst({
+      where: { userId: userId, postId: postId },
+    });
+    if (isExistLike) {
+      await prisma.likes.delete({
+        where: {
+          userId_postId: {
+            userId: userId,
+            postId: postId,
+          },
+        },
+      });
+      return { message: "게시글의 좋아요를 취소하였습니다." };
+    } else {
+      await prisma.likes.create({ data: { userId, postId } });
+      return { message: "게시글의 좋아요를 등록하였습니다." };
     }
   };
 }

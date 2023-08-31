@@ -53,19 +53,31 @@ export const updateOnePost = asyncHandler(
       postId,
       updatePostRequest
     );
-    res.json(post);
+    res.send({ message: "게시글을 수정하였습니다." });
   }
 );
 
 // 특정 게시글 삭제
 export const deleteOnePost = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = res.locals.decoded;
-    if (!user) {
-      throw new CustomError(401, "로그인이 필요한 기능입니다.");
-    }
+    const user: LoginResponse = {
+      nickname: res.locals.decoded.nickname,
+      userId: res.locals.decoded.userId,
+    };
     const postId: number = Number(req.params.postId);
     await PostService.deleteOnePost(user, postId);
     res.send({ message: "게시글을 삭제하였습니다." });
+  }
+);
+
+export const toggleLikePost = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const postId: number = Number(req.params.postId);
+    const user: LoginResponse = {
+      nickname: res.locals.decoded.nickname,
+      userId: res.locals.decoded.userId,
+    };
+    const result = await PostService.toggleLikePost(user, postId);
+    res.send({ message: result });
   }
 );

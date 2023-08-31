@@ -40,6 +40,11 @@ class PostService {
     const result = await PostRepository.deleteOnePost(user, postId);
     return result;
   };
+
+  toggleLikePost =  async (user: Express.User, postId: number) => {
+    const result = await PostRepository.toggleLikePost(user, postId)
+    return result
+  }
 }
 
 export default new PostService();
