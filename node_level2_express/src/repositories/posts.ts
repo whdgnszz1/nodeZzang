@@ -25,7 +25,7 @@ class PostRepository {
     return allPosts;
   };
 
-  getOnePost = async (postId: number): Promise<OnePostResponse | null> => {
+  getOnePost = async (postId: number): Promise<OnePostResponse> => {
     const post: OnePostResponse | null = await prisma.posts.findFirst({
       where: { postId: postId },
       select: {
