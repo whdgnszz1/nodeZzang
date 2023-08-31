@@ -10,7 +10,15 @@ import CommentsService from "../services/comments";
 // 댓글 생성
 export const createComment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    const { user, password, content } = req.body;
     const postId = Number(req.params.postId);
+
+    if (!user || !password || !content || !postId) {
+      return res
+        .status(400)
+        .json({ message: "데이터 형식이 올바르지 않습니다." });
+    }
+
     const newComment: CreateCommentRequest = req.body;
     await CommentsService.createComment(postId, newComment);
     res.send({ message: "댓글을 생성하였습니다." });
@@ -38,8 +46,16 @@ export const getOneComment = asyncHandler(
 // 특정 댓글 수정
 export const updateOneComment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const updateComment: UpdateCommentRequest = req.body;
+    const { password, content } = req.body;
+    const postId = Number(req.params.postId);
     const commentId: number = Number(req.params.commentId);
+
+    if (!password || !content || !postId || !commentId) {
+      return res
+        .status(400)
+        .json({ message: "데이터 형식이 올바르지 않습니다." });
+    }
+    const updateComment: UpdateCommentRequest = req.body;
     await CommentsService.updateOneComment(commentId, updateComment);
     res.send({ message: "댓글을 수정하였습니다." });
   }
@@ -49,7 +65,15 @@ export const updateOneComment = asyncHandler(
 export const deleteOneComment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { password } = req.body;
+    const postId = Number(req.params.postId);
     const commentId: number = Number(req.params.commentId);
+
+    if (!password || !postId || !commentId) {
+      return res
+        .status(400)
+        .json({ message: "데이터 형식이 올바르지 않습니다." });
+    }
+    
     const comment = await CommentsService.deleteOneComment(commentId, password);
     res.send({ message: "댓글을 삭제하였습니다." });
   }
