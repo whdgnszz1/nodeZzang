@@ -1,13 +1,13 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import path from "path";
 import session from "express-session";
 import { config } from "dotenv";
 
-import PostsRouter from "./routes/posts";
-import CommentsRouter from "./routes/comments";
-import { CustomError } from "./errors/customError";
+import MainRouter from "./routes/index";
+import errorHandler from "./middlewares/errorHandler";
+import notFound from "./middlewares/notFound";
 
 config(); // process.env
 
@@ -32,21 +32,13 @@ app.use(
 );
 
 // router
-app.use("/posts", [PostsRouter]);
-app.use("/posts/:postId/comments", [CommentsRouter]);
+app.use("/", MainRouter);
 
 // 404 NOT FOUND
-app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
-  if (err.status === 404) {
-    res.status(404).send(err.message);
-  }
-  const response = {
-    message: err.message,
-    ...(process.env.NODE_ENV !== "production" ? { stack: err.stack } : {}),
-  };
+app.use(notFound);
 
-  res.status(err.status || 500).json(response);
-});
+// 에러핸들러
+app.use(errorHandler);
 
 app.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트에서 실행");
