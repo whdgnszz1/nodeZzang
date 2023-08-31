@@ -32,7 +32,7 @@ class CommentsRepository {
     });
 
     if (!comment) {
-      throw new CustomError("해당하는 댓글을 찾을 수 없습니다.", 404);
+      throw new CustomError(404, "해당하는 댓글을 찾을 수 없습니다.");
     }
 
     return comment;
@@ -47,7 +47,7 @@ class CommentsRepository {
     });
 
     if (!comment) {
-      throw new CustomError("댓글 조회에 실패하였습니다.", 404);
+      throw new CustomError(404, "댓글 조회에 실패하였습니다.");
     }
 
     if (updateComment.password === comment.password) {
@@ -59,7 +59,7 @@ class CommentsRepository {
       });
       return updatedComment;
     } else {
-      throw new CustomError("비밀번호가 일치하지 않습니다.", 401);
+      throw new CustomError(401, "비밀번호가 일치하지 않습니다.");
     }
   };
 
@@ -69,7 +69,7 @@ class CommentsRepository {
     });
 
     if (!comment) {
-      throw new CustomError("댓글 조회에 실패하였습니다..", 404);
+      throw new CustomError(404, "댓글 조회에 실패하였습니다..");
     }
 
     if (password === comment.password) {
@@ -78,7 +78,7 @@ class CommentsRepository {
       });
       return { message: "댓글을 삭제하였습니다." };
     } else {
-      throw new CustomError("비밀번호가 일치하지 않습니다.", 401);
+      throw new CustomError(401, "비밀번호가 일치하지 않습니다.");
     }
   };
 }

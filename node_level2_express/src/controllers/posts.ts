@@ -40,7 +40,7 @@ export const updateOnePost = asyncHandler(
     const updatePostRequest: UpdatePostRequest = req.body;
     const postId: number = Number(req.params.postId);
     const post = await PostService.updateOnePost(postId, updatePostRequest);
-    res.json(post);
+    res.send({ message: "게시글을 수정하였습니다." });
   }
 );
 
