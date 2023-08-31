@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.use("/posts", PostsRouter);
 router.use("/posts/:postId/comments", CommentsRouter);
-router.use("/users", UsersRouter);
+router.use("/", UsersRouter);
 
 export default router;
