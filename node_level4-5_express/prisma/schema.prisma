@@ -20,8 +20,9 @@ model Posts {
   updatedAt DateTime @updatedAt @map("updatedAt")
 
   comments  Comments[]
+  likes     Likes[]
   user      Users    @relation(fields: [userId], references: [userId])
-
+  
   @@map("Posts")
 }
 
@@ -29,7 +30,7 @@ model Posts {
 model Comments {
   commentId Int      @id @default(autoincrement()) @map("commentId")
   userId    Int      @map("userId")
-  nickname  String   @map("user")
+  nickname  String   @map("nickname")
   content   String   @map("content") @db.Text
   createdAt DateTime @default(now()) @map("createdAt")
   updatedAt DateTime @updatedAt @map("updatedAt")
@@ -50,5 +51,19 @@ model Users {
   
   posts     Posts[]
   comments  Comments[]
+  likes     Likes[]
+
   @@map("Users")
+}
+
+model Likes {
+  userId    Int       @map("userId")
+  postId    Int       @map("postId")
+
+  user      Users     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  post      Posts     @relation(fields: [postId], references: [postId], onDelete: Cascade)
+
+  @@map("Likes")
+  @@unique([userId, postId])
+  @@id([userId, postId])
 }
