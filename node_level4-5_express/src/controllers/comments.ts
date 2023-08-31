@@ -1,20 +1,20 @@
 import { Request, Response, NextFunction } from "express";
+import { LoginResponse } from "../dtos/auth";
 import {
   AllCommentResponse,
   CreateCommentRequest,
   UpdateCommentRequest,
 } from "../dtos/comments";
-import { CustomError } from "../errors/customError";
 import asyncHandler from "../lib/asyncHandler";
 import CommentsService from "../services/comments";
 
 // 댓글 생성
 export const createComment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = res.locals.decoded;
-    if (!user) {
-      throw new CustomError(401, "로그인이 필요한 기능입니다.");
-    }
+    const user: LoginResponse = {
+      nickname: res.locals.decoded.nickname,
+      userId: res.locals.decoded.userId,
+    };
     const postId = Number(req.params.postId);
     const newComment: CreateCommentRequest = req.body;
     await CommentsService.createComment(user, postId, newComment);
@@ -43,10 +43,10 @@ export const getOneComment = asyncHandler(
 // 특정 댓글 수정
 export const updateOneComment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = res.locals.decoded;
-    if (!user) {
-      throw new CustomError(401, "로그인이 필요한 기능입니다.");
-    }
+    const user: LoginResponse = {
+      nickname: res.locals.decoded.nickname,
+      userId: res.locals.decoded.userId,
+    };
     const updateComment: UpdateCommentRequest = req.body;
     const commentId: number = Number(req.params.commentId);
     await CommentsService.updateOneComment(user, commentId, updateComment);
@@ -57,10 +57,10 @@ export const updateOneComment = asyncHandler(
 // 특정 댓글 삭제
 export const deleteOneComment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = res.locals.decoded;
-    if (!user) {
-      throw new CustomError(401, "로그인이 필요한 기능입니다.");
-    }
+    const user: LoginResponse = {
+      nickname: res.locals.decoded.nickname,
+      userId: res.locals.decoded.userId,
+    };
     const commentId: number = Number(req.params.commentId);
     const comment = await CommentsService.deleteOneComment(user, commentId);
     res.send({ message: "댓글을 삭제하였습니다." });

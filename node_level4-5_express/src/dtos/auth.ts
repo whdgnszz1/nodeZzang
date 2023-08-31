@@ -14,6 +14,13 @@ export type LoginResponse = {
   userId: number;
 };
 
+export type DecodedToken = {
+  nickname: string;
+  userId: number;
+  iat: number;
+  exp: number;
+}
+
 declare global {
   namespace Express {
     interface User {
