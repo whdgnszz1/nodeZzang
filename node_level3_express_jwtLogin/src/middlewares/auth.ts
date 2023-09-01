@@ -10,14 +10,11 @@ export const verifyToken = (req: any, res: Response, next: NextFunction) => {
     if (!process.env.JWT_SECRET) {
       throw new CustomError("process.env.JWT_SECRET를 찾을 수 없습니다.", 403);
     }
-    const [tokenType, accessToken] = req.headers.authorization.split(" ")
-    if(tokenType !== "Bearer") {
-      throw new CustomError('전달된 쿠키에서 오류가 발생하였습니다.', 403)
+    const [tokenType, accessToken] = req.headers.authorization.split(" ");
+    if (tokenType !== "Bearer") {
+      throw new CustomError("전달된 쿠키에서 오류가 발생하였습니다.", 403);
     }
-    res.locals.decoded = jwt.verify(
-      accessToken,
-      process.env.JWT_SECRET
-    );
+    res.locals.decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
     return next();
   } catch (error: any) {
     if (error instanceof CustomError) {
@@ -25,7 +22,7 @@ export const verifyToken = (req: any, res: Response, next: NextFunction) => {
     }
 
     if (error.name === "TokenExpiredError") {
-      res
+      return res
         .status(403)
         .send({ message: "전달된 쿠키에서 오류가 발생하였습니다." });
     }
