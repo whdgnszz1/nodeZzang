@@ -34,7 +34,7 @@ class PostRepository {
     return allPosts;
   };
 
-  getOnePost = async (postId: number): Promise<OnePostResponse | null> => {
+  getOnePost = async (postId: number): Promise<OnePostResponse> => {
     const post: OnePostResponse | null = await prisma.posts.findFirst({
       where: { postId: postId },
       select: {
@@ -75,7 +75,7 @@ class PostRepository {
           content: updatePostRequest.content,
         },
       });
-      return updatedPost;
+      return { message: "게시글을 수정하였습니다." };
     } else {
       throw new CustomError("게시글 수정의 권한이 존재하지 않습니다.", 403);
     }

@@ -51,15 +51,22 @@ class CommentsRepository {
 
   updateOneComment = async (
     user: Express.User,
+    postId: number,
     commentId: number,
     updateComment: UpdateCommentRequest
   ) => {
+    const post = await prisma.posts.findFirst({
+      where: { postId },
+    });
+    if (!post) {
+      throw new CustomError("게시글이 존재하지 않습니다.", 404);
+    }
+
     const comment = await prisma.comments.findFirst({
       where: { commentId: commentId },
     });
-
     if (!comment) {
-      throw new CustomError("댓글 조회에 실패하였습니다.", 404);
+      throw new CustomError("댓글이 존재하지 않습니다.", 404);
     }
 
     if (user.userId === comment.userId) {
@@ -77,12 +84,19 @@ class CommentsRepository {
 
   deleteOneComment = async (
     user: Express.User,
-    commentId: number,
+    postId: number,
+    commentId: number
   ) => {
+    const post = await prisma.posts.findFirst({
+      where: { postId },
+    });
+    if (!post) {
+      throw new CustomError("게시글이 존재하지 않습니다.", 404);
+    }
+
     const comment = await prisma.comments.findFirst({
       where: { commentId: commentId },
     });
-
     if (!comment) {
       throw new CustomError("댓글 조회에 실패하였습니다..", 404);
     }
