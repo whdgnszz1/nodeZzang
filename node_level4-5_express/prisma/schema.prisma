@@ -18,6 +18,7 @@ model Posts {
   content   String   @map("content") @db.Text
   createdAt DateTime @default(now()) @map("createdAt")
   updatedAt DateTime @updatedAt @map("updatedAt")
+  likeCount Int      @map("likeCount") @default(0)
 
   comments  Comments[]
   likes     Likes[]
