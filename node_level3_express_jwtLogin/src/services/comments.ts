@@ -12,71 +12,51 @@ class CommentService {
     postId: number,
     newComment: CreateCommentRequest
   ) => {
-    try {
-      const result = await CommentsRepository.createComment(
-        user,
-        postId,
-        newComment
-      );
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const result = await CommentsRepository.createComment(
+      user,
+      postId,
+      newComment
+    );
+    return result;
   };
 
   getAllComments = async () => {
-    try {
-      const result: AllCommentResponse[] =
-        await CommentsRepository.getAllComments();
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const result: AllCommentResponse[] =
+      await CommentsRepository.getAllComments();
+    return result;
   };
 
   getOneComment = async (commentId: number) => {
-    try {
-      const result = await CommentsRepository.getOneComment(commentId);
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const result = await CommentsRepository.getOneComment(commentId);
+    return result;
   };
 
   updateOneComment = async (
     user: Express.User,
+    postId: number,
     commentId: number,
     updateComment: UpdateCommentRequest
   ) => {
-    try {
-      const result = await CommentsRepository.updateOneComment(
-        user,
-        commentId,
-        updateComment
-      );
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const result = await CommentsRepository.updateOneComment(
+      user,
+      postId,
+      commentId,
+      updateComment
+    );
+    return result;
   };
 
   deleteOneComment = async (
     user: Express.User,
-    commentId: number,
+    postId: number,
+    commentId: number
   ) => {
-    try {
-      const result = await CommentsRepository.deleteOneComment(
-        user,
-        commentId,      );
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const result = await CommentsRepository.deleteOneComment(
+      user,
+      postId,
+      commentId
+    );
+    return result;
   };
 }
 
