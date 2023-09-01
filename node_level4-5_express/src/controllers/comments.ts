@@ -27,11 +27,11 @@ export const getAllComments = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const allComments: AllCommentResponse[] =
       await CommentsService.getAllComments();
-    res.json(allComments);
+    res.json({comments: allComments});
   }
 );
 
-// 특정 댓글 조회
+// 특정 댓글 조회 (과제에 없는 기능)
 export const getOneComment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const commentId: number = Number(req.params.commentId);
