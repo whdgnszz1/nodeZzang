@@ -69,15 +69,3 @@ export const deleteOnePost = asyncHandler(
     res.send({ message: "게시글을 삭제하였습니다." });
   }
 );
-
-export const toggleLikePost = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const postId: number = Number(req.params.postId);
-    const user: LoginResponse = {
-      nickname: res.locals.decoded.nickname,
-      userId: res.locals.decoded.userId,
-    };
-    const result = await PostService.toggleLikePost(user, postId);
-    res.send({ message: result });
-  }
-);

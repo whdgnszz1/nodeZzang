@@ -18,8 +18,7 @@ class PostService {
   };
 
   getOnePost = async (postId: number): Promise<OnePostResponse> => {
-    // 나중에 처리
-    const result: any = await PostRepository.getOnePost(postId);
+    const result = await PostRepository.getOnePost(postId);
     return result;
   };
 
@@ -40,11 +39,6 @@ class PostService {
     const result = await PostRepository.deleteOnePost(user, postId);
     return result;
   };
-
-  toggleLikePost =  async (user: Express.User, postId: number) => {
-    const result = await PostRepository.toggleLikePost(user, postId)
-    return result
-  }
 }
 
 export default new PostService();
