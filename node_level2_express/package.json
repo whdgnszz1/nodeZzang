@@ -4,9 +4,11 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon app",
+    "start": "pm2 start src/app.ts --interpreter ./node_modules/.bin/ts-node",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "pm2-stop": "pm2 stop src/app.ts",
+    "start:dev": "nodemon app"
   },
   "dependencies": {
     "@prisma/client": "^5.2.0",
