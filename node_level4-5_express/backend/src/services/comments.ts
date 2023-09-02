@@ -33,19 +33,29 @@ class CommentService {
 
   updateOneComment = async (
     user: Express.User,
+    postId: number,
     commentId: number,
     updateComment: UpdateCommentRequest
   ) => {
     const result = await CommentsRepository.updateOneComment(
       user,
+      postId,
       commentId,
       updateComment
     );
     return result;
   };
 
-  deleteOneComment = async (user: Express.User, commentId: number) => {
-    const result = await CommentsRepository.deleteOneComment(user, commentId);
+  deleteOneComment = async (
+    user: Express.User,
+    postId: number,
+    commentId: number
+  ) => {
+    const result = await CommentsRepository.deleteOneComment(
+      user,
+      postId,
+      commentId
+    );
     return result;
   };
 }

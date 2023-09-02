@@ -12,6 +12,13 @@ class CommentsRepository {
     postId: number,
     comment: CreateCommentRequest
   ) => {
+    const post = await prisma.posts.findFirst({
+      where: { postId },
+    });
+    if (!post) {
+      throw new CustomError(404, "게시글이 존재하지 않습니다.");
+    }
+
     const newComment = await prisma.comments.create({
       data: {
         userId: user.userId,
@@ -51,9 +58,17 @@ class CommentsRepository {
 
   updateOneComment = async (
     user: Express.User,
+    postId: number,
     commentId: number,
     updateComment: UpdateCommentRequest
   ) => {
+    const post = await prisma.posts.findFirst({
+      where: { postId },
+    });
+    if (!post) {
+      throw new CustomError(404, "게시글이 존재하지 않습니다.");
+    }
+
     const comment = await prisma.comments.findFirst({
       where: { commentId: commentId },
     });
@@ -75,7 +90,18 @@ class CommentsRepository {
     }
   };
 
-  deleteOneComment = async (user: Express.User, commentId: number) => {
+  deleteOneComment = async (
+    user: Express.User,
+    postId: number,
+    commentId: number
+  ) => {
+    const post = await prisma.posts.findFirst({
+      where: { postId },
+    });
+    if (!post) {
+      throw new CustomError(404, "게시글이 존재하지 않습니다.");
+    }
+
     const comment = await prisma.comments.findFirst({
       where: { commentId: commentId },
     });
