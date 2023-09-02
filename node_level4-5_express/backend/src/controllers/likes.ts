@@ -6,7 +6,6 @@ import LikesService from "../services/likes";
 
 export const togglePostLike = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log(res.locals.decoded);
     const postId: number = +req.params.postId;
     const user: LoginResponse = {
       nickname: res.locals.decoded.nickname,
