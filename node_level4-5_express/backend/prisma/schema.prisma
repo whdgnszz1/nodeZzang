@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Posts {
+model Posts { 
   postId    Int      @id @default(autoincrement()) @map("postId")
   userId    Int      @map("userId")
   nickname  String   @map("nickname")
