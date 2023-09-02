@@ -1,9 +1,10 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import path from "path";
 import session from "express-session";
 import { config } from "dotenv";
+import cors from 'cors'
 
 import mainRouter from "./routes";
 
@@ -14,6 +15,14 @@ config(); // process.env
 
 const app = express();
 app.set("port", process.env.PORT || 8000);
+app.use(cors({
+  origin: true,
+  //쿠키요청 허용
+  credentials: true
+
+  // origin: true 
+  // credentials: true
+}))
 
 app.use(morgan("dev")); // 배포시엔 'combined'
 app.use(express.static(path.join(__dirname, "public"))); // 퍼블릭폴더를 프론트에서 접근 가능하게 함.
