@@ -100,7 +100,7 @@
   - Git Actions를 이용한 CI/CD
 
 3. 로그인
-  - 처음 로그인 시 발급된 jwt토큰이 만료되면 Refresh token 발급 요청을 보내 Access Token을 발급받습니다.
+  - 서버로 만료된 Access token이 들어오면 Refresh token검증을 통해 Access Token을 발급받습니다.
   - 구글 계정, 카카오 계정으로 로그인이 가능합니다.(개발 중)
 
 4. 회원가입
@@ -174,7 +174,7 @@
   - Git Actions를 이용한 CI/CD
 
 3. 로그인
-  - 처음 로그인 시 발급된 jwt토큰이 만료되면 Refresh token 발급 요청을 보내 Access Token을 발급받습니다.
+  - 서버로 만료된 Access token이 들어오면 Refresh token검증을 통해 Access Token을 발급받습니다.
   - 구글 계정, 카카오 계정으로 로그인이 가능합니다.(개발 중)
 
 4. 회원가입
