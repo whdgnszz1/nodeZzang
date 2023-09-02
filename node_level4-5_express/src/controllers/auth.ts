@@ -23,6 +23,13 @@ export const login = asyncHandler(
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+    const refreshToken = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
+      expiresIn: "15d",
+    });
+
+    res.setHeader("refreshToken", refreshToken);
+    res.setHeader("accessToken", token);
+
     res.send({ Authorization: `Bearer ${token}` });
   }
 );

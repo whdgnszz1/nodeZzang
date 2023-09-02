@@ -48,6 +48,13 @@ class UsersRepository {
     delete existUser.password;
     return existUser;
   };
+
+  getUser = async (userId: number) => {
+    const existUser = await prisma.users.findFirst({
+      where: { userId },
+    });
+    return existUser;
+  };
 }
 
 export default new UsersRepository();
