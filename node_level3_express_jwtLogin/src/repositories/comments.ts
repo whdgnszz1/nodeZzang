@@ -12,6 +12,13 @@ class CommentsRepository {
     postId: number,
     comment: CreateCommentRequest
   ) => {
+    const post = await prisma.posts.findFirst({
+      where: { postId },
+    });
+    if (!post) {
+      throw new CustomError("게시글이 존재하지 않습니다.", 404);
+    }
+    
     const newComment = await prisma.comments.create({
       data: {
         userId: user.userId,
