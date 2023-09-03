@@ -21,7 +21,11 @@ class PostRepository {
 
   getAllPosts = async (userId: number) => {
     const allPosts = await prisma.posts.findMany({});
-    
+  
+    if (typeof userId === "undefined") {
+      return allPosts.map(post => ({ ...post, isLiked: false }));
+    }
+  
     const postsWithLikes = await Promise.all(allPosts.map(async post => {
       const isLiked = await prisma.likes.findFirst({
         where: {
@@ -37,6 +41,7 @@ class PostRepository {
   
     return postsWithLikes;
   };
+  
 
   getOnePost = async (postId: number): Promise<OnePostResponse> => {
     const post: OnePostResponse | null = await prisma.posts.findFirst({
