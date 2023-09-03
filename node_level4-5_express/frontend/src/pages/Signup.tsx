@@ -7,7 +7,7 @@ const Signup = () => {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleNicknameChange = (value: string) => {
     setNickname(value);
@@ -28,13 +28,12 @@ const Signup = () => {
     }
 
     try {
-      const response = await postAPI("/api/signup", {
+      await postAPI("/api/signup", {
         nickname,
         password,
         confirm,
       });
-      console.log(response.data);
-      navigate('/login')
+      navigate("/login");
     } catch (error) {
       console.error(error);
     }
@@ -43,20 +42,28 @@ const Signup = () => {
   return (
     <>
       <div className=" h-screen flex justify-center items-center">
-        <div className="bg-rose-400 w-[768px] h-[1000px] flex flex-col items-center justify-center gap-4 rounded-xl">
-          <h1>노드짱짱</h1>
-          <AuthInput inputType="닉네임" onInputChange={handleNicknameChange} />
-          <AuthInput
-            inputType="비밀번호"
-            onInputChange={handlePasswordChange}
-          />
-          <AuthInput
-            inputType="비밀번호 확인"
-            onInputChange={handleConfirmChange}
-          />
+        <div className="border-black border-2 w-[768px] h-[1000px] flex flex-col items-center justify-center gap-4">
+          <div className="border-2  w-[320px] border-black px-1">
+            <AuthInput
+              inputType="닉네임"
+              onInputChange={handleNicknameChange}
+            />
+          </div>
+          <div className="border-2  w-[320px] border-black px-1">
+            <AuthInput
+              inputType="비밀번호"
+              onInputChange={handlePasswordChange}
+            />
+          </div>
+          <div className="border-2  w-[320px] border-black px-1">
+            <AuthInput
+              inputType="비밀번호 확인"
+              onInputChange={handleConfirmChange}
+            />
+          </div>
           <button
             onClick={handleSubmit}
-            className="bg-white w-[320px] rounded-md py-1"
+            className="bg-white w-[320px] border-2 font-semibold border-black py-1"
           >
             회원가입
           </button>
