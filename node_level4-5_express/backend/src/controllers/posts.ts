@@ -1,7 +1,6 @@
 import PostService from "../services/posts";
 import { Request, Response, NextFunction } from "express";
 import {
-  AllPostResponse,
   CreatePostRequest,
   OnePostResponse,
   UpdatePostRequest,
@@ -30,7 +29,6 @@ export const createPost = asyncHandler(
         .status(412)
         .send({ message: "게시글 내용의 형식이 일치하지 않습니다." });
     }
-
     const user: LoginResponse = {
       nickname: res.locals.decoded.nickname,
       userId: res.locals.decoded.userId,
