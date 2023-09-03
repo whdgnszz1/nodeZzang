@@ -19,6 +19,7 @@ model Posts {
   createdAt DateTime @default(now()) @map("createdAt")
   updatedAt DateTime @updatedAt @map("updatedAt")
   likeCount Int      @map("likeCount") @default(0)
+  isLiked   Boolean  @map("isLiked") @default(false)
 
   comments  Comments[]
   likes     Likes[]

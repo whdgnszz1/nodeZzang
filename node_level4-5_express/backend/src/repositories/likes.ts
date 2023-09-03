@@ -63,6 +63,7 @@ class LikesRepository {
         userId: true,
         nickname: true,
         title: true,
+        content:true,
         createdAt: true,
         updatedAt: true,
         likeCount: true,
@@ -73,9 +74,10 @@ class LikesRepository {
       ({ likeCount, ...rest }) => ({
         ...rest,
         likes: likeCount,
+        isLiked: true
       })
     );
-
+    
     return userLikedPosts;
   };
 }

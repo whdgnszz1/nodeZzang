@@ -1,5 +1,4 @@
 import {
-  AllPostResponse,
   CreatePostRequest,
   OnePostResponse,
   UpdatePostRequest,
@@ -20,18 +19,23 @@ class PostRepository {
     return newPost;
   };
 
-  getAllPosts = async () => {
-    const allPosts: AllPostResponse[] = await prisma.posts.findMany({
-      select: {
-        postId: true,
-        userId: true,
-        nickname: true,
-        title: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-    return allPosts;
+  getAllPosts = async (userId: number) => {
+    const allPosts = await prisma.posts.findMany({});
+    
+    const postsWithLikes = await Promise.all(allPosts.map(async post => {
+      const isLiked = await prisma.likes.findFirst({
+        where: {
+          postId: post.postId,
+          userId: userId
+        }
+      });
+      return {
+        ...post,
+        isLiked: Boolean(isLiked)
+      };
+    }));
+  
+    return postsWithLikes;
   };
 
   getOnePost = async (postId: number): Promise<OnePostResponse> => {

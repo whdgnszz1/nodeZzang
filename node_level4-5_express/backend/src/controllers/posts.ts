@@ -41,10 +41,11 @@ export const createPost = asyncHandler(
   }
 );
 
-// 전체 게시글 조회
+// 전체 게시글 조회s
 export const getAllPosts = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const allPosts: AllPostResponse[] = await PostService.getAllPosts();
+    const userId = res.locals.decoded?.userId
+    const allPosts = await PostService.getAllPosts(userId);
     res.json({ posts: allPosts });
   }
 );

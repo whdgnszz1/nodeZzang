@@ -20,8 +20,11 @@ export type AllPostResponse = {
   userId: number;
   nickname: string;
   title: string;
+  content: string,
   createdAt: Date;
   updatedAt: Date;
+  likes: number;
+  liked: boolean;
 };
 
 export type OnePostResponse = {
