@@ -29,7 +29,6 @@ export class CommentsService {
       content,
       password: hashedPassword,
     });
-    console.log(comment.readOnlyData);
     return { message: '댓글을 생성하였습니다.' };
   }
 
