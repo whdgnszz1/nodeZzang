@@ -9,6 +9,8 @@ axios.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
+    config.withCredentials = true;
+
     return config;
   },
   (error) => {
@@ -17,7 +19,15 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(
-  (response) => {
+  async (response) => {
+    if (response.data && response.data.newAccessToken) {
+      Cookies.set("accessToken", response.data.newAccessToken);
+      const originalRequest = response.config;
+      originalRequest.headers[
+        "Authorization"
+      ] = response.data.newAccessToken;
+      return await axios(originalRequest);
+    }
     return response;
   },
   async (error) => {
