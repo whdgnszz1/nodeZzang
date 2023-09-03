@@ -16,7 +16,6 @@ export class UsersRepository {
       where: { userId },
       select: ['nickname', 'userId'],
     });
-    console.log('dd', user);
     return user;
   }
 

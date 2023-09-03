@@ -9,7 +9,7 @@ const queryClient = new QueryClient({
       retryDelay: (attempt) => Math.min(attempt * 1000, 30 * 1000),
       refetchOnWindowFocus: false,
       onError: (error) => {
-        console.log("There was an error:", error);
+        console.error(error)
       },
     },
   },

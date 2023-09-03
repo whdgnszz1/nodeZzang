@@ -34,7 +34,6 @@ export const signUp = asyncHandler(
 
     const user: SignUpRequest = req.body;
     const result = await UsersService.signUp(user);
-    console.log(result);
     res.status(200).send({ message: "회원 가입에 성공하였습니다." });
   }
 );

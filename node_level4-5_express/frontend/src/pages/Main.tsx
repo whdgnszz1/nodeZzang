@@ -67,8 +67,6 @@ const Main = () => {
     return <div>Error loading posts</div>;
   }
 
-  console.log(posts)
-
   return (
     <>
       <div className=" h-screen flex justify-center items-center">

@@ -45,7 +45,6 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   getOnePost(@Req() req: Request, @Param('id') postId: number) {
     const user = req.user as any;
-    console.log(user);
     const userId = user.userId;
     return this.postsService.getOnePost(postId, userId);
   }

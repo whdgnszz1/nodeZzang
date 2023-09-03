@@ -39,19 +39,4 @@ export class UsersService {
     console.log(user);
     return { message: '회원 가입에 성공하였습니다.' };
   }
-
-  // async login(body: LoginRequestDto) {
-  //   const { nickname, password } = body;
-  //   const user = await this.usersRepository.existsByNickname(nickname);
-  //   if (!user) {
-  //     throw new HttpException('닉네임 또는 패스워드를 확인해주세요', 412);
-  //   }
-  //   const validatePassword = bcrypt.compare(password, user.password);
-  //   if (!validatePassword) {
-  //     throw new HttpException('닉네임 또는 패스워드를 확인해주세요', 412);
-  //   }
-
-  //   const token = 'awfefawe';
-  //   return { token };
-  // }
 }
