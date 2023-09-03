@@ -34,7 +34,6 @@ export const signUp = asyncHandler(
 
     const user: SignUpRequest = req.body;
     const result = await UsersService.signUp(user);
-    console.log(result);
     res.status(200).send({ message: "회원 가입에 성공하였습니다." });
   }
 );
@@ -66,15 +65,15 @@ export const login = asyncHandler(
       }
     );
 
-    res.cookie("Authorization", `Bearer ${accessToken}`, { httpOnly: false });
-    res.cookie("RefreshToken", refreshToken, { httpOnly: false });
+    res.cookie("accessToken", accessToken, { httpOnly: false });
+    res.cookie("refreshToken", refreshToken, { httpOnly: false });
     res.status(200).send({ token: accessToken, refreshToken });
   }
 );
 
 export const logout = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.clearCookie("Authorization");
+    res.clearCookie("accessToken");
     res.status(200).send({ message: "로그아웃에 성공하였습니다." });
   }
 );
