@@ -17,7 +17,6 @@ export const createComment = asyncHandler(
         .status(412)
         .send({ message: "데이터 형식이 올바르지 않습니다." });
     }
-
     const user: LoginResponse = {
       nickname: res.locals.decoded.nickname,
       userId: res.locals.decoded.userId,
@@ -32,8 +31,9 @@ export const createComment = asyncHandler(
 // 전체 댓글 조회
 export const getAllComments = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    const postId: number = +req.params.postId;
     const allComments: AllCommentResponse[] =
-      await CommentsService.getAllComments();
+      await CommentsService.getAllComments(postId);
     res.status(200).json({ comments: allComments });
   }
 );

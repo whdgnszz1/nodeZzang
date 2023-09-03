@@ -30,8 +30,9 @@ class CommentsRepository {
     return newComment;
   };
 
-  getAllComments = async () => {
+  getAllComments = async (postId: number) => {
     const allComments: AllCommentResponse[] = await prisma.comments.findMany({
+      where: { postId: postId },
       select: {
         commentId: true,
         userId: true,

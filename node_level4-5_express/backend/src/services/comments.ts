@@ -20,9 +20,9 @@ class CommentService {
     return result;
   };
 
-  getAllComments = async () => {
+  getAllComments = async (postId: number) => {
     const result: AllCommentResponse[] =
-      await CommentsRepository.getAllComments();
+      await CommentsRepository.getAllComments(postId);
     return result;
   };
 
