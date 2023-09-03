@@ -51,12 +51,24 @@ export const login = asyncHandler(
     if (!process.env.JWT_SECRET) {
       throw new Error("JWT 토큰을 찾을 수 없습니다.");
     }
-    const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
+
+    const accessToken = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    res.cookie("Authorization", `Bearer ${token}`, { httpOnly: false });
-    res.status(200).send({ token });
+    const refreshToken = jwt.sign(
+      {
+        userId: loggedInUser.userId,
+      },
+      process.env.REFRESH_TOKEN_SECRET as string,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.cookie("Authorization", `Bearer ${accessToken}`, { httpOnly: false });
+    res.cookie("RefreshToken", refreshToken, { httpOnly: false });
+    res.status(200).send({ token: accessToken, refreshToken });
   }
 );
 

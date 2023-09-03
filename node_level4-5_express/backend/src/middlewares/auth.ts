@@ -22,37 +22,33 @@ export const verifyToken = async (
       throw new CustomError(403, "전달된 쿠키에서 오류가 발생하였습니다.");
     }
 
-    res.locals.decoded = jwt.verify(
-      accessToken,
-      process.env.JWT_SECRET
-    ) as DecodedToken;
+    res.locals.decoded = jwt.verify(accessToken, process.env.JWT_SECRET) as DecodedToken;
     return next();
   } catch (error: any) {
     if (error.name === "TokenExpiredError") {
-      const refreshToken = req.cookies.refreshToken;
-      const decodedRefreshToken = jwt.verify(
-        refreshToken,
-        process.env.JWT_SECRET as string
-      ) as DecodedToken;
+      try {
+        const refreshToken = req.cookies.refreshToken;
+        const decodedRefreshToken = jwt.verify(refreshToken, process.env.JWT_SECRET as string) as DecodedToken;
 
-      const user = await UsersRepositoty.getUser(decodedRefreshToken.userId);
-      if (!user) {
-        throw new CustomError(403, "전달된 쿠키에서 오류가 발생하였습니다.");
+        const user = await UsersRepositoty.getUser(decodedRefreshToken.userId);
+        if (!user) {
+          throw new CustomError(403, "전달된 쿠키에서 오류가 발생하였습니다.");
+        }
+
+        const newAccessToken = jwt.sign(
+          { user },
+          process.env.JWT_SECRET as string,
+          { expiresIn: "1h" }
+        );
+
+        res.setHeader("Authorization", `Bearer ${newAccessToken}`);
+        res.locals.decoded = jwt.verify(newAccessToken, process.env.JWT_SECRET as string) as DecodedToken;
+        return next();
+      } catch (innerError) {
+        next(innerError);
       }
-
-      const newAccessToken = jwt.sign(
-        { user },
-        process.env.JWT_SECRET as string,
-        { expiresIn: "1h" }
-      );
-
-      res.setHeader("Authorization", `Bearer ${newAccessToken}`);
-      res.locals.decoded = jwt.verify(
-        newAccessToken,
-        process.env.JWT_SECRET as string
-      ) as DecodedToken;
-      return next();
+    } else {
+      next(error);
     }
-    next(error);
   }
-};
+}

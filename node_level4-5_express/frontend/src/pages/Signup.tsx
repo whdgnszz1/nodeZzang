@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { postAPI } from "src/axios";
 import AuthInput from "src/components/AuthInput";
 
@@ -6,6 +7,7 @@ const Signup = () => {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const navigate = useNavigate()
 
   const handleNicknameChange = (value: string) => {
     setNickname(value);
@@ -32,10 +34,12 @@ const Signup = () => {
         confirm,
       });
       console.log(response.data);
+      navigate('/login')
     } catch (error) {
       console.error(error);
     }
   };
+
   return (
     <>
       <div className=" h-screen flex justify-center items-center">
