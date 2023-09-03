@@ -12,12 +12,12 @@ export const verifyToken = async (
   if (!authHeader) {
     return next();
   }
-   
+
   const [tokenType, accessToken] = authHeader.split(" ");
   if (tokenType !== "Bearer") {
     return next();
   }
-  
+
   try {
     res.locals.decoded = jwt.verify(
       accessToken,
@@ -43,7 +43,7 @@ export const verifyToken = async (
       }
 
       const newAccessToken = jwt.sign(
-        { user },
+        { userId: user.userId, nickname: user.nickname },
         process.env.JWT_SECRET as string,
         { expiresIn: "1h" }
       );
