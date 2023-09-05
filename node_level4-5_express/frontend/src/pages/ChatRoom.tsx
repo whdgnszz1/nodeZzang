@@ -6,10 +6,30 @@ import Navbar from "src/components/Navbar";
 import { useQuery } from "react-query";
 import { getAPI } from "src/axios";
 
-interface ExtendedSocket extends Socket {
-  interval?: NodeJS.Timeout;
+/* 타입 정의 */
+interface MessageProps {
+  message: {
+    message: string;
+    createdAt: string;
+    nickname: string;
+    userId: string;
+  };
+  isCurrentUser: boolean;
 }
 
+interface ChatMessage {
+  message: string;
+  createdAt: string;
+  nickname: string;
+  userId: string;
+}
+
+interface User {
+  userId: string;
+  nickname: string;
+}
+
+/* 시간 바꿔주는 함수 */
 const formatTime = (dateString: string) => {
   const date = new Date(dateString);
   let hours = date.getHours();
@@ -23,10 +43,10 @@ const formatTime = (dateString: string) => {
   return `${ampm} ${hours}:${minutes < 10 ? "0" + minutes : minutes}`;
 };
 
-const Message = memo(({ message, isCurrentUser }: any) => {
+/* memo를 사용해 채팅을 캐싱 */
+const Message = memo(({ message, isCurrentUser }: MessageProps) => {
   const formattedTime = formatTime(message.createdAt);
   if (isCurrentUser) {
-    // 현재 유저의 메시지
     return (
       <div className="flex justify-end my-2 max-w-3/5">
         <div>
@@ -72,14 +92,54 @@ const Message = memo(({ message, isCurrentUser }: any) => {
   }
 });
 
-function ChatRoom() {
-  const { id } = useParams();
-  const [socket, setSocket] = useState<ExtendedSocket | null>(null);
-  const [messageInput, setMessageInput] = useState<string>("");
-  const [localChatHistory, setLocalChatHistory] = useState<any[]>([]);
+/* 기존 채팅 가져오는 코드 */
+const fetchChatHistory = async (roomId: string): Promise<ChatMessage[]> => {
+  const response = await getAPI(`/api/chats/rooms/${roomId}`);
+  return response.data.chats;
+};
 
+/* 컴포넌트 */
+function ChatRoom() {
+  const user: User = JSON.parse(localStorage.getItem("user") as string);
+  const { id } = useParams<{ id: string }>();
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [messageInput, setMessageInput] = useState<string>("");
+  const [localChatHistory, setLocalChatHistory] = useState<ChatMessage[]>([]);
+
+  const { isLoading, isError } = useQuery(
+    `chatHistory_${id}`,
+    () => fetchChatHistory(id as string),
+    {
+      onSuccess: (data) => {
+        setLocalChatHistory(data);
+      },
+    }
+  );
+
+  /* chat 네임스페이스에 socket연결 후 /:id의 채팅방에 join */
+
+  useEffect(() => {
+    const newSocket = io(`${process.env.REACT_APP_SERVER_URL!}/chat`, {
+      path: "/socket.io",
+    });
+    newSocket.emit("join", id);
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [id]);
+
+  /* 채팅 전송하는 코드 */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessageInput(e.target.value);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   const handleSend = () => {
@@ -99,43 +159,10 @@ function ChatRoom() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  const fetchChatHistory = async () => {
-    const response = await getAPI(`/api/chats/rooms/${id}`);
-    return response.data.chats;
-  };
-
-  const { isLoading, isError } = useQuery(
-    `chatHistory_${id}`,
-    fetchChatHistory,
-    {
-      onSuccess: (data) => {
-        setLocalChatHistory(data);
-      },
-    }
-  );
-
-  useEffect(() => {
-    const newSocket = io(`${process.env.REACT_APP_SERVER_URL!}/chat`, {
-      path: "/socket.io",
-    });
-    newSocket.emit("join", id);
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.disconnect();
-    };
-  }, [id]);
-
+  /* 다른사람이 채팅 보냈을때 receiveMessage 받는 코드 */
   useEffect(() => {
     if (!socket) return;
-    socket.on("receiveMessage", (message: any) => {
+    socket.on("receiveMessage", (message: ChatMessage) => {
       setLocalChatHistory((prevHistory) => [...prevHistory, message]);
     });
 
@@ -144,8 +171,6 @@ function ChatRoom() {
     };
   }, [socket]);
 
-  const user = JSON.parse(localStorage.getItem("user") as string);
-
   if (isLoading) {
     return <div>Loading</div>;
   }
@@ -153,7 +178,7 @@ function ChatRoom() {
   if (isError) {
     return <div>Error</div>;
   }
-  console.log(localChatHistory);
+
   return (
     <div className="h-screen flex justify-center items-center">
       <div className="w-[768px] h-[1000px] border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
@@ -183,7 +208,7 @@ function ChatRoom() {
             보내기
           </button>
         </div>
-        <Footer />  
+        <Footer />
       </div>
     </div>
   );
