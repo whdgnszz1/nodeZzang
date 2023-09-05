@@ -76,6 +76,14 @@ export const login = asyncHandler(
 export const logout = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+
     res.status(200).send({ message: "로그아웃에 성공하였습니다." });
   }
 );
+
+
+export const getUserFromToken = (res: Response) => ({
+  nickname: res.locals.decoded.nickname,
+  userId: res.locals.decoded.userId,
+});

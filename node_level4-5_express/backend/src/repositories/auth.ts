@@ -18,7 +18,7 @@ class UsersRepository {
     const newUser = await prisma.users.create({
       data: { nickname: user.nickname, password: hashedPassword },
     });
-    return newUser;
+    return {message: "회원가입에 성공하였습니다."};
   };
 
   login = async (user: LoginRequest): Promise<Express.User> => {
@@ -50,7 +50,7 @@ class UsersRepository {
   };
 
   getUser = async (userId: number) => {
-    const existUser = await prisma.users.findFirst({
+    const existUser: Express.User | null = await prisma.users.findFirst({
       where: { userId },
     });
     return existUser;

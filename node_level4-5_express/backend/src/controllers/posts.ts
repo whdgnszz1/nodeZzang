@@ -6,7 +6,7 @@ import {
   UpdatePostRequest,
 } from "../dtos/posts";
 import asyncHandler from "../lib/asyncHandler";
-import { LoginResponse } from "../dtos/auth";
+import { getUserFromToken } from "./auth";
 
 // 게시글 생성
 export const createPost = asyncHandler(
@@ -29,17 +29,15 @@ export const createPost = asyncHandler(
         .status(412)
         .send({ message: "게시글 내용의 형식이 일치하지 않습니다." });
     }
-    const user: LoginResponse = {
-      nickname: res.locals.decoded.nickname,
-      userId: res.locals.decoded.userId,
-    };
+    const user = getUserFromToken(res);
+
     const newPost: CreatePostRequest = req.body;
     const result = await PostService.createPost(user, newPost);
     res.send({ message: "게시글을 생성하였습니다." });
   }
 );
 
-// 전체 게시글 조회s
+// 전체 게시글 조회
 export const getAllPosts = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = res.locals.decoded?.userId
@@ -79,10 +77,8 @@ export const updateOnePost = asyncHandler(
         .send({ message: "게시글 내용의 형식이 일치하지 않습니다." });
     }
 
-    const user: LoginResponse = {
-      nickname: res.locals.decoded.nickname,
-      userId: res.locals.decoded.userId,
-    };
+    const user = getUserFromToken(res);
+
     const updatePostRequest: UpdatePostRequest = req.body;
     const postId: number = Number(req.params.postId);
     const result = await PostService.updateOnePost(
@@ -97,10 +93,8 @@ export const updateOnePost = asyncHandler(
 // 특정 게시글 삭제
 export const deleteOnePost = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user: LoginResponse = {
-      nickname: res.locals.decoded.nickname,
-      userId: res.locals.decoded.userId,
-    };
+    const user = getUserFromToken(res);
+
     const postId: number = Number(req.params.postId);
     const result = await PostService.deleteOnePost(user, postId);
     res.send({ message: "게시글을 삭제하였습니다." });
