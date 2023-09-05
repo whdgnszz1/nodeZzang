@@ -1,10 +1,6 @@
 import PostsService from "../services/posts";
 import { Request, Response, NextFunction } from "express";
-import {
-  CreatePostRequest,
-  OnePostResponse,
-  UpdatePostRequest,
-} from "../dtos/posts";
+import { PostRequest, PostResponse } from "../dtos/posts";
 import asyncHandler from "../lib/asyncHandler";
 import { getUserFromToken } from "./auth";
 
@@ -34,7 +30,7 @@ class PostsController {
       }
       const user = getUserFromToken(res);
 
-      const newPost: CreatePostRequest = req.body;
+      const newPost: PostRequest = req.body;
       const result = await this.postsService.createPost(user, newPost);
       res.send({ message: "게시글을 생성하였습니다." });
     }
@@ -44,7 +40,9 @@ class PostsController {
   getAllPosts = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const userId = res.locals.decoded?.userId;
-      const allPosts = await this.postsService.getAllPosts(userId);
+      const allPosts: PostResponse[] = await this.postsService.getAllPosts(
+        userId
+      );
       res.json({ posts: allPosts });
     }
   );
@@ -53,7 +51,7 @@ class PostsController {
   getOnePost = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const postId: number = Number(req.params.postId);
-      const post: OnePostResponse = await this.postsService.getOnePost(postId);
+      const post: PostResponse = await this.postsService.getOnePost(postId);
       res.json({ post: post });
     }
   );
@@ -82,7 +80,7 @@ class PostsController {
 
       const user = getUserFromToken(res);
 
-      const updatePostRequest: UpdatePostRequest = req.body;
+      const updatePostRequest: PostRequest = req.body;
       const postId: number = Number(req.params.postId);
       const result = await this.postsService.updateOnePost(
         user,

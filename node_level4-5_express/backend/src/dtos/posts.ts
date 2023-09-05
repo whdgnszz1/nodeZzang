@@ -1,4 +1,4 @@
-export type CreatePostRequest = {
+export type PostRequest = {
   title: string;
   content: string;
 };
@@ -10,24 +10,7 @@ export type CreatePostToDataBase = {
   content: string;
 };
 
-export type UpdatePostRequest = {
-  title: string;
-  content: string;
-};
-
-export type AllPostResponse = {
-  postId: number;
-  userId: number;
-  nickname: string;
-  title: string;
-  content: string,
-  createdAt: Date;
-  updatedAt: Date;
-  likes: number;
-  liked: boolean;
-};
-
-export type OnePostResponse = {
+export type PostResponse = {
   postId: number;
   userId: number;
   nickname: string;
@@ -35,4 +18,6 @@ export type OnePostResponse = {
   content: string;
   createdAt: Date;
   updatedAt: Date;
+  likeCount: number;
+  isLiked: boolean;
 };
