@@ -14,6 +14,11 @@ interface Post {
   isLiked: boolean;
 }
 
+interface User {
+  userId: string;
+  nickname: string;
+}
+
 /* API 요청 */
 // API 요청을 통해 유저가 좋아요누른 게시글을 가져오는 코드
 const fetchPosts = async (): Promise<Post[]> => {
@@ -23,6 +28,7 @@ const fetchPosts = async (): Promise<Post[]> => {
 
 /* Profile 컴포넌트 */
 function Profile() {
+  const user: User = JSON.parse(localStorage.getItem("user") as string);
   const {
     data: posts = [],
     isLoading,
@@ -52,11 +58,11 @@ function Profile() {
 
   return (
     <>
-      <div className=" h-screen flex justify-center items-center">
-        <div className="w-[768px] h-[1000px] border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
+      <div className=" min-h-screen flex justify-center items-center">
+        <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between ">
           <Navbar />
-          <div className="w-full h-full flex flex-col justify-center items-center mt-8 gap-2">
-            <div className="flex flex-col gap-2">
+          <div className="w-full h-full flex flex-col mt-20 gap-2">
+            <div className="flex flex-col gap-4 border-b-2 border-black w-full justify-center items-center">
               <div className="w-[200px] h-[200px] rounded-full">
                 <img
                   src={process.env.PUBLIC_URL + "/assets/default.png"}
@@ -64,11 +70,11 @@ function Profile() {
                   className="rounded-full"
                 />
               </div>
-              <div className="flex justify-center items-center text-xl font-semibold">
-                종훈
+              <div className="flex justify-center items-center text-xl font-semibold mb-4">
+                {user.nickname}
               </div>
             </div>
-            <div className="w-full h-full grid grid-cols-2 mt-2 gap-2">
+            <div className="w-full mt-6 grid grid-cols-2 gap-2 overflow-auto px-2">
               {likedPosts.map((post) => {
                 return (
                   <PostCard key={post.postId} post={post} onLike={handleLike} />

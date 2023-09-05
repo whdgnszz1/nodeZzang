@@ -135,7 +135,7 @@ const Detail: FC = () => {
       onSuccess: refetchAll,
     }
   );
-  
+
   // 댓글 삭제 Mutation을 사용하여 댓글 수정
   const handleDeleteComment = (commentId: number) => {
     deleteCommentMutation.mutate({ postId, commentId: String(commentId) });
@@ -143,8 +143,8 @@ const Detail: FC = () => {
 
   return (
     <>
-      <div className="h-screen flex justify-center items-center">
-        <div className="w-[768px] h-[1000px] border-x-2 border-black flex flex-col items-center overflow-auto ">
+      <div className="h-screen min-h-screen flex justify-center items-center">
+        <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center overflow-auto mt-16 ">
           <Navbar />
           <div className="w-full flex items-center border-b-2 border-b-black mt-4 p-2">
             {post?.title}

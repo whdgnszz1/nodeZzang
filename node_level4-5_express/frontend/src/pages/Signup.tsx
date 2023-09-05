@@ -30,7 +30,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="h-screen flex justify-center items-center">
+    <div className="h-screen min-h-screen flex justify-center items-center">
       <div className="border-black border-2 w-[768px] h-[1000px] flex flex-col items-center justify-center gap-4">
         <div className="border-2 w-[320px] border-black px-1">
           <AuthInput inputType="닉네임" onInputChange={setNickname} />
