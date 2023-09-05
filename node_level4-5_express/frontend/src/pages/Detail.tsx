@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import { useParams } from "react-router-dom";
 import { deleteAPI, getAPI, postAPI, putAPI } from "src/axios";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import { useQuery, useMutation } from "react-query";
 import { FaEdit, FaTrash, FaCheck, FaPaperPlane } from "react-icons/fa";
+
+/* 타입 정의 */
+interface Post {
+  title: string;
+  content: string;
+}
 
 interface Comment {
   commentId: number;
@@ -22,53 +28,83 @@ interface CommentDeleteProps {
   commentId: string;
 }
 
+/* API 요청 */
+
+// API 요청을 통해 게시글 가져오는 코드
 const fetchPost = async (postId: string) => {
   const response = await getAPI(`/api/posts/${postId}`);
   return response.data.post;
 };
 
+// API 요청을 통해 댓글 가져오는 코드
 const fetchComments = async (postId: string) => {
   const response = await getAPI(`/api/posts/${postId}/comments`);
   return response.data.comments;
 };
 
-const Detail: React.FC = () => {
+// API 요청을 통해 댓글 추가하는 코드
+const createComments = async (postId: string, commentContent: string) => {
+  await postAPI(`/api/posts/${postId}/comments`, {
+    content: commentContent,
+  });
+};
+
+// API 요청을 통해 댓글 수정하는 코드
+const updateComment = async ({
+  postId,
+  commentId,
+  content,
+}: CommentUpdateProps) => {
+  await putAPI(`/api/posts/${postId}/comments/${commentId}`, { content });
+};
+
+// API 요청을 통해 댓글 삭제하는 코드
+const deleteComment = async ({ postId, commentId }: CommentDeleteProps) => {
+  await deleteAPI(`/api/posts/${postId}/comments/${commentId}`);
+};
+
+/* 컴포넌트 */
+const Detail: FC = () => {
   const { id } = useParams();
-  const postId = id as string;
+  const postId: string = id as string;
 
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editedComment, setEditedComment] = useState<string>("");
   const [commentContent, setCommentContent] = useState<string>("");
 
-  const { data: post } = useQuery(["post", postId], () => fetchPost(postId));
-  const { data: comments } = useQuery(["comments", postId], () =>
-    fetchComments(postId)
+  // react-query를 사용해 id의 게시글, 게시글에 대한 댓글들 가져오는 코드
+  const { data: post, refetch: refetchPost } = useQuery<Post, Error>(
+    ["post", postId],
+    () => fetchPost(postId)
   );
 
-  const postQuery = useQuery(["post", postId], () => fetchPost(postId));
-  const commentsQuery = useQuery(["comments", postId], () =>
-    fetchComments(postId)
-  );
-  const { refetch: refetchPost } = postQuery;
-  const { refetch: refetchComments } = commentsQuery;
+  const { data: comments, refetch: refetchComments } = useQuery<
+    Comment[],
+    Error
+  >(["comments", postId], () => fetchComments(postId));
 
   const refetchAll = () => {
     refetchPost();
     refetchComments();
   };
-  const updateComment = async ({
-    postId,
-    commentId,
-    content,
-  }: CommentUpdateProps) => {
-    await putAPI(`/api/posts/${postId}/comments/${commentId}`, { content });
+
+  /* 댓글 작성 코드*/
+  const handleCommentSubmit = async () => {
+    await createComments(postId, commentContent);
+    setCommentContent("");
+    refetchAll();
   };
 
-  const deleteComment = async ({ postId, commentId }: CommentDeleteProps) => {
-    await deleteAPI(`/api/posts/${postId}/comments/${commentId}`);
+  /* 댓글 수정 코드 */
+
+  // 수정버튼을 눌렀을때 특정 댓글만 선택
+  const handleEditClick = (commentId: number, currentContent: string) => {
+    setEditingCommentId(commentId);
+    setEditedComment(currentContent);
   };
 
-  const updateMutation = useMutation<void, Error, CommentUpdateProps>(
+  // 댓글 수정 Mutation 정의
+  const updateCommentMutation = useMutation<void, Error, CommentUpdateProps>(
     updateComment,
     {
       onSuccess: () => {
@@ -79,29 +115,10 @@ const Detail: React.FC = () => {
     }
   );
 
-  const deleteMutation = useMutation<void, Error, CommentDeleteProps>(
-    deleteComment,
-    {
-      onSuccess: refetchAll,
-    }
-  );
-
-  const handleCommentSubmit = async () => {
-    await postAPI(`/api/posts/${postId}/comments`, {
-      content: commentContent,
-    });
-    setCommentContent("");
-    refetchAll();
-  };
-
-  const handleEditClick = (commentId: number, currentContent: string) => {
-    setEditingCommentId(commentId);
-    setEditedComment(currentContent);
-  };
-
+  // 댓글 수정 Mutation을 사용하여 댓글 수정
   const handleUpdateComment = () => {
     if (editingCommentId !== null) {
-      updateMutation.mutate({
+      updateCommentMutation.mutate({
         postId,
         commentId: String(editingCommentId),
         content: editedComment,
@@ -109,8 +126,19 @@ const Detail: React.FC = () => {
     }
   };
 
+  /* 댓글 삭제 코드 */
+
+  // 댓글 삭제 Mutation 정의
+  const deleteCommentMutation = useMutation<void, Error, CommentDeleteProps>(
+    deleteComment,
+    {
+      onSuccess: refetchAll,
+    }
+  );
+  
+  // 댓글 삭제 Mutation을 사용하여 댓글 수정
   const handleDeleteComment = (commentId: number) => {
-    deleteMutation.mutate({ postId, commentId: String(commentId) });
+    deleteCommentMutation.mutate({ postId, commentId: String(commentId) });
   };
 
   return (
