@@ -6,17 +6,17 @@ import {
   getOneComment,
   updateOneComment,
 } from "../controllers/comments";
-import { verifyToken } from "../middlewares/auth";
+import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
 const router = express.Router({ mergeParams: true });
 
 // 댓글 작성
-router.post("/", verifyToken, createComment);
+router.post("/", ensureAuthenticated, createComment);
 // 댓글 조회
 router.get("/", getAllComments);
 router.get("/:commentId", getOneComment);
 // 댓글 수정
-router.put("/:commentId", verifyToken, updateOneComment);
+router.put("/:commentId", ensureAuthenticated, updateOneComment);
 // 댓글 삭제
-router.delete("/:commentId", verifyToken, deleteOneComment);
+router.delete("/:commentId", ensureAuthenticated, deleteOneComment);
 
 export default router;

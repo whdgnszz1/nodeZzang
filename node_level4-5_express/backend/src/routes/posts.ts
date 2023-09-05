@@ -6,17 +6,17 @@ import {
   getOnePost,
   updateOnePost,
 } from "../controllers/posts";
-import { verifyToken } from "../middlewares/auth";
+import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
 const router = express.Router();
 
 // 게시글 작성
-router.post("/", verifyToken, createPost);
+router.post("/", ensureAuthenticated, createPost);
 // 게시글 조회
-router.get("/",verifyToken, getAllPosts);
-router.get("/:postId", verifyToken, getOnePost);
+router.get("/", getAllPosts);
+router.get("/:postId", getOnePost);
 // 게시글 수정
-router.put("/:postId", verifyToken, updateOnePost);
+router.put("/:postId", ensureAuthenticated, updateOnePost);
 // 게시글 삭제
-router.delete("/:postId", verifyToken, deleteOnePost);
+router.delete("/:postId", ensureAuthenticated, deleteOnePost);
 
 export default router;

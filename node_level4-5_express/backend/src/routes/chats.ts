@@ -5,11 +5,11 @@ import {
   enterRoom,
   getRooms,
 } from "../controllers/chats";
-import { verifyToken } from "../middlewares/auth";
+import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
 const router = express.Router();
 
-router.post("/rooms", verifyToken, createRoom);
+router.post("/rooms", ensureAuthenticated, createRoom);
 router.get("/rooms", getRooms);
-router.get("/rooms/:roomId", verifyToken, enterRoom);
-router.delete("/rooms/:roomId", verifyToken, deleteRoom);
+router.get("/rooms/:roomId", ensureAuthenticated, enterRoom);
+router.delete("/rooms/:roomId", ensureAuthenticated, deleteRoom);
 export default router;
