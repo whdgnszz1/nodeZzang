@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { getAPI } from "src/axios";
 import EditProfileModal from "src/components/EditProfileModal";
@@ -6,6 +6,7 @@ import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import PostCard from "src/components/PostCard";
 import { HiPencil } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 /* 타입 정의 */
 interface Post {
@@ -31,22 +32,23 @@ const fetchPosts = async (): Promise<Post[]> => {
 
 /* Profile 컴포넌트 */
 function Profile() {
-  const [user, setUser] = useState<User>(
-    JSON.parse(localStorage.getItem("user") as string)
-  );
-  const handleUserUpdate = (updatedUser: User) => {
+  const navigate = useNavigate();
+  const initialUser = JSON.parse(localStorage.getItem("user") as string);
+  const [user, setUser] = useState<User>(initialUser || {});
+
+  const handleUserUpdate = useCallback((updatedUser: User) => {
     setUser(updatedUser);
-  };
+  }, []);
   /* 모달창 관리 코드 */
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const handleEditIconClick = (e: any) => {
+  const handleEditIconClick = useCallback((e: any) => {
     e.stopPropagation();
     setIsEditModalOpen(true);
-  };
+  }, []);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsEditModalOpen(false);
-  };
+  }, []);
 
   useEffect(() => {
     const handleOutsideClick = (e: any) => {
@@ -59,7 +61,7 @@ function Profile() {
     return () => {
       window.removeEventListener("click", handleOutsideClick);
     };
-  }, []);
+  }, [handleCloseModal]);
 
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
@@ -73,7 +75,7 @@ function Profile() {
     return () => {
       window.removeEventListener("keydown", handleEsc);
     };
-  }, []);
+  }, [handleCloseModal]);
 
   /* 모달창 관리 코드 끝 */
 
@@ -82,7 +84,14 @@ function Profile() {
     data: posts = [],
     isLoading,
     isError,
-  } = useQuery<Post[]>("likedPosts", fetchPosts);
+  } = useQuery<Post[]>("likedPosts", fetchPosts, {
+    onError: (error: any) => {
+      if (error?.response?.status === 403) {
+        alert("로그인이 필요한 페이지입니다.");
+        navigate("/");
+      }
+    },
+  });
   const [localPosts, setLocalPosts] = useState(posts);
 
   useEffect(() => {
@@ -102,49 +111,61 @@ function Profile() {
 
   const likedPosts = localPosts.filter((post) => post.isLiked);
 
-  if (isLoading) {
-    return <div>Loading</div>;
-  }
-
   if (isError) {
     return <div>Error</div>;
   }
-  console.log(isEditModalOpen);
   return (
     <>
       <div className="h-screen min-h-screen flex justify-center items-center">
         <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between ">
           <Navbar />
-          <div className="w-full h-full flex flex-col mt-20 gap-2">
-            <div className="flex flex-col gap-4 border-b-2 border-black w-full justify-center items-center">
-              <div className="relative w-[200px] h-[200px] rounded-full">
+          {isLoading ? (
+            <>
+              <div className="w-screen h-screen flex justify-center items-center">
                 <img
-                  src={
-                    user.profileUrl
-                      ? user.profileUrl
-                      : process.env.PUBLIC_URL + "/assets/default.png"
-                  }
-                  alt="user_profile"
-                  className="rounded-full"
+                  src={process.env.PUBLIC_URL + "/assets/loading.gif"}
+                  alt="loading_spinner"
                 />
-                <div className="absolute bottom-[-8px] right-0 mb-2 mr-2 cursor-pointer">
-                  <div onClick={handleEditIconClick}>
-                    <HiPencil size={24} />
+              </div>
+              ;
+            </>
+          ) : (
+            <div className="w-full h-full flex flex-col mt-20 gap-2">
+              <div className="flex flex-col gap-4 border-b-2 border-black w-full justify-center items-center">
+                <div className="relative w-[200px] h-[200px] rounded-full">
+                  <img
+                    src={
+                      user.profileUrl
+                        ? user.profileUrl
+                        : process.env.PUBLIC_URL + "/assets/default.png"
+                    }
+                    alt="user_profile"
+                    className="rounded-full"
+                  />
+                  <div className="absolute bottom-[-8px] right-0 mb-2 mr-2 cursor-pointer">
+                    <div onClick={handleEditIconClick}>
+                      <HiPencil size={24} />
+                    </div>
                   </div>
                 </div>
+                <div className="flex justify-center items-center text-xl font-semibold mb-4 cursor-default">
+                  {user.nickname}
+                </div>
               </div>
-              <div className="flex justify-center items-center text-xl font-semibold mb-4 cursor-default">
-                {user.nickname}
+              <div className="w-full mt-6 grid grid-cols-2 gap-2 overflow-auto px-2">
+                {likedPosts.map((post) => {
+                  return (
+                    <PostCard
+                      key={post.postId}
+                      post={post}
+                      onLike={handleLike}
+                    />
+                  );
+                })}
               </div>
             </div>
-            <div className="w-full mt-6 grid grid-cols-2 gap-2 overflow-auto px-2">
-              {likedPosts.map((post) => {
-                return (
-                  <PostCard key={post.postId} post={post} onLike={handleLike} />
-                );
-              })}
-            </div>
-          </div>
+          )}
+
           <Footer />
         </div>
         <EditProfileModal

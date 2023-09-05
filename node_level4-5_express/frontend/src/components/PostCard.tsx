@@ -23,8 +23,11 @@ const PostCard: React.FC<Props> = ({ post, onLike }) => {
     try {
       await postAPI(`/api/posts/${post.postId}/like`, {});
       onLike(post.postId);
-    } catch (error) {
+    } catch (error:any) {
       console.error(error);
+      if (error?.response?.status === 403) {
+        alert("로그인이 필요한 기능입니다.");
+      }
     }
   };
 

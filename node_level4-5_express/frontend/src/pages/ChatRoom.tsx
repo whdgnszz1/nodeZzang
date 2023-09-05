@@ -1,10 +1,10 @@
 import { useEffect, useState, memo, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import { useQuery } from "react-query";
-import { getAPI } from "src/axios";
+import { postAPI } from "src/axios";
 
 /* 타입 정의 */
 interface MessageProps {
@@ -103,12 +103,13 @@ const Message = memo(({ message, isCurrentUser }: MessageProps) => {
 
 /* 기존 채팅 가져오는 코드 */
 const fetchChatHistory = async (roomId: string): Promise<ChatMessage[]> => {
-  const response = await getAPI(`/api/chats/rooms/${roomId}`);
+  const response = await postAPI(`/api/chats/rooms/${roomId}`, {});
   return response.data.chats;
 };
 
 /* 컴포넌트 */
 function ChatRoom() {
+  const navigate = useNavigate();
   const user: User = JSON.parse(localStorage.getItem("user") as string);
   const { id } = useParams<{ id: string }>();
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -130,6 +131,13 @@ function ChatRoom() {
     {
       onSuccess: (data) => {
         setLocalChatHistory(data);
+      },
+      onError: (error: any) => {
+        console.error(error)
+        if (error?.response?.status === 403) {
+          alert("로그인이 필요한 페이지입니다.");
+          navigate("/");
+        }
       },
     }
   );
@@ -191,10 +199,6 @@ function ChatRoom() {
     };
   }, [socket]);
 
-  if (isLoading) {
-    return <div>Loading</div>;
-  }
-
   if (isError) {
     return <div>Error</div>;
   }
@@ -203,32 +207,47 @@ function ChatRoom() {
     <div className="h-screen min-h-screen flex justify-center items-center">
       <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
         <Navbar />
-        <div className="w-full mt-16">
-          {localChatHistory.map((message: any, idx: number) => (
-            <Message
-              key={idx}
-              message={message}
-              isCurrentUser={message.userId === user.userId}
-            />
-          ))}
-          <div ref={messagesEndRef}></div>
-        </div>
-        <div className="w-full flex mb-12">
-          <input
-            type="text"
-            value={messageInput}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            placeholder="메시지를 입력해주세요."
-            className="border p-2 rounded w-11/12 mr-4"
-          />
-          <button
-            onClick={handleSend}
-            className="bg-rose-400 w-1/12 text-white p-2 rounded"
-          >
-            보내기
-          </button>
-        </div>
+        {isLoading ? (
+          <>
+            <div className="w-screen h-screen flex justify-center items-center">
+              <img
+                src={process.env.PUBLIC_URL + "/assets/loading.gif"}
+                alt="loading_spinner"
+              />
+            </div>
+            ;
+          </>
+        ) : (
+          <>
+            <div className="w-full mt-16">
+              {localChatHistory?.map((message: any, idx: number) => (
+                <Message
+                  key={idx}
+                  message={message}
+                  isCurrentUser={message.userId === user.userId}
+                />
+              ))}
+              <div ref={messagesEndRef}></div>
+            </div>
+            <div className="w-full flex mb-12">
+              <input
+                type="text"
+                value={messageInput}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
+                placeholder="메시지를 입력해주세요."
+                className="border p-2 rounded w-11/12 mr-4"
+              />
+              <button
+                onClick={handleSend}
+                className="bg-rose-400 w-1/12 text-white p-2 rounded"
+              >
+                보내기
+              </button>
+            </div>
+          </>
+        )}
+
         <Footer />
       </div>
     </div>

@@ -103,20 +103,22 @@ const Main = () => {
           setContent("");
           setShowModal(false);
         },
-        onError: (error) => {
+        onError: (error: any) => {
           console.error("게시글 작성 실패", error);
+          if (error?.response?.status === 403) {
+            alert("로그인이 필요한 기능입니다.");
+            setTitle("");
+            setContent("");
+            setShowModal(false);
+          }
         },
       }
     );
   };
 
-  if (isLoading) {
-    return <div>Loading</div>;
-  }
-
   if (isError) {
     console.error(error);
-    return <div>Error loading posts</div>;
+    return <div>Error</div>;
   }
 
   return (
@@ -124,11 +126,27 @@ const Main = () => {
       <div className="h-screen min-h-screen flex justify-center items-center relative">
         <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
           <Navbar />
-          <div className="w-full flex-1 mt-14 grid grid-cols-2 gap-2 overflow-auto">
-            {posts?.map((post) => {
-              return <PostCard key={post.id} post={post} onLike={handleLike} />;
-            })}
-          </div>
+
+          {isLoading ? (
+            <>
+              <div className="w-screen h-screen flex justify-center items-center">
+                <img
+                  src={process.env.PUBLIC_URL + "/assets/loading.gif"}
+                  alt="loading_spinner"
+                />
+              </div>
+              ;
+            </>
+          ) : (
+            <div className="w-full flex-1 mt-14 grid grid-cols-2 gap-2 overflow-auto">
+              {posts?.map((post) => {
+                return (
+                  <PostCard key={post.id} post={post} onLike={handleLike} />
+                );
+              })}
+            </div>
+          )}
+
           <Footer />
           <button
             onClick={() => setShowModal(true)}

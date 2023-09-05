@@ -6,6 +6,7 @@ function EditProfileModal({ isOpen, onClose, user, onUserUpdate }: any) {
   const [nickname, setNickname] = useState(user.nickname);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImageURL, setPreviewImageURL] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -22,6 +23,7 @@ function EditProfileModal({ isOpen, onClose, user, onUserUpdate }: any) {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("nickname", nickname);
     if (selectedImage) {
@@ -42,11 +44,24 @@ function EditProfileModal({ isOpen, onClose, user, onUserUpdate }: any) {
       onClose();
     } catch (error) {
       console.error("이미지 업로드에 실패하였습니다.", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    isOpen && (
+    isOpen &&
+    (isLoading ? (
+      <>
+        <div className="fixed">
+          <img
+            src={process.env.PUBLIC_URL + "/assets/loading.gif"}
+            alt="loading_spinner"
+          />
+        </div>
+        ;
+      </>
+    ) : (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
         <div className="bg-white p-6 rounded relative w-[400px] h-[400px] modal-content flex flex-col">
           <div
@@ -92,7 +107,7 @@ function EditProfileModal({ isOpen, onClose, user, onUserUpdate }: any) {
           </button>
         </div>
       </div>
-    )
+    ))
   );
 }
 
