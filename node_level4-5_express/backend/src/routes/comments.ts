@@ -16,7 +16,6 @@ const router = express.Router({ mergeParams: true });
 router.post("/", ensureAuthenticated, commentsController.createComment);
 // 댓글 조회
 router.get("/", commentsController.getAllComments);
-router.get("/:commentId", commentsController.getOneComment);
 // 댓글 수정
 router.put("/:commentId", ensureAuthenticated, commentsController.updateOneComment);
 // 댓글 삭제
