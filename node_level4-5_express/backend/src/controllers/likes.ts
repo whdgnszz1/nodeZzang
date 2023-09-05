@@ -4,22 +4,28 @@ import asyncHandler from "../lib/asyncHandler";
 import LikesService from "../services/likes";
 import { getUserFromToken } from "./auth";
 
-export const togglePostLike = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const postId: number = +req.params.postId;
-    const user = getUserFromToken(res);
+class LikesController {
+  constructor(private readonly likesService: LikesService) {}
 
-    const result = await LikesService.togglePostLike(user, postId);
-    res.send({ message: result });
-  }
-);
+  togglePostLike = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const postId: number = +req.params.postId;
+      const user = getUserFromToken(res);
 
-export const getUserLikedPosts = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const user = getUserFromToken(res);
+      const result = await this.likesService.togglePostLike(user, postId);
+      res.send({ message: result });
+    }
+  );
 
-    const result: UserLikedPostsResponse[] =
-      await LikesService.getUserLikedPosts(user);
-    res.send({ posts: result });
-  }
-);
+  getUserLikedPosts = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const user = getUserFromToken(res);
+
+      const result: UserLikedPostsResponse[] =
+        await this.likesService.getUserLikedPosts(user);
+      res.send({ posts: result });
+    }
+  );
+}
+
+export default LikesController;

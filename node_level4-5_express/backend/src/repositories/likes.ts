@@ -4,8 +4,10 @@ import { CustomError } from "../errors/customError";
 import prisma from "../utils/prisma/index";
 
 class LikesRepository {
+  constructor(private readonly postsRepository: PostsRepository) {}
+  
   toggleLikePost = async (user: Express.User, postId: number) => {
-    const post = await PostsRepository.getPostById(postId);
+    const post = await this.postsRepository.getPostById(postId);
 
     if (!post) {
       throw new CustomError(404, "해당하는 게시글을 찾을 수 없습니다.");
@@ -90,4 +92,4 @@ class LikesRepository {
   };
 }
 
-export default new LikesRepository();
+export default LikesRepository;
