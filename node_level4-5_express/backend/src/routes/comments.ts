@@ -1,22 +1,25 @@
 import express from "express";
-import {
-  createComment,
-  deleteOneComment,
-  getAllComments,
-  getOneComment,
-  updateOneComment,
-} from "../controllers/comments";
 import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
+
+import PostsRepository from "../repositories/posts";
+import CommentsRepository from "../repositories/comments";
+import CommentsService from "../services/comments";
+import CommentsController from "../controllers/comments";
+const postsRepository = new PostsRepository();
+const commentsRepository = new CommentsRepository(postsRepository);
+const commentsService = new CommentsService(commentsRepository);
+const commentsController = new CommentsController(commentsService);
+
 const router = express.Router({ mergeParams: true });
 
 // 댓글 작성
-router.post("/", ensureAuthenticated, createComment);
+router.post("/", ensureAuthenticated, commentsController.createComment);
 // 댓글 조회
-router.get("/", getAllComments);
-router.get("/:commentId", getOneComment);
+router.get("/", commentsController.getAllComments);
+router.get("/:commentId", commentsController.getOneComment);
 // 댓글 수정
-router.put("/:commentId", ensureAuthenticated, updateOneComment);
+router.put("/:commentId", ensureAuthenticated, commentsController.updateOneComment);
 // 댓글 삭제
-router.delete("/:commentId", ensureAuthenticated, deleteOneComment);
+router.delete("/:commentId", ensureAuthenticated, commentsController.deleteOneComment);
 
 export default router;

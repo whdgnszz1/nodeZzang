@@ -8,12 +8,14 @@ import { CustomError } from "../errors/customError";
 import prisma from "../utils/prisma/index";
 
 class CommentsRepository {
+  constructor(private readonly postsRepository: PostsRepository) {}
+  
   createComment = async (
     user: Express.User,
     postId: number,
     comment: CreateCommentRequest
   ) => {
-    const post = await PostsRepository.getPostById(postId);
+    const post = await this.postsRepository.getPostById(postId);
 
     if (!post) {
       throw new CustomError(404, "해당하는 게시글을 찾을 수 없습니다.");
@@ -63,7 +65,7 @@ class CommentsRepository {
     commentId: number,
     updateComment: UpdateCommentRequest
   ) => {
-    const post = await PostsRepository.getPostById(postId);
+    const post = await this.postsRepository.getPostById(postId);
 
     if (!post) {
       throw new CustomError(404, "게시글이 존재하지 않습니다.");
@@ -95,7 +97,7 @@ class CommentsRepository {
     postId: number,
     commentId: number
   ) => {
-    const post = await PostsRepository.getPostById(postId);
+    const post = await this.postsRepository.getPostById(postId);
 
     if (!post) {
       throw new CustomError(404, "게시글이 존재하지 않습니다.");
@@ -120,4 +122,4 @@ class CommentsRepository {
   };
 }
 
-export default new CommentsRepository();
+export default CommentsRepository;

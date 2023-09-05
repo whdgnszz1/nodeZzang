@@ -5,14 +5,15 @@ import {
   UpdateCommentRequest,
 } from "../dtos/comments";
 
-class CommentService {
-  // 의존성주입 해보기
+class CommentsService {
+  constructor(private readonly commentsRepository: CommentsRepository) {}
+
   createComment = async (
     user: Express.User,
     postId: number,
     newComment: CreateCommentRequest
   ) => {
-    const result = await CommentsRepository.createComment(
+    const result = await this.commentsRepository.createComment(
       user,
       postId,
       newComment
@@ -22,12 +23,12 @@ class CommentService {
 
   getAllComments = async (postId: number) => {
     const result: AllCommentResponse[] =
-      await CommentsRepository.getAllComments(postId);
+      await this.commentsRepository.getAllComments(postId);
     return result;
   };
 
   getOneComment = async (commentId: number) => {
-    const result = await CommentsRepository.getOneComment(commentId);
+    const result = await this.commentsRepository.getOneComment(commentId);
     return result;
   };
 
@@ -37,7 +38,7 @@ class CommentService {
     commentId: number,
     updateComment: UpdateCommentRequest
   ) => {
-    const result = await CommentsRepository.updateOneComment(
+    const result = await this.commentsRepository.updateOneComment(
       user,
       postId,
       commentId,
@@ -51,7 +52,7 @@ class CommentService {
     postId: number,
     commentId: number
   ) => {
-    const result = await CommentsRepository.deleteOneComment(
+    const result = await this.commentsRepository.deleteOneComment(
       user,
       postId,
       commentId
@@ -60,4 +61,4 @@ class CommentService {
   };
 }
 
-export default new CommentService();
+export default CommentsService
