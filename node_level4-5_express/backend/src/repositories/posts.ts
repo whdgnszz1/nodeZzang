@@ -136,4 +136,4 @@ class PostsRepository {
   };
 }
 
-export default new PostsRepository();
+export default PostsRepository;

@@ -1,24 +1,24 @@
 import {
-  AllPostResponse,
   CreatePostRequest,
   OnePostResponse,
   UpdatePostRequest,
 } from "../dtos/posts";
 import PostRepository from "../repositories/posts";
 
-class PostService {
+class PostsService {
+  constructor(private readonly postsRepository: PostRepository){}
   createPost = async (user: Express.User, post: CreatePostRequest) => {
-    const result = await PostRepository.createPost(user, post);
+    const result = await this.postsRepository.createPost(user, post);
     return result;
   };
 
   getAllPosts = async (userId: number) => {
-    const result = await PostRepository.getAllPosts(userId);
+    const result = await this.postsRepository.getAllPosts(userId);
     return result;
   };
 
   getOnePost = async (postId: number): Promise<OnePostResponse> => {
-    const result: OnePostResponse = await PostRepository.getOnePost(postId);
+    const result: OnePostResponse = await this.postsRepository.getOnePost(postId);
     return result;
   };
 
@@ -27,7 +27,7 @@ class PostService {
     postId: number,
     updatePostRequest: UpdatePostRequest
   ) => {
-    const result = await PostRepository.updateOnePost(
+    const result = await this.postsRepository.updateOnePost(
       user,
       postId,
       updatePostRequest
@@ -36,9 +36,9 @@ class PostService {
   };
 
   deleteOnePost = async (user: Express.User, postId: number) => {
-    const result = await PostRepository.deleteOnePost(user, postId);
+    const result = await this.postsRepository.deleteOnePost(user, postId);
     return result;
   };
 }
 
-export default new PostService();
+export default PostsService
