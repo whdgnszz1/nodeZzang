@@ -18,7 +18,7 @@ function Footer() {
     <div className="flex justify-around w-[768px] h-10 bg-rose-400 items-center text-white font-medium fixed bottom-0 border-x-2 border-t-2 border-black">
       <div
         onClick={() => navigate("/")}
-        className="cursor-pointer flex flex-col items-center"
+        className="cursor-pointer flex flex-1 flex-col items-center"
       >
         {isActive("/") ? (
           <BsPostcardHeartFill size={24} />
@@ -28,7 +28,7 @@ function Footer() {
       </div>
       <div
         onClick={() => navigate("/chat")}
-        className="cursor-pointer flex flex-col items-center"
+        className="cursor-pointer flex flex-1 flex-col items-center"
       >
         {isActive("/chat") ? (
           <BsChatHeartFill size={24} />
@@ -38,7 +38,7 @@ function Footer() {
       </div>
       <div
         onClick={() => navigate("/profile")}
-        className="cursor-pointer flex flex-col items-center"
+        className="cursor-pointer flex flex-1 flex-col items-center"
       >
         {isActive("/profile") ? (
           <BsPersonFill size={24} />
