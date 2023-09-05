@@ -13,8 +13,8 @@ export const createRoom = asyncHandler(
       maxMembers,
       owner: user.nickname,
     });
-    const io = req.app.get("io")
-    io.of('/room').emit('newRoom', newRoom)
+    const io = req.app.get("io");
+    io.of("/room").emit("newRoom", newRoom);
     res.status(200).send({ message: "채팅방을 생성하였습니다." });
   }
 );
@@ -28,15 +28,12 @@ export const getRooms = asyncHandler(
 
 export const enterRoom = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const roomId = req.params.roomId
+    const roomId = req.params.roomId;
     const chats = await Chat.find({ roomId: roomId });
-    res.status(200).json({chats})
+    res.status(200).json({ chats });
   }
 );
 
 export const deleteRoom = asyncHandler(
   (req: Request, res: Response, next: NextFunction) => {}
 );
-
-
-
