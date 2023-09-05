@@ -9,6 +9,7 @@
     "coverage": "jest --coverage"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.405.0",
     "@prisma/client": "^5.2.0",
     "@types/bcrypt": "^5.0.0",
     "@types/socket.io": "^3.0.2",
@@ -22,6 +23,7 @@
     "mongoose": "^7.5.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "multer-s3": "^3.0.1",
     "mysql2": "^3.6.0",
     "nunjucks": "^3.2.4",
     "passport": "^0.6.0",
@@ -40,6 +42,8 @@
     "@types/jest": "^29.5.4",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/morgan": "^1.9.5",
+    "@types/multer": "^1.4.7",
+    "@types/multer-s3": "^3.0.0",
     "@types/node": "^20.5.7",
     "@types/passport": "^1.0.12",
     "@types/passport-kakao": "^1.0.0",
