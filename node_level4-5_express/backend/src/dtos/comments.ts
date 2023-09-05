@@ -1,12 +1,8 @@
-export type CreateCommentRequest = {
+export type CommentRequest = {
   content: string;
 };
 
-export type UpdateCommentRequest = {
-  content: string;
-};
-
-export type AllCommentResponse = {
+export type CommentResponse = {
   commentId: number;
   userId: number;
   nickname: string;

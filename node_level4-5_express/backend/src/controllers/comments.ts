@@ -1,9 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import {
-  AllCommentResponse,
-  CreateCommentRequest,
-  UpdateCommentRequest,
-} from "../dtos/comments";
+import { CommentRequest, CommentResponse } from "../dtos/comments";
 import { CustomError } from "../errors/customError";
 import asyncHandler from "../lib/asyncHandler";
 import { getUserFromToken } from "./auth";
@@ -25,7 +21,7 @@ class CommentsController {
       const user = getUserFromToken(res);
 
       const postId = Number(req.params.postId);
-      const newComment: CreateCommentRequest = req.body;
+      const newComment: CommentRequest = req.body;
       await this.commentsService.createComment(user, postId, newComment);
       res.status(200).send({ message: "댓글을 생성하였습니다." });
     }
@@ -35,18 +31,9 @@ class CommentsController {
   getAllComments = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const postId: number = +req.params.postId;
-      const allComments: AllCommentResponse[] =
+      const allComments: CommentResponse[] =
         await this.commentsService.getAllComments(postId);
       res.status(200).json({ comments: allComments });
-    }
-  );
-
-  // 특정 댓글 조회 (과제에 없는 기능)
-  getOneComment = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const commentId: number = Number(req.params.commentId);
-      const comment = await this.commentsService.getOneComment(commentId);
-      res.status(200).json({ comment });
     }
   );
 
@@ -65,7 +52,7 @@ class CommentsController {
 
         const user = getUserFromToken(res);
 
-        const updateComment: UpdateCommentRequest = req.body;
+        const updateComment: CommentRequest = req.body;
         const commentId: number = Number(req.params.commentId);
         const result = await this.commentsService.updateOneComment(
           user,

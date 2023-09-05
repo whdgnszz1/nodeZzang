@@ -1,19 +1,15 @@
 import PostsRepository from "./posts";
-import {
-  AllCommentResponse,
-  CreateCommentRequest,
-  UpdateCommentRequest,
-} from "../dtos/comments";
+import { CommentRequest, CommentResponse } from "../dtos/comments";
 import { CustomError } from "../errors/customError";
 import prisma from "../utils/prisma/index";
 
 class CommentsRepository {
   constructor(private readonly postsRepository: PostsRepository) {}
-  
+
   createComment = async (
     user: Express.User,
     postId: number,
-    comment: CreateCommentRequest
+    comment: CommentRequest
   ) => {
     const post = await this.postsRepository.getPostById(postId);
 
@@ -24,7 +20,6 @@ class CommentsRepository {
     const newComment = await prisma.comments.create({
       data: {
         userId: user.userId,
-        nickname: user.nickname,
         ...comment,
         postId: postId,
       },
@@ -33,37 +28,30 @@ class CommentsRepository {
   };
 
   getAllComments = async (postId: number) => {
-    const allComments: AllCommentResponse[] = await prisma.comments.findMany({
+    const allCommentsWithUsers = await prisma.comments.findMany({
       where: { postId: postId },
-      select: {
-        commentId: true,
-        userId: true,
-        nickname: true,
-        content: true,
-        createdAt: true,
-        updatedAt: true,
-      },
+      include: { user: true },
     });
+
+    const allComments: CommentResponse[] = allCommentsWithUsers.map(
+      (comment) => ({
+        commentId: comment.commentId,
+        userId: comment.userId,
+        content: comment.content,
+        createdAt: comment.createdAt,
+        updatedAt: comment.updatedAt,
+        nickname: comment.user.nickname,
+      })
+    );
+
     return allComments;
-  };
-
-  getOneComment = async (commentId: number) => {
-    const comment = await prisma.comments.findFirst({
-      where: { commentId: commentId },
-    });
-
-    if (!comment) {
-      throw new CustomError(404, "해당하는 댓글을 찾을 수 없습니다.");
-    }
-
-    return comment;
   };
 
   updateOneComment = async (
     user: Express.User,
     postId: number,
     commentId: number,
-    updateComment: UpdateCommentRequest
+    updateComment: CommentRequest
   ) => {
     const post = await this.postsRepository.getPostById(postId);
 

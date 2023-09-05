@@ -1,9 +1,5 @@
 import CommentsRepository from "../repositories/comments";
-import {
-  AllCommentResponse,
-  CreateCommentRequest,
-  UpdateCommentRequest,
-} from "../dtos/comments";
+import { CommentRequest, CommentResponse } from "../dtos/comments";
 
 class CommentsService {
   constructor(private readonly commentsRepository: CommentsRepository) {}
@@ -11,7 +7,7 @@ class CommentsService {
   createComment = async (
     user: Express.User,
     postId: number,
-    newComment: CreateCommentRequest
+    newComment: CommentRequest
   ) => {
     const result = await this.commentsRepository.createComment(
       user,
@@ -22,13 +18,8 @@ class CommentsService {
   };
 
   getAllComments = async (postId: number) => {
-    const result: AllCommentResponse[] =
+    const result: CommentResponse[] =
       await this.commentsRepository.getAllComments(postId);
-    return result;
-  };
-
-  getOneComment = async (commentId: number) => {
-    const result = await this.commentsRepository.getOneComment(commentId);
     return result;
   };
 
@@ -36,7 +27,7 @@ class CommentsService {
     user: Express.User,
     postId: number,
     commentId: number,
-    updateComment: UpdateCommentRequest
+    updateComment: CommentRequest
   ) => {
     const result = await this.commentsRepository.updateOneComment(
       user,
@@ -61,4 +52,4 @@ class CommentsService {
   };
 }
 
-export default CommentsService
+export default CommentsService;
