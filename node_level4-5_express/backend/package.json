@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon app",
+    "start:pm2": "pm2 start ts-node -- -P tsconfig.json src/app.ts",
     "test": "jest",
     "coverage": "jest --coverage"
   },
