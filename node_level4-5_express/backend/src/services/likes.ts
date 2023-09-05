@@ -1,4 +1,4 @@
-import { UserLikedPostsResponse } from "./../dtos/likes";
+import { PostResponse } from "../dtos/posts";
 import LikesRepository from "../repositories/likes";
 
 class LikesService {
@@ -9,8 +9,9 @@ class LikesService {
   };
 
   getUserLikedPosts = async (user: Express.User) => {
-    const result: UserLikedPostsResponse[] =
-      await this.likesRepository.getUserLikedPosts(user);
+    const result: PostResponse[] = await this.likesRepository.getUserLikedPosts(
+      user
+    );
     return result;
   };
 }

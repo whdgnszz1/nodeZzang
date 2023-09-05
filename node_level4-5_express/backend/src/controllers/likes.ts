@@ -1,5 +1,5 @@
-import { UserLikedPostsResponse } from "./../dtos/likes";
 import { NextFunction, Request, Response } from "express";
+import { PostResponse } from "../dtos/posts";
 import asyncHandler from "../lib/asyncHandler";
 import LikesService from "../services/likes";
 import { getUserFromToken } from "./auth";
@@ -21,8 +21,9 @@ class LikesController {
     async (req: Request, res: Response, next: NextFunction) => {
       const user = getUserFromToken(res);
 
-      const result: UserLikedPostsResponse[] =
-        await this.likesService.getUserLikedPosts(user);
+      const result: PostResponse[] = await this.likesService.getUserLikedPosts(
+        user
+      );
       res.send({ posts: result });
     }
   );
