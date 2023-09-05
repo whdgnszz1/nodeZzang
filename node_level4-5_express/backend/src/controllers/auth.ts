@@ -67,7 +67,9 @@ export const login = asyncHandler(
 
     res.cookie("accessToken", accessToken, { httpOnly: false });
     res.cookie("refreshToken", refreshToken, { httpOnly: false });
-    res.status(200).send({ token: accessToken, refreshToken });
+    res
+      .status(200)
+      .send({ token: accessToken, refreshToken, user: loggedInUser });
   }
 );
 
