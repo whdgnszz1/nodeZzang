@@ -85,6 +85,20 @@ export const editProfile = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = res.locals.decoded;
     const newNickname = req.body.nickname;
+
+    const existingUserWithNickname = await prisma.users.findFirst({
+      where: { nickname: newNickname },
+    });
+
+    if (
+      existingUserWithNickname &&
+      existingUserWithNickname.userId !== user.userId
+    ) {
+      return res.status(400).json({
+        message: "이미 사용중인 닉네임입니다.",
+      });
+    }
+
     if (req.file) {
       const profileUrl = req.file.location;
       const result = await prisma.users.update({
@@ -94,16 +108,13 @@ export const editProfile = asyncHandler(
           nickname: newNickname,
         },
       });
-      console.log(result);
 
-      res
-        .status(200)
-        .json({
-          message: "회원 정보를 수정하였습니다.",
-          userId: result.userId,
-          nickname: result.nickname,
-          profileUrl: result.profileUrl,
-        });
+      res.status(200).json({
+        message: "회원 정보를 수정하였습니다.",
+        userId: result.userId,
+        nickname: result.nickname,
+        profileUrl: result.profileUrl,
+      });
     } else {
       const result = await prisma.users.update({
         where: { userId: user.userId },
@@ -111,15 +122,13 @@ export const editProfile = asyncHandler(
           nickname: newNickname,
         },
       });
-      console.log(result);
-      res
-        .status(200)
-        .json({
-          message: "회원 정보를 수정하였습니다.",
-          userId: result.userId,
-          nickname: result.nickname,
-          profileUrl: result.profileUrl,
-        });
+
+      res.status(200).json({
+        message: "회원 정보를 수정하였습니다.",
+        userId: result.userId,
+        nickname: result.nickname,
+        profileUrl: result.profileUrl,
+      });
     }
   }
 );
