@@ -169,7 +169,7 @@ function ChatRoom() {
   };
 
   /* 다른사람이 채팅 보냈을때 receiveMessage 받는 코드 */
-  
+
   useEffect(() => {
     if (!socket) return;
     socket.on("receiveMessage", (message: ChatMessage) => {
@@ -190,10 +190,10 @@ function ChatRoom() {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center">
+    <div className="h-screen min-h-screen flex justify-center items-center">
       <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
         <Navbar />
-        <div className="w-full mt-6">
+        <div className="w-full mt-16">
           {localChatHistory.map((message: any, idx: number) => (
             <Message
               key={idx}

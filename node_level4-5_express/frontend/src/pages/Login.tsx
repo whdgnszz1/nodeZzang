@@ -38,7 +38,7 @@ const Login: FC = () => {
 
   return (
     <>
-      <div className=" min-h-screen flex justify-center items-center">
+      <div className="h-full min-h-screen flex justify-center items-center">
         <div className="w-[768px] h-[1000px] border-2 border-black flex flex-col items-center justify-center gap-4">
           <div className="border-2  w-[320px] border-black px-1">
             <AuthInput
