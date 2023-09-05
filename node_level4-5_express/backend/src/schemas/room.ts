@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const roomSchema = new Schema({
   title: {
@@ -22,4 +22,4 @@ const roomSchema = new Schema({
   },
 });
 
-export default roomSchema;
+export default mongoose.model("Room", roomSchema);

@@ -19,7 +19,6 @@ config(); // process.env
 
 const app = express();
 const server = http.createServer(app);
-setupWebSocket(server);
 connectMongoDB();
 app.set("port", process.env.PORT || 8000);
 app.use(
@@ -68,3 +67,5 @@ app.use(errorHandler);
 server.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트에서 실행");
 });
+
+setupWebSocket(server, app)

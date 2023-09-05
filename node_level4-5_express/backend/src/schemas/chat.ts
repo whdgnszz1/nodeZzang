@@ -1,16 +1,20 @@
-import { Schema, Types } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 const chatSchema = new Schema({
-  room: {
-    type: Types.ObjectId,
+  roomId: {
+    type: String,
     required: true,
     ref: "Room",
   },
-  user: {
-    type: String,
+  userId: {
+    type: Number,
     required: true,
   },
-  chat: String,
+  nickname: {
+    type: String,
+    required: true
+  },
+  message: String,
   gif: String,
   createdAt: {
     type: Date,
@@ -18,4 +22,4 @@ const chatSchema = new Schema({
   },
 });
 
-export default chatSchema;
+export default mongoose.model("Chat", chatSchema);

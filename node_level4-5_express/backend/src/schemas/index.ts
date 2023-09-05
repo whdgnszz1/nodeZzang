@@ -6,7 +6,7 @@ export const connectMongoDB = () => {
   }
 
   mongoose.connect(process.env.MONGODB_URI!, {
-    dbName: "node_level4-5_express",
+    dbName: "node_level4-5_express_chat",
   })
   .then(() => {
     console.log("몽고디비 연결 성공");
