@@ -14,6 +14,9 @@ const chatSchema = new Schema({
     type: String,
     required: true
   },
+  profileUrl: {
+    type: String
+  },
   message: String,
   gif: String,
   createdAt: {

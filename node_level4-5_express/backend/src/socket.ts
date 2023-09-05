@@ -43,6 +43,7 @@ export const setupWebSocket = (httpServer: HttpServer, app: Application) => {
         roomId: data.roomId,
         userId: data.userId,
         nickname: data.nickname,
+        profileUrl: data.profileUrl
       });
       chat.to(data.roomId).emit("receiveMessage", data);
     });
