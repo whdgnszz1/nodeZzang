@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.post("/rooms", ensureAuthenticated, createRoom);
 router.get("/rooms", getRooms);
-router.get("/rooms/:roomId", ensureAuthenticated, enterRoom);
+router.post("/rooms/:roomId", ensureAuthenticated, enterRoom);
 router.delete("/rooms/:roomId", ensureAuthenticated, deleteRoom);
 export default router;
