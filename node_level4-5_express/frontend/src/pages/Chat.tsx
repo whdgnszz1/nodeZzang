@@ -138,6 +138,12 @@ function Chat() {
   };
 
   const handleComplete = async (): Promise<void> => {
+
+    if (Number(chatRoomData.maxMembers) < 2) {
+      alert("최대 인원은 2명 이상이어야 합니다.");
+      return;
+    }
+    
     try {
       await postAPI("/api/chats/rooms", chatRoomData);
       setChatRoomData({ title: "", password: "", maxMembers: "" });
@@ -302,6 +308,7 @@ function Chat() {
                   <input
                     type="number"
                     name="maxMembers"
+                    min="2"
                     className="border p-2 w-full"
                     placeholder="최대 인원"
                     onChange={handleChange}
