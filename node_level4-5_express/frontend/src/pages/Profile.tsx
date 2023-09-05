@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { getAPI } from "src/axios";
 import Footer from "src/components/Footer";
@@ -35,6 +35,11 @@ function Profile() {
     isError,
   } = useQuery<Post[]>("likedPosts", fetchPosts);
   const [localPosts, setLocalPosts] = useState(posts);
+
+  useEffect(() => {
+    setLocalPosts(posts);
+  }, [posts]);
+
   const handleLike = (postId: number) => {
     setLocalPosts((prevPosts) => {
       return prevPosts.map((post) => {
@@ -58,7 +63,7 @@ function Profile() {
 
   return (
     <>
-      <div className=" min-h-screen flex justify-center items-center">
+      <div className="h-screen min-h-screen flex justify-center items-center">
         <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between ">
           <Navbar />
           <div className="w-full h-full flex flex-col mt-20 gap-2">
