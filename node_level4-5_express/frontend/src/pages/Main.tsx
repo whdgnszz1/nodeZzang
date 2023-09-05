@@ -70,7 +70,7 @@ const Main = () => {
   return (
     <>
       <div className=" h-screen flex justify-center items-center">
-        <div className="w-[768px] h-[1000px] border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
+      <div className="relative w-[768px] h-[1000px] border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
           <Navbar />
           <div className="w-full h-full grid grid-cols-2 mt-6 gap-2">
             {posts.map((post: any, i: number) => {
@@ -120,7 +120,7 @@ const Main = () => {
 
           <button
             onClick={() => setShowModal(true)}
-            className="sticky right-0 bottom-10"
+            className="absolute bottom-10 right-10 w-32 h-10 bg-rose-400 text-white rounded-md"
           >
             게시글 만들기
           </button>
