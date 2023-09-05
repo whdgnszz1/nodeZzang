@@ -13,6 +13,7 @@ interface MessageProps {
     createdAt: string;
     nickname: string;
     userId: string;
+    profileUrl?: string;
   };
   isCurrentUser: boolean;
 }
@@ -61,7 +62,11 @@ const Message = memo(({ message, isCurrentUser }: MessageProps) => {
           </div>
         </div>
         <img
-          src={process.env.PUBLIC_URL + "/assets/default.png"}
+          src={
+            message.profileUrl
+              ? message.profileUrl
+              : process.env.PUBLIC_URL + "/assets/default.png"
+          }
           alt="user profile"
           className="ml-2 rounded-full w-8 h-8 self-center"
         />
@@ -72,7 +77,11 @@ const Message = memo(({ message, isCurrentUser }: MessageProps) => {
     return (
       <div className="flex justify-start my-2 max-w-3/5">
         <img
-          src={process.env.PUBLIC_URL + "/assets/default.png"}
+          src={
+            message.profileUrl
+              ? message.profileUrl
+              : process.env.PUBLIC_URL + "/assets/default.png"
+          }
           alt="user profile"
           className="mr-2 rounded-full w-8 h-8 self-center"
         />
@@ -161,6 +170,7 @@ function ChatRoom() {
         roomId: id,
         userId: user.userId,
         nickname: user.nickname,
+        profileUrl: user.profileUrl,
         createdAt: now.toISOString(),
       });
 
