@@ -31,8 +31,9 @@ const Login: FC = () => {
         setIsLoggedIn(true);
       });
       navigate("/");
-    } catch (error) {
+    } catch (error:any) {
       console.error(error);
+      alert(error.response.data.message)
     }
   };
 
