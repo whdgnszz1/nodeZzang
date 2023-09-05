@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
 const API_BASE_URL = `${process.env.REACT_APP_SERVER_URL}`;
@@ -39,22 +39,22 @@ axios.interceptors.response.use(
   }
 );
 
-export const postAPI = <T>(url: string, data: T) => {
-  return axios.post<T>(API_BASE_URL + url, data);
+export const postAPI = <T = any, R = any>(url: string, data: T): Promise<AxiosResponse<R>> => {
+  return axios.post<R>(API_BASE_URL + url, data);
 };
 
-export const putAPI = <T>(url: string, data: T) => {
-  return axios.put<T>(API_BASE_URL + url, data);
+export const putAPI = <T = any, R = any>(url: string, data: T): Promise<AxiosResponse<R>> => {
+  return axios.put<R>(API_BASE_URL + url, data);
 };
 
-export const getAPI = (url: string, config?: AxiosRequestConfig) => {
-  return axios.get(API_BASE_URL + url, config);
+export const getAPI = <R = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<R>> => {
+  return axios.get<R>(API_BASE_URL + url, config);
 };
 
-export const deleteAPI = (url: string) => {
-  return axios.delete(API_BASE_URL + url);
+export const deleteAPI = <R = any>(url: string): Promise<AxiosResponse<R>> => {
+  return axios.delete<R>(API_BASE_URL + url);
 };
 
-export const patchAPI = <T>(url: string, data: T) => {
-  return axios.patch<T>(API_BASE_URL + url, data);
+export const patchAPI = <T = any, R = any>(url: string, data: T): Promise<AxiosResponse<R>> => {
+  return axios.patch<R>(API_BASE_URL + url, data);
 };
