@@ -121,8 +121,8 @@ const Main = () => {
 
   return (
     <>
-      <div className=" h-screen flex justify-center items-center">
-        <div className="relative w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
+      <div className=" min-h-screen flex justify-center items-center relative">
+        <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
           <Navbar />
           <div className="w-full flex-1 mt-14 grid grid-cols-2 gap-2 overflow-auto">
             {posts?.map((post) => {
@@ -130,6 +130,13 @@ const Main = () => {
             })}
           </div>
           <Footer />
+          <button
+            onClick={() => setShowModal(true)}
+            className="fixed bottom-12 w-32 h-10 bg-rose-400 text-white rounded-md"
+            style={{ right: "calc(50% - 384px + 12px)" }}
+          >
+            게시글 만들기
+          </button>
           {showModal && (
             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-40 z-30">
               <div
@@ -172,13 +179,6 @@ const Main = () => {
               </div>
             </div>
           )}
-
-          <button
-            onClick={() => setShowModal(true)}
-            className="absolute bottom-12 right-10 w-32 h-10 bg-rose-400 text-white rounded-md"
-          >
-            게시글 만들기
-          </button>
         </div>
       </div>
     </>
