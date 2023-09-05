@@ -6,7 +6,15 @@ import {
 import { CustomError } from "../errors/customError";
 import prisma from "../utils/prisma/index";
 
-class PostRepository {
+class PostsRepository {
+  getPostById = async (postId: number) => {
+    const post = await prisma.posts.findFirst({
+      where: { postId: postId },
+    });
+
+    return post;
+  };
+
   createPost = async (user: Express.User, post: CreatePostRequest) => {
     const { userId, nickname } = user;
     const newPost = await prisma.posts.create({
@@ -21,27 +29,28 @@ class PostRepository {
 
   getAllPosts = async (userId: number) => {
     const allPosts = await prisma.posts.findMany({});
-  
+
     if (typeof userId === "undefined") {
-      return allPosts.map(post => ({ ...post, isLiked: false }));
+      return allPosts.map((post) => ({ ...post, isLiked: false }));
     }
-  
-    const postsWithLikes = await Promise.all(allPosts.map(async post => {
-      const isLiked = await prisma.likes.findFirst({
-        where: {
-          postId: post.postId,
-          userId: userId
-        }
-      });
-      return {
-        ...post,
-        isLiked: Boolean(isLiked)
-      };
-    }));
-  
+
+    const postsWithLikes = await Promise.all(
+      allPosts.map(async (post) => {
+        const isLiked = await prisma.likes.findFirst({
+          where: {
+            postId: post.postId,
+            userId: userId,
+          },
+        });
+        return {
+          ...post,
+          isLiked: Boolean(isLiked),
+        };
+      })
+    );
+
     return postsWithLikes;
   };
-  
 
   getOnePost = async (postId: number): Promise<OnePostResponse> => {
     const post: OnePostResponse | null = await prisma.posts.findFirst({
@@ -68,9 +77,7 @@ class PostRepository {
     postId: number,
     updatePostRequest: UpdatePostRequest
   ) => {
-    const post = await prisma.posts.findFirst({
-      where: { postId: postId },
-    });
+    const post = await this.getPostById(postId);
 
     if (!post) {
       throw new CustomError(404, "해당하는 게시글을 찾을 수 없습니다.");
@@ -91,9 +98,7 @@ class PostRepository {
   };
 
   deleteOnePost = async (user: Express.User, postId: number) => {
-    const post = await prisma.posts.findFirst({
-      where: { postId: postId },
-    });
+    const post = await this.getPostById(postId);
 
     if (!post) {
       throw new CustomError(404, "해당하는 게시글을 찾을 수 없습니다.");
@@ -131,4 +136,4 @@ class PostRepository {
   };
 }
 
-export default new PostRepository();
+export default new PostsRepository();

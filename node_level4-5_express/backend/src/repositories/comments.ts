@@ -1,3 +1,4 @@
+import PostsRepository from "./posts";
 import {
   AllCommentResponse,
   CreateCommentRequest,
@@ -12,11 +13,10 @@ class CommentsRepository {
     postId: number,
     comment: CreateCommentRequest
   ) => {
-    const post = await prisma.posts.findFirst({
-      where: { postId },
-    });
+    const post = await PostsRepository.getPostById(postId);
+
     if (!post) {
-      throw new CustomError(404, "게시글이 존재하지 않습니다.");
+      throw new CustomError(404, "해당하는 게시글을 찾을 수 없습니다.");
     }
 
     const newComment = await prisma.comments.create({
@@ -63,9 +63,8 @@ class CommentsRepository {
     commentId: number,
     updateComment: UpdateCommentRequest
   ) => {
-    const post = await prisma.posts.findFirst({
-      where: { postId },
-    });
+    const post = await PostsRepository.getPostById(postId);
+
     if (!post) {
       throw new CustomError(404, "게시글이 존재하지 않습니다.");
     }
@@ -96,9 +95,8 @@ class CommentsRepository {
     postId: number,
     commentId: number
   ) => {
-    const post = await prisma.posts.findFirst({
-      where: { postId },
-    });
+    const post = await PostsRepository.getPostById(postId);
+
     if (!post) {
       throw new CustomError(404, "게시글이 존재하지 않습니다.");
     }

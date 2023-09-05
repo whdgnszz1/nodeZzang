@@ -1,8 +1,16 @@
+import PostsRepository from "./posts";
 import { UserLikedPostsResponse } from "../dtos/likes";
+import { CustomError } from "../errors/customError";
 import prisma from "../utils/prisma/index";
 
 class LikesRepository {
   toggleLikePost = async (user: Express.User, postId: number) => {
+    const post = await PostsRepository.getPostById(postId);
+
+    if (!post) {
+      throw new CustomError(404, "해당하는 게시글을 찾을 수 없습니다.");
+    }
+
     const userId: number = user.userId;
     const isExistLike = await prisma.likes.findFirst({
       where: { userId: userId, postId: postId },
@@ -63,7 +71,7 @@ class LikesRepository {
         userId: true,
         nickname: true,
         title: true,
-        content:true,
+        content: true,
         createdAt: true,
         updatedAt: true,
         likeCount: true,
@@ -74,10 +82,10 @@ class LikesRepository {
       ({ likeCount, ...rest }) => ({
         ...rest,
         likes: likeCount,
-        isLiked: true
+        isLiked: true,
       })
     );
-    
+
     return userLikedPosts;
   };
 }
