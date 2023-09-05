@@ -136,8 +136,8 @@ function Chat() {
 
   return (
     <>
-      <div className=" h-screen flex justify-center items-center">
-        <div className="relative w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
+      <div className="h-screen min-h-screen flex justify-center items-center">
+        <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
           <Navbar />
           <div className="w-full flex-1 mt-14 gap-2 overflow-auto">
             {chatRooms.map((room: any) => (
@@ -149,7 +149,8 @@ function Chat() {
             ))}
           </div>
           <button
-            className="absolute bottom-12 right-10 w-32 h-10 bg-rose-400 text-white rounded-md"
+            className="fixed bottom-12 w-32 h-10 bg-rose-400 text-white rounded-md"
+            style={{ right: "calc(50% - 384px + 12px)" }}
             onClick={toggleModal}
           >
             채팅방 만들기
