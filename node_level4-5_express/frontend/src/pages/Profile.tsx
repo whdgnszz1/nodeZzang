@@ -1,22 +1,36 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "react-query";
 import { getAPI } from "src/axios";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import PostCard from "src/components/PostCard";
 
+/* 타입 정의 */
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  postId: number;
+  isLiked: boolean;
+}
+
+/* API 요청 */
+// API 요청을 통해 유저가 좋아요누른 게시글을 가져오는 코드
+const fetchPosts = async (): Promise<Post[]> => {
+  const response = await getAPI<{ posts: Post[] }>("/api/posts/like");
+  return response.data.posts;
+};
+
+/* Profile 컴포넌트 */
 function Profile() {
-  const [posts, setPosts] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await getAPI("/api/posts/like").then((data) => data);
-      setPosts(response.data.posts);
-    };
-    fetchPosts();
-  }, []);
-
+  const {
+    data: posts = [],
+    isLoading,
+    isError,
+  } = useQuery<Post[]>("likedPosts", fetchPosts);
+  const [localPosts, setLocalPosts] = useState(posts);
   const handleLike = (postId: number) => {
-    setPosts((prevPosts) => {
+    setLocalPosts((prevPosts) => {
       return prevPosts.map((post) => {
         if (post.postId === postId) {
           return { ...post, isLiked: !post.isLiked };
@@ -25,6 +39,16 @@ function Profile() {
       });
     });
   };
+
+  const likedPosts = localPosts.filter((post) => post.isLiked);
+
+  if (isLoading) {
+    return <div>Loading</div>;
+  }
+
+  if (isError) {
+    return <div>Error</div>;
+  }
 
   return (
     <>
@@ -40,14 +64,16 @@ function Profile() {
                   className="rounded-full"
                 />
               </div>
-              <div className="flex justify-center items-center text-xl font-semibold">종훈</div>
+              <div className="flex justify-center items-center text-xl font-semibold">
+                종훈
+              </div>
             </div>
             <div className="w-full h-full grid grid-cols-2 mt-2 gap-2">
-              {posts
-                .filter((post) => post.isLiked === true)
-                .map((post, i) => {
-                  return <PostCard key={i} post={post} onLike={handleLike} />;
-                })}
+              {likedPosts.map((post) => {
+                return (
+                  <PostCard key={post.postId} post={post} onLike={handleLike} />
+                );
+              })}
             </div>
           </div>
           <Footer />
