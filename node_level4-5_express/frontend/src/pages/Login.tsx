@@ -10,7 +10,7 @@ const Login: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [, setIsLoggedIn] = useRecoilState<boolean>(userState);
   const navigate = useNavigate();
-  
+
   /* input값 관리하는 코드 */
   const handleNicknameChange = (value: string): void => {
     setNickname(value);
@@ -54,15 +54,28 @@ const Login: FC = () => {
           </div>
 
           <button
+            onClick={() => navigate("/signup")}
+            className="bg-white w-[320px] font-semibold py-1 border-2 border-black"
+          >
+            회원가입 하러가기
+          </button>
+
+          <button
             onClick={handleSubmit}
             className="bg-white w-[320px] font-semibold py-1 border-2 border-black"
           >
             로그인
           </button>
-          <button className="bg-white w-[320px] font-semibold py-1 border-2 border-black">
+          <button
+            onClick={() => alert("아직 준비중인 기능입니다.")}
+            className="bg-white w-[320px] font-semibold py-1 border-2 border-black"
+          >
             카카오 로그인
           </button>
-          <button className="bg-white w-[320px] font-semibold py-1 border-2 border-black">
+          <button
+            onClick={() => alert("아직 준비중인 기능입니다.")}
+            className="bg-white w-[320px] font-semibold py-1 border-2 border-black"
+          >
             구글 로그인
           </button>
         </div>

@@ -45,7 +45,19 @@ const Signup = () => {
           onClick={handleSubmit}
           className="bg-white w-[320px] border-2 font-semibold border-black py-1"
         >
-          회원가입
+          회원가입 완료
+        </button>
+        <button
+          onClick={() => navigate('/login')}
+          className="bg-white w-[320px] border-2 font-semibold border-black py-1"
+        >
+          로그인 창으로
+        </button>
+        <button
+          onClick={() => navigate('/')}
+          className="bg-white w-[320px] border-2 font-semibold border-black py-1"
+        >
+          홈으로
         </button>
       </div>
     </div>
