@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState, memo, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import Footer from "src/components/Footer";
@@ -106,6 +106,15 @@ function ChatRoom() {
   const [messageInput, setMessageInput] = useState<string>("");
   const [localChatHistory, setLocalChatHistory] = useState<ChatMessage[]>([]);
 
+  /* 채팅방을 들어왔을 때 가장 아래로 보내주는 코드 */
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [localChatHistory]);
+
+  /* 채팅 목록을 가져오는 코드 */
+
   const { isLoading, isError } = useQuery(
     `chatHistory_${id}`,
     () => fetchChatHistory(id as string),
@@ -160,6 +169,7 @@ function ChatRoom() {
   };
 
   /* 다른사람이 채팅 보냈을때 receiveMessage 받는 코드 */
+  
   useEffect(() => {
     if (!socket) return;
     socket.on("receiveMessage", (message: ChatMessage) => {
@@ -180,19 +190,20 @@ function ChatRoom() {
   }
 
   return (
-    <div className="h-screen flex justify-center items-center">
-      <div className="w-[768px] h-[1000px] border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
+    <div className="min-h-screen flex justify-center items-center">
+      <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
         <Navbar />
-        <div className="w-full mt-6 flex flex-col-reverse">
-          {[...localChatHistory].reverse().map((message: any, idx: number) => (
+        <div className="w-full mt-6">
+          {localChatHistory.map((message: any, idx: number) => (
             <Message
               key={idx}
               message={message}
               isCurrentUser={message.userId === user.userId}
             />
           ))}
+          <div ref={messagesEndRef}></div>
         </div>
-        <div className="w-full flex mb-6">
+        <div className="w-full flex mb-12">
           <input
             type="text"
             value={messageInput}
