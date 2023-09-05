@@ -24,9 +24,9 @@ const Login = () => {
       await postAPI("/api/login", {
         nickname,
         password,
-      }).then((data) => {
+      }).then((data: any) => {
+        localStorage.setItem("user", JSON.stringify(data.data.user));
         setIsLoggedIn(true);
-        console.log(data)
       });
       navigate("/");
     } catch (error) {
