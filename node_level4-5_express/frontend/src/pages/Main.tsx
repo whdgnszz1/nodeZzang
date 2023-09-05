@@ -1,13 +1,35 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getAPI, postAPI } from "src/axios";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import PostCard from "src/components/PostCard";
 import { useMutation, useQuery } from "react-query";
 
-const fetchPosts = async () => {
-  const response = await getAPI("/api/posts");
+/* 타입 정의 */
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  postId: number;
+  isLiked: boolean;
+}
+
+interface NewPost {
+  title: string;
+  content: string;
+}
+
+/* API 요청 */
+// API 요청을 통해 게시글을 가져오는 코드
+const fetchPosts = async (): Promise<Post[]> => {
+  const response = await getAPI<{ posts: Post[] }>("/api/posts");
   return response.data.posts;
+};
+
+// API 요청을 통해 게시글을 추가하는 코드
+const createPost = async (newPost: NewPost): Promise<Post> => {
+  const response = await postAPI<NewPost, Post>("/api/posts", newPost);
+  return response.data;
 };
 
 const Main = () => {
@@ -15,6 +37,8 @@ const Main = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
   const {
     data: posts,
@@ -24,21 +48,44 @@ const Main = () => {
     isError,
   } = useQuery("posts", fetchPosts);
 
-  const mutation = useMutation(
-    (newPost: { title: string; content: string }) =>
-      postAPI("/api/posts", newPost),
-    {
-      onSuccess: () => {
-        refetch();
-      },
-    }
-  );
+  const createPostMutation = useMutation(createPost, {
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const handleLike = () => {
     refetch();
   };
 
-  const handleSubmit = async () => {
+  /* 모달 관련 코드 */
+  const closeModal = () => {
+    setShowModal(false);
+    setTitle("");
+    setContent("");
+  };
+
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      closeModal();
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside as any);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    });
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside as any);
+    };
+  }, [handleClickOutside]);
+
+  /* 게시글 작성하는 코드 */
+  const handleSubmit = () => {
     if (!title.trim()) {
       setErrorMsg("제목을 입력해주세요");
       return;
@@ -48,18 +95,23 @@ const Main = () => {
       return;
     }
 
-    try {
-      await mutation.mutateAsync({ title, content });
-      setTitle("");
-      setContent("");
-      setShowModal(false);
-    } catch (error) {
-      console.error("게시글 작성 실패", error);
-    }
+    createPostMutation.mutate(
+      { title, content },
+      {
+        onSuccess: () => {
+          setTitle("");
+          setContent("");
+          setShowModal(false);
+        },
+        onError: (error) => {
+          console.error("게시글 작성 실패", error);
+        },
+      }
+    );
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading</div>;
   }
 
   if (isError) {
@@ -70,17 +122,20 @@ const Main = () => {
   return (
     <>
       <div className=" h-screen flex justify-center items-center">
-      <div className="relative w-[768px] h-[1000px] border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
+        <div className="relative w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
           <Navbar />
-          <div className="w-full h-full grid grid-cols-2 mt-6 gap-2">
-            {posts.map((post: any, i: number) => {
-              return <PostCard key={i} post={post} onLike={handleLike} />;
+          <div className="w-full flex-1 mt-14 grid grid-cols-2 gap-2 overflow-auto">
+            {posts?.map((post) => {
+              return <PostCard key={post.id} post={post} onLike={handleLike} />;
             })}
           </div>
           <Footer />
           {showModal && (
-            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-40">
-              <div className="bg-white p-8 rounded shadow-lg w-96">
+            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-40 z-30">
+              <div
+                ref={modalRef}
+                className="bg-white p-8 rounded shadow-lg w-96"
+              >
                 <h2 className="text-xl mb-4">게시글 작성하기</h2>
                 {errorMsg && <p className="text-red-500 mb-2">{errorMsg}</p>}
                 <div>
@@ -120,7 +175,7 @@ const Main = () => {
 
           <button
             onClick={() => setShowModal(true)}
-            className="absolute bottom-10 right-10 w-32 h-10 bg-rose-400 text-white rounded-md"
+            className="absolute bottom-12 right-10 w-32 h-10 bg-rose-400 text-white rounded-md"
           >
             게시글 만들기
           </button>
