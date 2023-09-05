@@ -28,8 +28,10 @@ class UsersRepository {
         userId: true,
         nickname: true,
         password: true,
+        profileUrl: true
       },
     });
+    
     if (!existUser) {
       throw new CustomError(412, "닉네임 또는 패스워드를 확인해주세요.");
     }

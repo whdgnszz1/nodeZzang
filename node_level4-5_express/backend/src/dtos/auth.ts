@@ -12,6 +12,7 @@ export type LoginRequest = {
 export type LoginResponse = {
   nickname: string;
   userId: number;
+  profileUrl?: string | null;
 };
 
 export type DecodedToken = {
@@ -27,6 +28,13 @@ declare global {
       userId: number;
       nickname: string;
       password?: string;
+      profileUrl?: string | null;
     }
+  }
+}
+
+declare module 'express-serve-static-core' {
+  interface Request {
+    file: Express.MulterS3.File;
   }
 }

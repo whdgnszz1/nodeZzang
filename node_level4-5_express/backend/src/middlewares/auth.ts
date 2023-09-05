@@ -42,8 +42,16 @@ export const verifyToken = async (
         return next();
       }
 
+      const payload = user.profileUrl
+        ? {
+            userId: user.userId,
+            nickname: user.nickname,
+            profileUrl: user.profileUrl,
+          }
+        : { userId: user.userId, nickname: user.nickname };
+
       const newAccessToken = jwt.sign(
-        { userId: user.userId, nickname: user.nickname },
+        payload,
         process.env.JWT_SECRET as string,
         { expiresIn: "1h" }
       );

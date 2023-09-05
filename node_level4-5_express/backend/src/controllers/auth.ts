@@ -3,6 +3,7 @@ import { LoginRequest, LoginResponse, SignUpRequest } from "../dtos/auth";
 import UsersService from "../services/auth";
 import jwt from "jsonwebtoken";
 import asyncHandler from "../lib/asyncHandler";
+import prisma from "../utils/prisma";
 
 export const signUp = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -46,12 +47,10 @@ export const login = asyncHandler(
     }
 
     const user: LoginRequest = req.body;
-    const loggedInUser: LoginResponse = await UsersService.login(user);
-    if (!process.env.JWT_SECRET) {
-      throw new Error("JWT 토큰을 찾을 수 없습니다.");
-    }
 
-    const accessToken = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
+    const loggedInUser: LoginResponse = await UsersService.login(user);
+
+    const accessToken = jwt.sign(loggedInUser, process.env.JWT_SECRET!, {
       expiresIn: "1h",
     });
 
@@ -82,6 +81,48 @@ export const logout = asyncHandler(
   }
 );
 
+export const editProfile = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = res.locals.decoded;
+    const newNickname = req.body.nickname;
+    if (req.file) {
+      const profileUrl = req.file.location;
+      const result = await prisma.users.update({
+        where: { userId: user.userId },
+        data: {
+          profileUrl,
+          nickname: newNickname,
+        },
+      });
+      console.log(result);
+
+      res
+        .status(200)
+        .json({
+          message: "회원 정보를 수정하였습니다.",
+          userId: result.userId,
+          nickname: result.nickname,
+          profileUrl: result.profileUrl,
+        });
+    } else {
+      const result = await prisma.users.update({
+        where: { userId: user.userId },
+        data: {
+          nickname: newNickname,
+        },
+      });
+      console.log(result);
+      res
+        .status(200)
+        .json({
+          message: "회원 정보를 수정하였습니다.",
+          userId: result.userId,
+          nickname: result.nickname,
+          profileUrl: result.profileUrl,
+        });
+    }
+  }
+);
 
 export const getUserFromToken = (res: Response) => ({
   nickname: res.locals.decoded.nickname,
