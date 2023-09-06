@@ -7,18 +7,17 @@ import prisma from "../utils/prisma";
 
 export const signUp = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { nickname, password, confirm } = req.body;
-    if (!nickname || !password || !confirm) {
+    const {email, nickname, password, confirm } = req.body;
+    if (!email || !nickname || !password || !confirm) {
       return res
         .status(400)
         .send({ message: "요청한 데이터 형식이 올바르지 않습니다." });
     }
-
-    const nicknameRegex = /^[a-zA-Z0-9]{3,}$/;
-    if (!nicknameRegex.test(nickname)) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    if(!emailRegex.test(email)) {
       return res
-        .status(412)
-        .send({ message: "닉네임의 형식이 일치하지 않습니다." });
+      .status(412)
+      .send({ message: "이메일의 형식이 일치하지 않습니다." });
     }
 
     if (password.length < 4) {

@@ -1,11 +1,12 @@
 export type SignUpRequest = {
+  email: string;
   nickname: string;
   password: string;
   confirm: string;
 };
 
 export type LoginRequest = {
-  nickname: string;
+  email: string;
   password: string;
 };
 
@@ -20,7 +21,7 @@ export type DecodedToken = {
   userId: number;
   iat: number;
   exp: number;
-}
+};
 
 declare global {
   namespace Express {
@@ -33,7 +34,7 @@ declare global {
   }
 }
 
-declare module 'express-serve-static-core' {
+declare module "express-serve-static-core" {
   interface Request {
     file: Express.MulterS3.File;
   }

@@ -5,10 +5,17 @@ import bcrypt from "bcrypt";
 
 class UsersRepository {
   signUp = async (user: SignUpRequest) => {
-    const existUser = await prisma.users.findFirst({
+    const existEmail = await prisma.users.findFirst({
+      where: { email: user.email },
+    });
+    if (existEmail) {
+      throw new CustomError(412, "이미 존재하는 이메일입니다.");
+    }
+
+    const existNickname = await prisma.users.findFirst({
       where: { nickname: user.nickname },
     });
-    if (existUser) {
+    if (existNickname) {
       throw new CustomError(412, "중복된 닉네임입니다.");
     }
     if (user.password !== user.confirm) {
@@ -16,22 +23,26 @@ class UsersRepository {
     }
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const newUser = await prisma.users.create({
-      data: { nickname: user.nickname, password: hashedPassword },
+      data: {
+        email: user.email,
+        nickname: user.nickname,
+        password: hashedPassword,
+      },
     });
-    return {message: "회원가입에 성공하였습니다."};
+    return { message: "회원가입에 성공하였습니다." };
   };
 
   login = async (user: LoginRequest): Promise<Express.User> => {
     const existUser: Express.User | null = await prisma.users.findFirst({
-      where: { nickname: user.nickname },
+      where: { email: user.email },
       select: {
         userId: true,
         nickname: true,
         password: true,
-        profileUrl: true
+        profileUrl: true,
       },
     });
-    
+
     if (!existUser) {
       throw new CustomError(412, "닉네임 또는 패스워드를 확인해주세요.");
     }
