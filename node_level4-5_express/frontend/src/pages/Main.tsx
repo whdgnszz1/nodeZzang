@@ -1,37 +1,10 @@
 import { useState } from "react";
-import { getAPI, postAPI } from "src/axios";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import PostCard from "src/components/PostCard";
 import { useMutation, useQuery } from "react-query";
 import useModal from "src/hooks/useModal";
-
-/* 타입 정의 */
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  postId: number;
-  isLiked: boolean;
-}
-
-interface NewPost {
-  title: string;
-  content: string;
-}
-
-/* API 요청 */
-// API 요청을 통해 게시글을 가져오는 코드
-const fetchPosts = async (): Promise<Post[]> => {
-  const response = await getAPI<{ posts: Post[] }>("/api/posts");
-  return response.data.posts;
-};
-
-// API 요청을 통해 게시글을 추가하는 코드
-const createPost = async (newPost: NewPost): Promise<Post> => {
-  const response = await postAPI<NewPost, Post>("/api/posts", newPost);
-  return response.data;
-};
+import { createPost, getAllPosts } from "src/api/postAPI";
 
 const Main = () => {
   const [title, setTitle] = useState("");
@@ -45,7 +18,7 @@ const Main = () => {
     error,
     isLoading,
     isError,
-  } = useQuery("posts", fetchPosts);
+  } = useQuery("posts", getAllPosts);
 
   const createPostMutation = useMutation(createPost, {
     onSuccess: () => {
