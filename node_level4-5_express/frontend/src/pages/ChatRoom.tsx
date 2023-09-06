@@ -5,30 +5,10 @@ import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import { useQuery } from "react-query";
 import { postAPI } from "src/axios";
+import { ChatMessage, MessageProps } from "src/types/chatType";
+import { User } from "src/types/userType";
 
 /* 타입 정의 */
-interface MessageProps {
-  message: {
-    message: string;
-    createdAt: string;
-    nickname: string;
-    userId: string;
-    profileUrl?: string;
-  };
-  isCurrentUser: boolean;
-}
-
-interface ChatMessage {
-  message: string;
-  createdAt: string;
-  nickname: string;
-  userId: string;
-}
-
-interface User {
-  userId: string;
-  nickname: string;
-}
 
 /* 시간 바꿔주는 함수 */
 const formatTime = (dateString: string) => {
@@ -115,6 +95,48 @@ function ChatRoom() {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messageInput, setMessageInput] = useState<string>("");
   const [localChatHistory, setLocalChatHistory] = useState<ChatMessage[]>([]);
+  const [page, setPage] = useState(1);
+
+  const messageListRef = useRef<HTMLDivElement | null>(null);
+  console.log(page);
+  useEffect(() => {
+    const currentRef = messageListRef.current;
+
+    const handleScroll = (e: any) => {
+      if (e.target.scrollTop <= 5) {
+        // 5px 이내로 스크롤 했을 때
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+    currentRef?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      currentRef?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const fetchChatHistoryByPage = async (
+    roomId: string,
+    page: number
+  ): Promise<ChatMessage[]> => {
+    const response = await postAPI(
+      `/api/chats/rooms/${roomId}?page=${page}`,
+      {}
+    );
+    return response.data.chats;
+  };
+
+  useEffect(() => {
+    const fetchMoreMessages = async () => {
+      if (typeof id !== "undefined") {
+        const newMessages = await fetchChatHistoryByPage(id, page);
+        console.log("New Messages:", newMessages); // 이 부분
+        setLocalChatHistory((prev) => [...newMessages, ...prev]);
+      }
+    };
+
+    if (page > 1) fetchMoreMessages();
+  }, [page, id]);
 
   /* 채팅방을 들어왔을 때 가장 아래로 보내주는 코드 */
 
@@ -133,7 +155,7 @@ function ChatRoom() {
         setLocalChatHistory(data);
       },
       onError: (error: any) => {
-        console.error(error)
+        console.error(error);
         if (error?.response?.status === 403) {
           alert("로그인이 필요한 페이지입니다.");
           navigate("/");
@@ -205,7 +227,10 @@ function ChatRoom() {
 
   return (
     <div className="h-screen min-h-screen flex justify-center items-center">
-      <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
+      <div
+        ref={messageListRef}
+        className="  w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2"
+      >
         <Navbar />
         {isLoading ? (
           <>
@@ -220,13 +245,15 @@ function ChatRoom() {
         ) : (
           <>
             <div className="w-full mt-16">
-              {localChatHistory?.map((message: any, idx: number) => (
-                <Message
-                  key={idx}
-                  message={message}
-                  isCurrentUser={message.userId === user.userId}
-                />
-              ))}
+              {[...localChatHistory]
+                .reverse()
+                .map((message: any, idx: number) => (
+                  <Message
+                    key={idx}
+                    message={message}
+                    isCurrentUser={message.userId === user.userId}
+                  />
+                ))}
               <div ref={messagesEndRef}></div>
             </div>
             <div className="w-full flex mb-12">
