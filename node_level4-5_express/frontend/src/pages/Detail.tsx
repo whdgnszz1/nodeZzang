@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import { useQuery, useMutation } from "react-query";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { postAPI } from "src/axios";
 import { FaEdit, FaTrash, FaCheck, FaPaperPlane } from "react-icons/fa";
 import {
   Comment,
@@ -136,6 +138,19 @@ const Detail: FC = () => {
     return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
   };
 
+  const handleLikeClick = async () => {
+    try {
+      await postAPI(`/api/posts/${postId}/like`, {});
+      refetchPost();
+    } catch (error: any) {
+      console.error(error);
+      if (error?.response?.status === 403) {
+        alert("로그인이 필요한 기능입니다.");
+      }
+    }
+  };
+  console.log(post);
+
   return (
     <>
       <div className="h-screen min-h-screen flex justify-center items-center">
@@ -161,9 +176,25 @@ const Detail: FC = () => {
               <div className="w-full flex items-center border-b-2 border-b-black  p-2">
                 {post?.title}
               </div>
-              <div className="w-full h-96 border-b-2 border-b-black flex items-start p-2">
+              <div className="w-full h-96 border-b-2 border-b-black flex items-start relative p-2">
                 {post?.content}
+                <div className="absolute right-3 bottom-2">
+                  {post?.isLiked ? (
+                    <span onClick={handleLikeClick}>
+                      <AiFillHeart
+                        color="red"
+                        size={24}
+                        className="cursor-pointer"
+                      />
+                    </span>
+                  ) : (
+                    <span onClick={handleLikeClick}>
+                      <AiOutlineHeart size={24} className="cursor-pointer" />
+                    </span>
+                  )}
+                </div>
               </div>
+
               <div className="w-full h-10 flex gap-2 ">
                 <input
                   className="w-full border-b-2 border-b-black p-1 focus:outline-none px-2"

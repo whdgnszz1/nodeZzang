@@ -4,21 +4,20 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { PostResponse } from "src/types/postType";
 
-
 type Props = {
   post: PostResponse;
   onLike: any;
 };
 
 const PostCard: React.FC<Props> = ({ post, onLike }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const handleLikeClick = async (event:React.MouseEvent) => {
-    event.stopPropagation()
+  const handleLikeClick = async (event: React.MouseEvent) => {
+    event.stopPropagation();
     try {
       await postAPI(`/api/posts/${post.postId}/like`, {});
       onLike(post.postId);
-    } catch (error:any) {
+    } catch (error: any) {
       console.error(error);
       if (error?.response?.status === 403) {
         alert("로그인이 필요한 기능입니다.");
@@ -36,14 +35,15 @@ const PostCard: React.FC<Props> = ({ post, onLike }) => {
     const day = date.getDate();
     const hours = date.getHours();
     const minutes = date.getMinutes();
-  
+
     return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
-  }
-
-
+  };
 
   return (
-    <div onClick={handleCardClick} className="border-2 border-black h-[300px] flex flex-col relative">
+    <div
+      onClick={handleCardClick}
+      className="border-2 border-black h-[300px] flex flex-col relative"
+    >
       <div className="border-b-2 border-black w-full h-10 flex justify-between items-center px-2">
         <span>작성자: {post.nickname}</span>
         <span>{post.createdAt && formatDate(post.createdAt)}</span>
@@ -55,11 +55,11 @@ const PostCard: React.FC<Props> = ({ post, onLike }) => {
       <div className="absolute right-3 bottom-2">
         {post.isLiked ? (
           <span onClick={handleLikeClick}>
-            <AiFillHeart color="red" size={20} />
+            <AiFillHeart color="red" size={20} className="cursor-pointer" />
           </span>
         ) : (
           <span onClick={handleLikeClick}>
-            <AiOutlineHeart size={20} />
+            <AiOutlineHeart size={20} className="cursor-pointer" />
           </span>
         )}
       </div>
