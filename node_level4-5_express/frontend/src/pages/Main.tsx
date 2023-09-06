@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { getAPI, postAPI } from "src/axios";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import PostCard from "src/components/PostCard";
 import { useMutation, useQuery } from "react-query";
+import useModal from "src/hooks/useModal";
 
 /* 타입 정의 */
 interface Post {
@@ -33,12 +34,10 @@ const createPost = async (newPost: NewPost): Promise<Post> => {
 };
 
 const Main = () => {
-  const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-
-  const modalRef = useRef<HTMLDivElement | null>(null);
+  const createPostModal = useModal();
 
   const {
     data: posts,
@@ -58,32 +57,6 @@ const Main = () => {
     refetch();
   };
 
-  /* 모달 관련 코드 */
-  const closeModal = () => {
-    setShowModal(false);
-    setTitle("");
-    setContent("");
-  };
-
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-      closeModal();
-    }
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside as any);
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        closeModal();
-      }
-    });
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside as any);
-    };
-  }, [handleClickOutside]);
-
   /* 게시글 작성하는 코드 */
   const handleSubmit = () => {
     if (!title.trim()) {
@@ -101,7 +74,7 @@ const Main = () => {
         onSuccess: () => {
           setTitle("");
           setContent("");
-          setShowModal(false);
+          createPostModal.closeModal();
         },
         onError: (error: any) => {
           console.error("게시글 작성 실패", error);
@@ -109,7 +82,7 @@ const Main = () => {
             alert("로그인이 필요한 기능입니다.");
             setTitle("");
             setContent("");
-            setShowModal(false);
+            createPostModal.closeModal();
           }
         },
       }
@@ -149,16 +122,16 @@ const Main = () => {
 
           <Footer />
           <button
-            onClick={() => setShowModal(true)}
+            onClick={() => createPostModal.openModal()}
             className="fixed bottom-12 w-32 h-10 bg-rose-400 text-white rounded-md"
             style={{ right: "calc(50% - 384px + 12px)" }}
           >
             게시글 만들기
           </button>
-          {showModal && (
+          {createPostModal.isOpen && (
             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-40 z-30">
               <div
-                ref={modalRef}
+                ref={createPostModal.modalRef}
                 className="bg-white p-8 rounded shadow-lg w-96"
               >
                 <h2 className="text-xl mb-4">게시글 작성하기</h2>
@@ -182,7 +155,7 @@ const Main = () => {
                 </div>
                 <div className="flex justify-end gap-2">
                   <button
-                    onClick={() => setShowModal(false)}
+                    onClick={() => createPostModal.closeModal()}
                     className="px-4 py-2 bg-gray-300 rounded"
                   >
                     취소하기

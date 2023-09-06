@@ -7,6 +7,7 @@ import Navbar from "src/components/Navbar";
 import PostCard from "src/components/PostCard";
 import { HiPencil } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import useModal from "src/hooks/useModal";
 
 /* 타입 정의 */
 interface Post {
@@ -40,42 +41,17 @@ function Profile() {
     setUser(updatedUser);
   }, []);
   /* 모달창 관리 코드 */
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const editProfileModal = useModal()
   const handleEditIconClick = useCallback((e: any) => {
     e.stopPropagation();
-    setIsEditModalOpen(true);
+    editProfileModal.openModal();
+    // eslint-disable-next-line
   }, []);
 
   const handleCloseModal = useCallback(() => {
-    setIsEditModalOpen(false);
+    editProfileModal.closeModal();
+    // eslint-disable-next-line
   }, []);
-
-  useEffect(() => {
-    const handleOutsideClick = (e: any) => {
-      if (e.target.closest(".modal-content")) return;
-      handleCloseModal();
-    };
-
-    window.addEventListener("click", handleOutsideClick);
-
-    return () => {
-      window.removeEventListener("click", handleOutsideClick);
-    };
-  }, [handleCloseModal]);
-
-  useEffect(() => {
-    const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        handleCloseModal();
-      }
-    };
-
-    window.addEventListener("keydown", handleEsc);
-
-    return () => {
-      window.removeEventListener("keydown", handleEsc);
-    };
-  }, [handleCloseModal]);
 
   /* 모달창 관리 코드 끝 */
 
@@ -169,10 +145,11 @@ function Profile() {
           <Footer />
         </div>
         <EditProfileModal
-          isOpen={isEditModalOpen}
+          isOpen={editProfileModal.isOpen}
           onClose={handleCloseModal}
           user={user}
           onUserUpdate={handleUserUpdate}
+          modalRef={editProfileModal.modalRef}
         />
       </div>
     </>

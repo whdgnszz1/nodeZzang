@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { getAPI, postAPI } from "src/axios";
 import Footer from "src/components/Footer";
@@ -6,6 +6,7 @@ import Navbar from "src/components/Navbar";
 import { useQuery } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineLock, AiOutlineUnlock } from "react-icons/ai";
+import useModal from "src/hooks/useModal";
 
 /* 타입 지정 */
 interface ChatRoom {
@@ -31,32 +32,29 @@ const fetchChatRooms = async (): Promise<ChatRoom[]> => {
 function Chat() {
   const navigate = useNavigate();
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [isCreateChatRoomModalOpen, setIsCreateChatRoomModalOpen] =
-    useState<boolean>(false);
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const [chatRoomData, setChatRoomData] = useState<ChatRoomData>({
     title: "",
     password: "",
     maxMembers: "",
   });
-
-  const [isPasswordModalOpen, setIsPasswordModalOpen] =
-    useState<boolean>(false);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [roomPassword, setRoomPassword] = useState<string>("");
   const passwordInputRef = useRef<HTMLInputElement | null>(null);
-  const passwordModalRef = useRef<HTMLInputElement | null>(null);
-  const modalRef = useRef<HTMLDivElement | null>(null);
+
+  const createChatRoomModal = useModal();
+  const passwordModal = useModal();
 
   // 비밀번호 모달 핸들러
   const handleRoomClick = (roomId: string, password?: string) => {
     setSelectedRoomId(roomId);
     if (password) {
-      setIsPasswordModalOpen(true);
+      passwordModal.openModal();
     } else {
       navigate(`/chat/${roomId}`);
     }
   };
+
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRoomPassword(e.target.value);
   };
@@ -80,15 +78,15 @@ function Chat() {
       }
     } finally {
       setRoomPassword("");
-      setIsPasswordModalOpen(false);
+      passwordModal.closeModal()
     }
   };
 
   useEffect(() => {
-    if (isPasswordModalOpen && passwordInputRef.current) {
+    if (passwordModal.isOpen && passwordInputRef.current) {
       passwordInputRef.current.focus();
     }
-  }, [isPasswordModalOpen]);
+  }, [passwordModal.isOpen]);
 
   /* 채팅방 가져와서 상태에 저장하는 코드 */
   const { data, isLoading, isError } = useQuery<ChatRoom[]>(
@@ -128,9 +126,6 @@ function Chat() {
   }, [socket, setChatRooms]);
 
   /* 채팅방 생성시 모달, input값들 관리하는 코드 */
-  const toggleCreateChatRoomModal = () => {
-    setIsCreateChatRoomModalOpen((prev) => !prev);
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -147,7 +142,7 @@ function Chat() {
     try {
       await postAPI("/api/chats/rooms", chatRoomData);
       setChatRoomData({ title: "", password: "", maxMembers: "" });
-      toggleCreateChatRoomModal();
+      createChatRoomModal.closeModal()
     } catch (error: any) {
       if (error?.response?.status === 403) {
         alert("로그인이 필요한 기능입니다.");
@@ -156,81 +151,6 @@ function Chat() {
       console.error("채팅방 생성 중 오류가 발생했습니다.", error);
     }
   };
-
-  const handleClickOutside = useCallback((event: MouseEvent): void => {
-    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-      toggleCreateChatRoomModal();
-    }
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("keydown", (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isCreateChatRoomModalOpen) {
-        toggleCreateChatRoomModal();
-      }
-    });
-
-    return () => {
-      document.removeEventListener("keydown", (e: KeyboardEvent) => {
-        if (e.key === "Escape" && isCreateChatRoomModalOpen) {
-          toggleCreateChatRoomModal();
-        }
-      });
-    };
-  }, [handleClickOutside, isCreateChatRoomModalOpen]);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [handleClickOutside]);
-
-  // 비밀번호 모달 바깥 클릭 핸들러
-  const handlePasswordModalOutsideClick = useCallback(
-    (event: MouseEvent): void => {
-      if (
-        passwordModalRef.current &&
-        !passwordModalRef.current.contains(event.target as Node)
-      ) {
-        closePasswordModal();
-      }
-    },
-    []
-  );
-
-  const closePasswordModal = () => {
-    setIsPasswordModalOpen(false);
-    setRoomPassword("");
-  };
-
-  useEffect(() => {
-    document.addEventListener("keydown", (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isPasswordModalOpen) {
-        closePasswordModal();
-      }
-    });
-
-    return () => {
-      document.removeEventListener("keydown", (e: KeyboardEvent) => {
-        if (e.key === "Escape" && isPasswordModalOpen) {
-          closePasswordModal();
-        }
-      });
-    };
-  }, [handlePasswordModalOutsideClick, isPasswordModalOpen]);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handlePasswordModalOutsideClick);
-
-    return () => {
-      document.removeEventListener(
-        "mousedown",
-        handlePasswordModalOutsideClick
-      );
-    };
-  }, [handlePasswordModalOutsideClick]);
 
   if (isError) {
     return <div>Error</div>;
@@ -270,16 +190,16 @@ function Chat() {
               <button
                 className="fixed bottom-12 w-32 h-10 bg-rose-400 text-white rounded-md"
                 style={{ right: "calc(50% - 384px + 12px)" }}
-                onClick={toggleCreateChatRoomModal}
+                onClick={createChatRoomModal.openModal}
               >
                 채팅방 만들기
               </button>
             </>
           )}
 
-          {isCreateChatRoomModalOpen && (
+          {createChatRoomModal.isOpen && (
             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-30">
-              <div ref={modalRef} className=" bg-white p-5 rounded-md">
+              <div ref={createChatRoomModal.modalRef} className=" bg-white p-5 rounded-md">
                 <h2 className="mb-4 w-96">채팅방 만들기</h2>
                 <div className="mb-4">
                   <label className="block mb-2">채팅방 제목</label>
@@ -323,7 +243,7 @@ function Chat() {
                     완료
                   </button>
                   <button
-                    onClick={toggleCreateChatRoomModal}
+                    onClick={createChatRoomModal.closeModal}
                     className="bg-gray-400 text-white p-2 rounded-md"
                   >
                     닫기
@@ -334,9 +254,9 @@ function Chat() {
           )}
           <Footer />
 
-          {isPasswordModalOpen && (
+          {passwordModal.isOpen && (
             <div
-              ref={passwordInputRef}
+              ref={passwordModal.modalRef}
               className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-30"
             >
               <div className="bg-white p-5 rounded-md w-96 h-52 flex flex-col gap-4">
@@ -345,7 +265,7 @@ function Chat() {
                     채팅방 비밀번호 입력
                   </div>
                   <button
-                    onClick={() => setIsPasswordModalOpen(false)}
+                    onClick={() => passwordModal.closeModal()}
                     className="   text-black rounded-full"
                   >
                     X

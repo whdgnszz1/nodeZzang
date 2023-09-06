@@ -2,7 +2,13 @@ import { useState } from "react";
 import { TbPhotoUp } from "react-icons/tb";
 import { putAPI } from "src/axios";
 
-function EditProfileModal({ isOpen, onClose, user, onUserUpdate }: any) {
+function EditProfileModal({
+  isOpen,
+  onClose,
+  user,
+  onUserUpdate,
+  modalRef,
+}: any) {
   const [nickname, setNickname] = useState(user.nickname);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImageURL, setPreviewImageURL] = useState<string | null>(null);
@@ -63,7 +69,10 @@ function EditProfileModal({ isOpen, onClose, user, onUserUpdate }: any) {
       </>
     ) : (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-        <div className="bg-white p-6 rounded relative w-[400px] h-[400px] modal-content flex flex-col">
+        <div
+          ref={modalRef}
+          className="bg-white p-6 rounded relative w-[400px] h-[400px] modal-content flex flex-col"
+        >
           <div
             className="absolute top-2 right-3 cursor-pointer"
             onClick={handleClose}
