@@ -22,6 +22,16 @@ const Login: FC = () => {
 
   /* 로그인 로직 */
   const handleSubmit = async (): Promise<void> => {
+    if (!nickname) {
+      alert("닉네임을 입력해주세요");
+      return;
+    }
+
+    if (!password) {
+      alert("비밀번호를 입력해주세요");
+      return;
+    }
+
     try {
       await postAPI("/api/login", {
         nickname,
@@ -31,9 +41,9 @@ const Login: FC = () => {
         setIsLoggedIn(true);
       });
       navigate("/");
-    } catch (error:any) {
+    } catch (error: any) {
       console.error(error);
-      alert(error.response.data.message)
+      alert(error.response.data.message); // This will display the error message received from the server.
     }
   };
 
