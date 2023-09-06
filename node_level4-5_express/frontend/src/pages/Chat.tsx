@@ -1,34 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { getAPI, postAPI } from "src/axios";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import { useQuery } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineLock, AiOutlineUnlock } from "react-icons/ai";
 import useModal from "src/hooks/useModal";
+import { ChatRoom, ChatRoomData } from "src/types/chatType";
+import {
+  checkRoomPassword,
+  createChatRoom,
+  fetchChatRooms,
+} from "src/api/chatAPI";
 
-/* 타입 지정 */
-interface ChatRoom {
-  _id: string;
-  title: string;
-  password: string;
-  maxMembers: number;
-}
-
-interface ChatRoomData {
-  title: string;
-  password: string;
-  maxMembers: string;
-}
-
-/* API 요청을 통해 채팅방 목록 가져오는 코드 */
-const fetchChatRooms = async (): Promise<ChatRoom[]> => {
-  const response = await getAPI("/api/chats/rooms");
-  return response.data.rooms;
-};
-
-/* Chat 컴포넌트 */
 function Chat() {
   const navigate = useNavigate();
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -45,7 +29,7 @@ function Chat() {
   const createChatRoomModal = useModal();
   const passwordModal = useModal();
 
-  // 비밀번호 모달 핸들러
+  /* 비밀번호 모달 핸들러 */
   const handleRoomClick = (roomId: string, password?: string) => {
     setSelectedRoomId(roomId);
     if (password) {
@@ -63,9 +47,7 @@ function Chat() {
     if (!selectedRoomId) return;
 
     try {
-      const result = await postAPI(`/api/chats/rooms/${selectedRoomId}`, {
-        password: roomPassword,
-      });
+      const result = await checkRoomPassword(selectedRoomId, roomPassword);
 
       if (result.data.redirectTo) {
         navigate(result.data.redirectTo);
@@ -78,7 +60,7 @@ function Chat() {
       }
     } finally {
       setRoomPassword("");
-      passwordModal.closeModal()
+      passwordModal.closeModal();
     }
   };
 
@@ -133,16 +115,15 @@ function Chat() {
   };
 
   const handleComplete = async (): Promise<void> => {
-
     if (Number(chatRoomData.maxMembers) < 2) {
       alert("최대 인원은 2명 이상이어야 합니다.");
       return;
     }
-    
+
     try {
-      await postAPI("/api/chats/rooms", chatRoomData);
+      await createChatRoom(chatRoomData);
       setChatRoomData({ title: "", password: "", maxMembers: "" });
-      createChatRoomModal.closeModal()
+      createChatRoomModal.closeModal();
     } catch (error: any) {
       if (error?.response?.status === 403) {
         alert("로그인이 필요한 기능입니다.");
@@ -155,6 +136,7 @@ function Chat() {
   if (isError) {
     return <div>Error</div>;
   }
+  
   return (
     <>
       <div className="h-screen min-h-screen flex justify-center items-center">
@@ -199,7 +181,10 @@ function Chat() {
 
           {createChatRoomModal.isOpen && (
             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-30">
-              <div ref={createChatRoomModal.modalRef} className=" bg-white p-5 rounded-md">
+              <div
+                ref={createChatRoomModal.modalRef}
+                className=" bg-white p-5 rounded-md"
+              >
                 <h2 className="mb-4 w-96">채팅방 만들기</h2>
                 <div className="mb-4">
                   <label className="block mb-2">채팅방 제목</label>
