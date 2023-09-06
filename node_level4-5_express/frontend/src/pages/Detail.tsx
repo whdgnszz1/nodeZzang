@@ -1,67 +1,22 @@
 import { FC, useState } from "react";
 import { useParams } from "react-router-dom";
-import { deleteAPI, getAPI, postAPI, putAPI } from "src/axios";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import { useQuery, useMutation } from "react-query";
 import { FaEdit, FaTrash, FaCheck, FaPaperPlane } from "react-icons/fa";
-
-/* 타입 정의 */
-interface Post {
-  title: string;
-  content: string;
-}
-
-interface Comment {
-  commentId: number;
-  content: string;
-}
-
-interface CommentUpdateProps {
-  postId: string;
-  commentId: string;
-  content: string;
-}
-
-interface CommentDeleteProps {
-  postId: string;
-  commentId: string;
-}
-
-/* API 요청 */
-
-// API 요청을 통해 게시글 가져오는 코드
-const fetchPost = async (postId: string) => {
-  const response = await getAPI(`/api/posts/${postId}`);
-  return response.data.post;
-};
-
-// API 요청을 통해 댓글 가져오는 코드
-const fetchComments = async (postId: string) => {
-  const response = await getAPI(`/api/posts/${postId}/comments`);
-  return response.data.comments;
-};
-
-// API 요청을 통해 댓글 추가하는 코드
-const createComments = async (postId: string, commentContent: string) => {
-  await postAPI(`/api/posts/${postId}/comments`, {
-    content: commentContent,
-  });
-};
-
-// API 요청을 통해 댓글 수정하는 코드
-const updateComment = async ({
-  postId,
-  commentId,
-  content,
-}: CommentUpdateProps) => {
-  await putAPI(`/api/posts/${postId}/comments/${commentId}`, { content });
-};
-
-// API 요청을 통해 댓글 삭제하는 코드
-const deleteComment = async ({ postId, commentId }: CommentDeleteProps) => {
-  await deleteAPI(`/api/posts/${postId}/comments/${commentId}`);
-};
+import {
+  Comment,
+  CommentDeleteProps,
+  CommentUpdateProps,
+} from "src/types/commentType";
+import {
+  createComments,
+  deleteComment,
+  fetchComments,
+  fetchPost,
+  updateComment,
+} from "src/api/commentAPI";
+import { Post } from "src/types/postType";
 
 /* 컴포넌트 */
 const Detail: FC = () => {
@@ -106,7 +61,7 @@ const Detail: FC = () => {
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && commentContent.trim()) {
+    if (event.key === "Enter" && commentContent.trim()) {
       handleCommentSubmit();
     }
   };
