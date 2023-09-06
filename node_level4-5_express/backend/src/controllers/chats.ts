@@ -4,7 +4,7 @@ import asyncHandler from "../lib/asyncHandler";
 import Chat from "../schemas/chat";
 import Room from "../schemas/room";
 
-export const createRoom = asyncHandler(
+export const createRoom = (
   async (req: Request, res: Response, next: NextFunction) => {
     const { title, password, maxMembers } = req.body;
     const user = res.locals.decoded;
@@ -63,7 +63,15 @@ export const enterRoom = asyncHandler(
       }
     }
 
-    const chats = await Chat.find({ roomId: roomId });
+    const page = parseInt(req.query.page as string) || 1;
+    const itemsPerPage = 20;
+    const skip = (page - 1) * itemsPerPage;
+
+    const chats = await Chat.find({ roomId: roomId })
+                            .sort({ createdAt: -1 })
+                            .skip(skip)
+                            .limit(itemsPerPage);
+
     return res.status(200).json({ chats });
   }
 );

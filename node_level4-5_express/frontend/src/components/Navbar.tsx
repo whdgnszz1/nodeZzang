@@ -24,7 +24,7 @@ const Navbar = () => {
           className="pt-1 w-10"
         />
       </div>
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center cursor-default">
         노드짱
       </div>
       {isLoggedIn ? (
