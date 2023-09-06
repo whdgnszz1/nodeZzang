@@ -17,6 +17,7 @@ import {
   updateComment,
 } from "src/api/commentAPI";
 import { Post } from "src/types/postType";
+import { User } from "src/types/userType";
 
 /* 컴포넌트 */
 const Detail: FC = () => {
@@ -25,6 +26,8 @@ const Detail: FC = () => {
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editedComment, setEditedComment] = useState<string>("");
   const [commentContent, setCommentContent] = useState<string>("");
+  const initialUser = JSON.parse(localStorage.getItem("user") as string);
+  const [user] = useState<User>(initialUser || {});
 
   // react-query를 사용해 id의 게시글, 게시글에 대한 댓글들 가져오는 코드
   const {
@@ -180,18 +183,27 @@ const Detail: FC = () => {
                     <>
                       <span>{comment.content}</span>
                       <div className="flex gap-4">
-                        <button
-                          onClick={() =>
-                            handleEditClick(comment.commentId, comment.content)
-                          }
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteComment(comment.commentId)}
-                        >
-                          <FaTrash />
-                        </button>
+                        {comment.userId === Number(user.userId) && (
+                          <button
+                            onClick={() =>
+                              handleEditClick(
+                                comment.commentId,
+                                comment.content
+                              )
+                            }
+                          >
+                            <FaEdit />
+                          </button>
+                        )}
+                        {comment.userId === Number(user.userId) && (
+                          <button
+                            onClick={() =>
+                              handleDeleteComment(comment.commentId)
+                            }
+                          >
+                            <FaTrash />
+                          </button>
+                        )}
                       </div>
                     </>
                   )}

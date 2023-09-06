@@ -43,7 +43,7 @@ const Login: FC = () => {
       navigate("/");
     } catch (error: any) {
       console.error(error);
-      alert(error.response.data.message); // This will display the error message received from the server.
+      alert(error.response.data.message);
     }
   };
 
