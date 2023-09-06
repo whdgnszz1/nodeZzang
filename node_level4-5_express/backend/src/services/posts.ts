@@ -10,12 +10,20 @@ class PostsService {
   };
 
   getAllPosts = async (userId: number): Promise<PostResponse[]> => {
-    const result: PostResponse[] = await this.postsRepository.getAllPosts(userId);
+    const result: PostResponse[] = await this.postsRepository.getAllPosts(
+      userId
+    );
     return result;
   };
 
-  getOnePost = async (postId: number): Promise<PostResponse> => {
-    const result: PostResponse = await this.postsRepository.getOnePost(postId);
+  getOnePost = async (
+    postId: number,
+    userId: number
+  ): Promise<PostResponse> => {
+    const result: PostResponse = await this.postsRepository.getOnePost(
+      postId,
+      userId
+    );
     return result;
   };
 
