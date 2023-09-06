@@ -3,16 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { signUp } from "src/api/userAPI";
 import AuthInput from "src/components/AuthInput";
 
-type FormField = "nickname" | "password" | "confirm";
+type FormField = "email" | "nickname" | "password" | "confirm";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
+    email: "",
     nickname: "",
     password: "",
     confirm: "",
   });
 
   const [formErrors, setFormErrors] = useState({
+    email: null,
     nickname: null,
     password: null,
     confirm: null,
@@ -21,11 +23,12 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const validations = {
+    email: (value: string) => {
+      const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return regex.test(value) ? null : "이메일 형식이 올바르지 않습니다.";
+    },
     nickname: (value: string) => {
-      const regex = /^[a-zA-Z0-9]{3,}$/;
-      return regex.test(value)
-        ? null
-        : "닉네임은 최소 3자 이상, 알파벳 대소문자(a~z, A~Z), 숫자(0~9)로만 구성해야 합니다.";
+      return value.trim() === "" ? "닉네임을 입력해주세요." : null;
     },
     password: (value: string) => {
       return value.length < 4 || value.includes(formData.nickname)
@@ -54,8 +57,8 @@ const Signup = () => {
     }
 
     try {
-      const { nickname, password, confirm } = formData;
-      await signUp({ nickname, password, confirm });
+      const { email, nickname, password, confirm } = formData;
+      await signUp({ email, nickname, password, confirm });
       navigate("/login");
     } catch (error: any) {
       console.error(error);
@@ -64,6 +67,7 @@ const Signup = () => {
   };
 
   const inputFields = [
+    { key: "email" as FormField, label: "이메일" },
     { key: "nickname" as FormField, label: "닉네임" },
     { key: "password" as FormField, label: "비밀번호" },
     { key: "confirm" as FormField, label: "비밀번호 확인" },

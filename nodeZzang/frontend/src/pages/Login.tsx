@@ -6,14 +6,14 @@ import { useRecoilState } from "recoil";
 import { userState } from "src/states/userState";
 
 const Login: FC = () => {
-  const [nickname, setNickname] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [, setIsLoggedIn] = useRecoilState<boolean>(userState);
   const navigate = useNavigate();
 
   /* input값 관리하는 코드 */
   const handleNicknameChange = (value: string): void => {
-    setNickname(value);
+    setEmail(value);
   };
 
   const handlePasswordChange = (value: string): void => {
@@ -22,8 +22,8 @@ const Login: FC = () => {
 
   /* 로그인 로직 */
   const handleSubmit = async (): Promise<void> => {
-    if (!nickname) {
-      alert("닉네임을 입력해주세요");
+    if (!email) {
+      alert("이메일을 입력해주세요");
       return;
     }
 
@@ -34,7 +34,7 @@ const Login: FC = () => {
 
     try {
       await postAPI("/api/login", {
-        nickname,
+        email,
         password,
       }).then((response) => {
         localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -53,7 +53,7 @@ const Login: FC = () => {
         <div className="w-[768px] h-[1000px] border-2 border-black flex flex-col items-center justify-center gap-4">
           <div className="border-2  w-[320px] border-black px-1">
             <AuthInput
-              inputType="닉네임"
+              inputType="이메일"
               onInputChange={handleNicknameChange}
             />
           </div>
