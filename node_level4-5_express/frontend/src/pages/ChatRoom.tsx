@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
-import { useQuery } from "react-query";
 import { postAPI } from "src/axios";
 import { ChatMessage, MessageProps } from "src/types/chatType";
 import { User } from "src/types/userType";
@@ -24,6 +23,21 @@ const formatTime = (dateString: string) => {
   return `${ampm} ${hours}:${minutes < 10 ? "0" + minutes : minutes}`;
 };
 
+interface ProfileImageProps {
+  profileUrl: string | undefined;
+}
+
+// 채팅에 들어갈 이미지 컴포넌트
+const ProfileImage: React.FC<ProfileImageProps> = ({ profileUrl }) => (
+  <img
+    src={
+      profileUrl ? profileUrl : process.env.PUBLIC_URL + "/assets/default.png"
+    }
+    alt="user profile"
+    className="rounded-full w-8 h-8 self-center"
+  />
+);
+
 /* memo를 사용해 채팅을 캐싱 */
 const Message = memo(({ message, isCurrentUser }: MessageProps) => {
   const formattedTime = formatTime(message.createdAt);
@@ -41,30 +55,15 @@ const Message = memo(({ message, isCurrentUser }: MessageProps) => {
             </div>
           </div>
         </div>
-        <img
-          src={
-            message.profileUrl
-              ? message.profileUrl
-              : process.env.PUBLIC_URL + "/assets/default.png"
-          }
-          alt="user profile"
-          className="ml-2 rounded-full w-8 h-8 self-center"
-        />
+        <ProfileImage profileUrl={message.profileUrl} />
       </div>
     );
   } else {
     // 타 유저의 메시지
     return (
       <div className="flex justify-start my-2 max-w-3/5">
-        <img
-          src={
-            message.profileUrl
-              ? message.profileUrl
-              : process.env.PUBLIC_URL + "/assets/default.png"
-          }
-          alt="user profile"
-          className="mr-2 rounded-full w-8 h-8 self-center"
-        />
+        <ProfileImage profileUrl={message.profileUrl} />
+
         <div>
           <div className="text-xs">{message.nickname}</div>
           <div className="flex gap-1">
@@ -89,84 +88,45 @@ const fetchChatHistory = async (roomId: string): Promise<ChatMessage[]> => {
 
 /* 컴포넌트 */
 function ChatRoom() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const user: User = JSON.parse(localStorage.getItem("user") as string);
-  const { id } = useParams<{ id: string }>();
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [messageInput, setMessageInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
   const [localChatHistory, setLocalChatHistory] = useState<ChatMessage[]>([]);
-  const [page, setPage] = useState(1);
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [messageInput, setMessageInput] = useState("");
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const initialUser = JSON.parse(localStorage.getItem("user") as string);
+  const [user] = useState<User>(initialUser || {});
 
-  const messageListRef = useRef<HTMLDivElement | null>(null);
-  console.log(page);
-  useEffect(() => {
-    const currentRef = messageListRef.current;
-
-    const handleScroll = (e: any) => {
-      if (e.target.scrollTop <= 5) {
-        // 5px 이내로 스크롤 했을 때
-        setPage((prevPage) => prevPage + 1);
-      }
-    };
-    currentRef?.addEventListener("scroll", handleScroll);
-
-    return () => {
-      currentRef?.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  const fetchChatHistoryByPage = async (
-    roomId: string,
-    page: number
-  ): Promise<ChatMessage[]> => {
-    const response = await postAPI(
-      `/api/chats/rooms/${roomId}?page=${page}`,
-      {}
-    );
-    return response.data.chats;
+  // 소켓을 통해 받은 메시지를 localChatHistory 상태에 추가하는 함수
+  const addReceivedMessage = (message: ChatMessage) => {
+    setLocalChatHistory((prevHistory) => [message, ...prevHistory]);
   };
 
-  useEffect(() => {
-    const fetchMoreMessages = async () => {
-      if (typeof id !== "undefined") {
-        const newMessages = await fetchChatHistoryByPage(id, page);
-        console.log("New Messages:", newMessages); // 이 부분
-        setLocalChatHistory((prev) => [...newMessages, ...prev]);
-      }
-    };
-
-    if (page > 1) fetchMoreMessages();
-  }, [page, id]);
-
-  /* 채팅방을 들어왔을 때 가장 아래로 보내주는 코드 */
-
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
+  // 스크롤을 채팅의 가장 최근 메시지 위치로 이동시키는 함수
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [localChatHistory]);
+  };
 
-  /* 채팅 목록을 가져오는 코드 */
-
-  const { isLoading, isError } = useQuery(
-    `chatHistory_${id}`,
-    () => fetchChatHistory(id as string),
-    {
-      onSuccess: (data) => {
+  // 방 ID가 변경될 때, 채팅 기록을 불러오고 소켓 연결을 시작하는 useEffect
+  useEffect(() => {
+    const fetchAndSetChatHistory = async (roomId: string) => {
+      try {
+        const data = await fetchChatHistory(roomId);
         setLocalChatHistory(data);
-      },
-      onError: (error: any) => {
+      } catch (error: any) {
         console.error(error);
         if (error?.response?.status === 403) {
           alert("로그인이 필요한 페이지입니다.");
           navigate("/");
         }
-      },
-    }
-  );
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  /* chat 네임스페이스에 socket연결 후 /:id의 채팅방에 join */
+    if (id) fetchAndSetChatHistory(id);
 
-  useEffect(() => {
     const newSocket = io(`${process.env.REACT_APP_SERVER_URL!}/chat`, {
       path: "/socket.io",
     });
@@ -176,19 +136,21 @@ function ChatRoom() {
     return () => {
       newSocket.disconnect();
     };
-  }, [id]);
+  }, [id, navigate]);
 
-  /* 채팅 전송하는 코드 */
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMessageInput(e.target.value);
-  };
+  // 소켓 상태가 변경될 때, 메시지 수신 리스너를 설정하는 useEffect
+  useEffect(() => {
+    if (!socket) return;
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
+    socket.on("receiveMessage", addReceivedMessage);
+
+    return () => {
+      socket.off("receiveMessage");
+    };
+  }, [socket]);
+
+  // 채팅 기록(localChatHistory)이 변경될 때, 스크롤을 최신 메시지로 이동시키는 useEffect
+  useEffect(scrollToBottom, [localChatHistory]);
 
   const handleSend = () => {
     if (socket && messageInput.trim()) {
@@ -208,73 +170,60 @@ function ChatRoom() {
     }
   };
 
-  /* 다른사람이 채팅 보냈을때 receiveMessage 받는 코드 */
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMessageInput(event.target.value);
+  };
 
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("receiveMessage", (message: ChatMessage) => {
-      setLocalChatHistory((prevHistory) => [...prevHistory, message]);
-    });
-
-    return () => {
-      socket.off("receiveMessage");
-    };
-  }, [socket]);
-
-  if (isError) {
-    return <div>Error</div>;
-  }
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      handleSend();
+    }
+  };
 
   return (
     <div className="h-screen min-h-screen flex justify-center items-center">
       <div
-        ref={messageListRef}
-        className="  w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2"
+        ref={messagesEndRef}
+        className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2"
       >
         <Navbar />
         {isLoading ? (
-          <>
-            <div className="w-screen h-screen flex justify-center items-center">
-              <img
-                src={process.env.PUBLIC_URL + "/assets/loading.gif"}
-                alt="loading_spinner"
-              />
-            </div>
-            ;
-          </>
+          <div className="w-screen h-screen flex justify-center items-center">
+            <img
+              src={process.env.PUBLIC_URL + "/assets/loading.gif"}
+              alt="loading_spinner"
+            />
+          </div>
         ) : (
-          <>
-            <div className="w-full mt-16">
-              {[...localChatHistory]
-                .reverse()
-                .map((message: any, idx: number) => (
-                  <Message
-                    key={idx}
-                    message={message}
-                    isCurrentUser={message.userId === user.userId}
-                  />
-                ))}
-              <div ref={messagesEndRef}></div>
-            </div>
-            <div className="w-full flex mb-12">
-              <input
-                type="text"
-                value={messageInput}
-                onChange={handleInputChange}
-                onKeyPress={handleKeyPress}
-                placeholder="메시지를 입력해주세요."
-                className="border p-2 rounded w-11/12 mr-4"
-              />
-              <button
-                onClick={handleSend}
-                className="bg-rose-400 w-1/12 text-white p-2 rounded"
-              >
-                보내기
-              </button>
-            </div>
-          </>
+          <div className="w-full mt-16">
+            {[...localChatHistory]
+              .reverse()
+              .map((message: any, idx: number) => (
+                <Message
+                  key={idx}
+                  message={message}
+                  isCurrentUser={message.userId === user.userId}
+                />
+              ))}
+            <div ref={messagesEndRef}></div>
+          </div>
         )}
-
+        <div className="w-full flex mb-12">
+          <input
+            type="text"
+            value={messageInput}
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            placeholder="메시지를 입력해주세요."
+            className="border p-2 rounded w-11/12 mr-4"
+          />
+          <button
+            onClick={handleSend}
+            className="bg-rose-400 w-1/12 text-white p-2 rounded"
+          >
+            보내기
+          </button>
+        </div>
         <Footer />
       </div>
     </div>
