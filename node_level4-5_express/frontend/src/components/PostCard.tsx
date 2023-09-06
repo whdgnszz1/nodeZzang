@@ -2,16 +2,11 @@ import React from "react";
 import { postAPI } from "src/axios";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { PostResponse } from "src/types/postType";
 
-type PostType = {
-  postId: number;
-  title: string;
-  content: string;
-  isLiked: boolean;
-};
 
 type Props = {
-  post: PostType;
+  post: PostResponse;
   onLike: any;
 };
 
@@ -35,20 +30,36 @@ const PostCard: React.FC<Props> = ({ post, onLike }) => {
     navigate(`/detail/${post.postId}`);
   };
 
+  const formatDate = (isoString: string) => {
+    const date = new Date(isoString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+  
+    return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
+  }
+
+
+
   return (
     <div onClick={handleCardClick} className="border-2 border-black h-[300px] flex flex-col relative">
+      <div className="border-b-2 border-black w-full h-10 flex justify-between items-center px-2">
+        <span>작성자: {post.nickname}</span>
+        <span>{post.createdAt && formatDate(post.createdAt)}</span>
+      </div>
       <div className="border-b-2 border-black w-full h-10 flex items-center px-2">
-        {post.title}
+        제목: {post.title}
       </div>
       <div className="w-full p-2">{post.content}</div>
       <div className="absolute right-3 bottom-2">
         {post.isLiked ? (
           <span onClick={handleLikeClick}>
-            <AiFillHeart color="red" size={16} />
+            <AiFillHeart color="red" size={20} />
           </span>
         ) : (
           <span onClick={handleLikeClick}>
-            <AiOutlineHeart />
+            <AiOutlineHeart size={20} />
           </span>
         )}
       </div>
