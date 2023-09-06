@@ -5,10 +5,13 @@ export interface Post {
 
 export interface PostResponse {
   id: number;
+  postId: number;
+  userId: number;
+  nickname: string;
   title: string;
   content: string;
-  postId: number;
   isLiked: boolean;
+  createdAt: string;
 }
 
 export interface PostRequest {
