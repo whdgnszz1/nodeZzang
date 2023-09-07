@@ -4,8 +4,8 @@
   "main": "app.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon app",
-    "start:pm2": "pm2 start ts-node -- -P tsconfig.json src/app.ts",
+    "start:dev": "NODE_ENV=development nodemon app",
+    "start:prod": "NODE_ENV=production pm2 start ts-node -- -P tsconfig.json src/app.ts",
     "test": "jest",
     "coverage": "jest --coverage"
   },

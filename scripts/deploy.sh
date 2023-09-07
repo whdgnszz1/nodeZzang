@@ -1,7 +1,7 @@
 REPOSITORY=/home/ubuntu/jonghun
 NODE_APP_DIR=$REPOSITORY/nodeZzang
-BACKEND_ENV_PATH=$NODE_APP_DIR/backend/.env
-FRONTEND_ENV_PATH=$NODE_APP_DIR/frontend/.env
+BACKEND_ENV_PATH=$NODE_APP_DIR/backend/.env.production
+FRONTEND_ENV_PATH=$NODE_APP_DIR/frontend/.env.production
 
 
 cd $REPOSITORY
@@ -20,14 +20,14 @@ fi
 if [ -f $BACKEND_ENV_PATH ]; then
     source $BACKEND_ENV_PATH
 else
-    echo "> backend.env 파일이 존재하지 않습니다."
+    echo "> backend/.env.production 파일이 존재하지 않습니다."
 fi
 
 # Frontend 환경 변수 설정
 if [ -f $FRONTEND_ENV_PATH ]; then
     source $FRONTEND_ENV_PATH
 else
-    echo "> frontend/.env 파일이 존재하지 않습니다."
+    echo "> frontend/.env.production 파일이 존재하지 않습니다."
 fi
 
 # Frontend 의존성 패키지 설치
@@ -49,4 +49,4 @@ cd $NODE_APP_DIR/backend
 # Backend 앱 실행
 echo "> Starting Node Express app"
 cd $NODE_APP_DIR/backend
-/usr/bin/yarn start:pm2
+/usr/bin/yarn start:prod
