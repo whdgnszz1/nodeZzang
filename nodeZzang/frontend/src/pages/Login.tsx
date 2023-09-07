@@ -47,6 +47,11 @@ const Login: FC = () => {
     }
   };
 
+  const handleKakaoLogin = () => {
+    const kakaoOauthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fkakao%2Fcallback&client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}`;
+    window.location.href = kakaoOauthURL;
+  };
+
   return (
     <>
       <div className="h-full min-h-screen flex justify-center items-center">
@@ -71,10 +76,10 @@ const Login: FC = () => {
           </button>
 
           <button
-            onClick={() => alert("아직 준비중인 기능입니다.")}
-            className="bg-white w-[320px] font-semibold py-1 border-2 border-black"
+            onClick={handleKakaoLogin}
+            className="bg-[#FAE100] w-[320px] text-black font-semibold py-1 border-2 border-none"
           >
-            카카오 로그인
+            카카오로 로그인
           </button>
           <button
             onClick={() => alert("아직 준비중인 기능입니다.")}
