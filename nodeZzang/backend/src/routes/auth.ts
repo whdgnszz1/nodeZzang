@@ -17,10 +17,10 @@ router.get("/kakao", passport.authenticate("kakao"));
 router.get(
   "/kakao/callback",
   passport.authenticate("kakao", {
-    failureRedirect: "카카오 로그인 실패",
+    failureRedirect: "/login",
   }),
   (req, res) => {
-    res.redirect(process.env.REDIRECT_URL!);
+    res.redirect("https://nodezzang.com");
   }
 );
 // 로그아웃
