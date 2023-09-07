@@ -28,7 +28,7 @@ declare global {
     interface User {
       userId: number;
       nickname: string;
-      password?: string;
+      password?: string | null;
       profileUrl?: string | null;
     }
   }
