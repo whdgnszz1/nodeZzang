@@ -27,6 +27,9 @@ class PostsRepository {
   getAllPosts = async (userId?: number) => {
     const allPosts = await prisma.posts.findMany({
       include: { user: true },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     const likedPostIds = userId

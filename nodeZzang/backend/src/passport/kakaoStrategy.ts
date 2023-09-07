@@ -10,7 +10,6 @@ export default () => {
         callbackURL: "/api/kakao/callback",
       },
       async (accessToken, refreshToken, profile, done) => {
-        console.log("profile", profile);
         try {
           const existUser = await prisma.users.findUnique({
             where: { snsId_provider: { snsId: String(profile.id), provider: "kakao" } },

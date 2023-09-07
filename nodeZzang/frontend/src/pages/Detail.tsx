@@ -149,7 +149,6 @@ const Detail: FC = () => {
       }
     }
   };
-  console.log(post);
 
   return (
     <>
