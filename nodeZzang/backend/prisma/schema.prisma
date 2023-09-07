@@ -45,8 +45,10 @@ model Users {
   userId     Int      @id @default(autoincrement()) @map("userId")
   email      String   @unique @map("email")
   nickname   String   @unique @map("nickname")
-  password   String   @map("password")
+  password   String?  @map("password")
   profileUrl String?  @map("profile")
+  snsId      String?  @map("snsId")
+  provider   String   @default("local") @map("provider")
   createdAt  DateTime @default(now()) @map("createdAt")
   updatedAt  DateTime @updatedAt @map("updatedAt")
   
@@ -54,6 +56,7 @@ model Users {
   comments   Comments[]
   likes      Likes[]
 
+  @@unique([snsId, provider])
   @@map("Users")
 }
 
