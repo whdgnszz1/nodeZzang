@@ -51,7 +51,7 @@ const Login: FC = () => {
     const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:8000';
     const kakaoOauthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&redirect_uri=${encodeURIComponent(`${SERVER_URL}/api/kakao/callback`)}&client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}`;
         window.location.href = kakaoOauthURL;
-  }; 
+  };
 
   return (
     <>
