@@ -48,8 +48,9 @@ const Login: FC = () => {
   };
 
   const handleKakaoLogin = () => {
-    const kakaoOauthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fkakao%2Fcallback&client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}`;
-    window.location.href = kakaoOauthURL;
+    const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:8000';
+    const kakaoOauthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&redirect_uri=${encodeURIComponent(`${SERVER_URL}/api/kakao/callback`)}&client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}`;
+        window.location.href = kakaoOauthURL;
   };
 
   return (
