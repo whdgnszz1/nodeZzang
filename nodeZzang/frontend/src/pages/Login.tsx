@@ -48,14 +48,27 @@ const Login: FC = () => {
   };
 
   const handleKakaoLogin = () => {
-    const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:8000';
-    const kakaoOauthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&redirect_uri=${encodeURIComponent(`${SERVER_URL}/api/kakao/callback`)}&client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}`;
-        window.location.href = kakaoOauthURL;
+    const SERVER_URL =
+      process.env.REACT_APP_SERVER_URL || "http://localhost:8000";
+    const kakaoOauthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&redirect_uri=${encodeURIComponent(
+      `${SERVER_URL}/api/kakao/callback`
+    )}&client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}`;
+    window.location.href = kakaoOauthURL;
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSubmit();
+    }
   };
 
   return (
     <>
-      <div className="h-full min-h-screen flex justify-center items-center">
+      <div
+        className="h-full min-h-screen flex justify-center items-center"
+        onKeyPress={handleKeyPress}
+        tabIndex={0}
+      >
         <div className="w-[768px] h-[1000px] border-2 border-black flex flex-col items-center justify-center gap-4">
           <div className="border-2  w-[320px] border-black px-1">
             <AuthInput
