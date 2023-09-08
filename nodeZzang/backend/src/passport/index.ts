@@ -1,12 +1,13 @@
 import passport from "passport";
 import kakao from "./kakaoStrategy";
+import google from "./googleStrategy";
 import prisma from "../utils/prisma";
 
 const passportConfig = () => {
   passport.serializeUser((user, done) => {
     done(null, user.userId);
   });
-  
+
   passport.deserializeUser(async (userId, done) => {
     try {
       const user = await prisma.users.findUnique({
@@ -18,7 +19,8 @@ const passportConfig = () => {
     }
   });
 
-  kakao()
+  kakao();
+  google();
 };
 
 export default passportConfig;

@@ -36,6 +36,32 @@ router.get(
   }
 );
 
+// 구글
+router.get("/google", passport.authenticate("google", {
+  scope: ["profile", "email"]
+}));
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    session: false,
+  }),
+  (req, res) => {
+    const googleLoggedInToken = req.user?.googleLoggedInToken;
+    if (googleLoggedInToken) {
+      res.cookie("accessToken", googleLoggedInToken, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 1000 * 60 * 60 * 24, 
+      });
+      res.redirect(process.env.REDIRECT_URL!);
+    } else {
+      res.status(401).send('Unauthorized');
+    }
+  }
+);
+
 
 // 로그아웃
 router.post("/logout", logout);

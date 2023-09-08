@@ -31,6 +31,7 @@ declare global {
       password?: string | null;
       profileUrl?: string | null;
       kakaoLoggedInToken?: string | null;
+      googleLoggedInToken?: string | null;
     }
   }
 }
