@@ -45,7 +45,7 @@ const PostCard: React.FC<Props> = ({ post, onLike }) => {
             }
             alt="작성자 프로필"
             className="w-6 h-6 rounded-full"
-          />{" "}
+          />
           {post.nickname}
         </span>
         <span>{post.createdAt && formatDate(post.createdAt)}</span>

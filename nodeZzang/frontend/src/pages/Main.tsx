@@ -69,8 +69,8 @@ const Main = () => {
 
   return (
     <>
-      <div className="h-screen min-h-screen flex justify-center items-center relative">
-        <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between overflow-auto px-2">
+      <div className="h-screen flex justify-center items-center relative">
+        <div className="w-[768px] h-full  border-x-2 border-black  flex flex-col items-center gap-4 justify-between overflow-auto ">
           <Navbar />
 
           {isLoading ? (

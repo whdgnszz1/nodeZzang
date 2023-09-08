@@ -72,8 +72,8 @@ function Profile() {
   }
   return (
     <>
-      <div className="h-screen min-h-screen flex justify-center items-center">
-        <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center gap-4 justify-between ">
+      <div className="h-screen flex justify-center items-center">
+        <div className="w-[768px] h-full  border-x-2 border-black  flex flex-col items-center gap-4 justify-between overflow-auto ">
           <Navbar />
           {isLoading ? (
             <>
@@ -108,7 +108,7 @@ function Profile() {
                   {user.nickname}
                 </div>
               </div>
-              <div className="w-full mt-6 grid grid-cols-2 gap-2 overflow-auto px-2">
+              <div className="w-full mt-6 grid grid-cols-2 gap-2 overflow-auto px-2 pb-12">
                 {likedPosts.map((post) => {
                   return (
                     <PostCard

@@ -143,7 +143,7 @@ const Detail: FC = () => {
   return (
     <>
       <div className="h-screen min-h-screen flex justify-center items-center">
-        <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center overflow-auto mt-16 ">
+      <div className="w-[768px] h-full  border-x-2 border-black  flex flex-col items-center gap-4 justify-between overflow-auto ">
           <Navbar />
           {postLoading || commentsLoading ? (
             <>
