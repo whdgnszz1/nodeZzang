@@ -3,6 +3,7 @@ import { postAPI } from "src/axios";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { PostResponse } from "src/types/postType";
+import { formatDate } from "src/utils/formatDate";
 
 type Props = {
   post: PostResponse;
@@ -29,15 +30,7 @@ const PostCard: React.FC<Props> = ({ post, onLike }) => {
     navigate(`/detail/${post.postId}`);
   };
 
-  const formatDate = (isoString: string) => {
-    const date = new Date(isoString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
 
-    return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
-  };
 
   return (
     <div

@@ -6,22 +6,9 @@ import Navbar from "src/components/Navbar";
 import { postAPI } from "src/axios";
 import { ChatMessage, MessageProps } from "src/types/chatType";
 import { User } from "src/types/userType";
+import { formatTime } from "src/utils/formatDate";
 
 /* 타입 정의 */
-
-/* 시간 바꿔주는 함수 */
-const formatTime = (dateString: string) => {
-  const date = new Date(dateString);
-  let hours = date.getHours();
-  const minutes = date.getMinutes();
-  const ampm = hours >= 12 ? "오후" : "오전";
-
-  if (hours > 12) {
-    hours -= 12;
-  }
-
-  return `${ampm} ${hours}:${minutes < 10 ? "0" + minutes : minutes}`;
-};
 
 interface ProfileImageProps {
   profileUrl: string | undefined;

@@ -20,6 +20,7 @@ import {
 } from "src/api/commentAPI";
 import { PostResponse } from "src/types/postType";
 import { User } from "src/types/userType";
+import { formatDate } from "src/utils/formatDate";
 
 /* 컴포넌트 */
 const Detail: FC = () => {
@@ -127,16 +128,7 @@ const Detail: FC = () => {
     deleteCommentMutation.mutate({ postId, commentId: String(commentId) });
   };
 
-  const formatDate = (isoString: string) => {
-    const date = new Date(isoString);
 
-    const month = date.getMonth() + 1; // 0-based indexing, so add 1
-    const day = date.getDate();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-
-    return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
-  };
 
   const handleLikeClick = async () => {
     try {
