@@ -56,14 +56,14 @@ export const login = asyncHandler(
       {
         userId: loggedInUser.userId,
       },
-      process.env.REFRESH_TOKEN_SECRET as string,
+      process.env.REFRESH_TOKEN_SECRET!,
       {
         expiresIn: process.env.NODE_ENV === "production" ? "7d" : "14d",
       }
     );
 
     const cookieOptions: CookieOptions = {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production", 
       sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
     };

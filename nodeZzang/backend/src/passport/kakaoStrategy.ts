@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as KaKaoStrategy } from "passport-kakao";
 import prisma from "../utils/prisma";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
 export default () => {
   passport.use(
@@ -21,7 +21,7 @@ export default () => {
             const kakaoLoggedInToken = jwt.sign(
               { userId: existUser.userId, nickname: existUser.nickname },
               process.env.JWT_SECRET!,
-              { expiresIn: '1h' }
+              { expiresIn: "1h" }
             );
             done(null, { user: existUser, kakaoLoggedInToken });
           } else {
@@ -36,7 +36,7 @@ export default () => {
             const kakaoLoggedInToken = jwt.sign(
               { userId: newUser.userId, nickname: newUser.nickname },
               process.env.JWT_SECRET!,
-              { expiresIn: '1h' }
+              { expiresIn: "1h" }
             );
             done(null, { user: newUser, kakaoLoggedInToken });
           }

@@ -25,7 +25,7 @@ router.get(
     const kakaoLoggedInToken = req.user?.kakaoLoggedInToken;
     if (kakaoLoggedInToken) {
       res.cookie("accessToken", kakaoLoggedInToken, {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24, // 1일
       });
