@@ -14,11 +14,15 @@ const Router = () => {
   const setIsLoggedIn = useSetRecoilState(userState);
 
   useEffect(() => {
-    const token = Cookies.get("accessToken");
-    if (token) {
+    const kakaoToken = Cookies.get("kakao_token");
+    const accessToken = Cookies.get("accessToken");
+    const googleToken = Cookies.get("google_token");
+
+    if (kakaoToken || accessToken || googleToken) {
       setIsLoggedIn(true);
     }
   }, [setIsLoggedIn]);
+  
   return (
     <BrowserRouter>
       <Routes>
