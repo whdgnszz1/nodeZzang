@@ -143,7 +143,7 @@ const Detail: FC = () => {
   return (
     <>
       <div className="h-screen min-h-screen flex justify-center items-center">
-      <div className="w-[768px] h-full  border-x-2 border-black  flex flex-col items-center gap-4 justify-between overflow-auto ">
+        <div className="w-[768px] h-full border-x-2 border-black flex flex-col items-center overflow-auto mt-16 ">
           <Navbar />
           {postLoading || commentsLoading ? (
             <>
@@ -230,7 +230,7 @@ const Detail: FC = () => {
                     <>
                       <div className="flex justify-between w-full">
                         <div className="flex gap-2">
-                          <div className="w-16 border-r-2 border-black">
+                          <div className="w-32 border-r-2 border-black">
                             {comment.nickname}
                           </div>
                           {comment.content}
