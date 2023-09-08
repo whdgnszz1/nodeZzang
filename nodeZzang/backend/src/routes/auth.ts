@@ -29,7 +29,7 @@ router.get(
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24, // 1일
       });
-      res.redirect(process.env.REDIRECT_URL!);
+      res.redirect(process.env.CLIENT_URL!);
     } else {
       res.status(401).send('Unauthorized');
     }
@@ -47,15 +47,16 @@ router.get(
     failureRedirect: "/login",
     session: false,
   }),
-  (req, res) => {
-    const googleLoggedInToken = req.user?.googleLoggedInToken;
-    if (googleLoggedInToken) {
-      res.cookie("accessToken", googleLoggedInToken, {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24, 
-      });
-      res.redirect(process.env.REDIRECT_URL!);
+  (req: any, res: any) => {
+    // const googleLoggedInToken = req.user?.googleLoggedInToken;
+    // if (googleLoggedInToken) {
+    //   res.cookie("accessToken", googleLoggedInToken, {
+    //     httpOnly: false,
+    //     secure: process.env.NODE_ENV === "production",
+    //     maxAge: 1000 * 60 * 60 * 24, 
+    //   });
+    if(req.user){
+      res.redirect(process.env.CLIENT_URL!);
     } else {
       res.status(401).send('Unauthorized');
     }

@@ -26,7 +26,7 @@ connectMongoDB();
 app.set("port", process.env.PORT || 8000);
 app.use(
   cors({
-    origin: process.env.REDIRECT_URL,
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );

@@ -18,7 +18,9 @@ env:
   REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
   MONGODB_URI: ${{ secrets.MONGODB_URI }}
   KAKAO_ID: ${{ secrets.KAKAO_ID }}
-  REDIRECT_URL: ${{ secrets.REDIRECT_URL }}
+  SERVER_URL: ${{ secrets.SERVER_URL }}
+  CLIENT_URL: ${{ secrets.CLIENT_URL }}
+
   GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
   GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
@@ -42,7 +44,8 @@ jobs:
           echo 'DATABASE_URL=${{ secrets.DATABASE_URL }}' >> .env.production
           echo 'MONGODB_URI=${{ secrets.MONGODB_URI }}' >> .env.production
           echo 'KAKAO_ID=${{ secrets.KAKAO_ID }}' >> .env.production
-          echo 'REDIRECT_URL=${{ secrets.REDIRECT_URL }}' >> .env.production
+          echo 'SERVER_URL=${{ secrets.SERVER_URL }}' >> .env.production
+          echo 'CLIENT_URL=${{ secrets.CLIENT_URL }}' >> .env.production
           echo 'GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}' >> .env.production
           echo 'GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}' >> .env.production
 

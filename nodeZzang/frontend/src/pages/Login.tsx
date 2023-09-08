@@ -58,14 +58,9 @@ const Login: FC = () => {
 
   const handleGoogleLogin = () => {
     const SERVER_URL = process.env.REACT_APP_SERVER_URL || "http://localhost:8000";
-    const stateValue = generateRandomState(); // CSRF 공격 방지를 위한 임의의 문자열 생성
-    const googleOauthURL = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=openid%20profile%20email&redirect_uri=${encodeURIComponent(`${SERVER_URL}/api/google/callback`)}&state=${stateValue}&access_type=offline`;
+    const googleOauthURL = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=openid%20profile%20email&redirect_uri=${encodeURIComponent(`${SERVER_URL}/api/google/callback`)}&access_type=offline`;
     window.location.href = googleOauthURL;
   };
-  
-  function generateRandomState() {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
