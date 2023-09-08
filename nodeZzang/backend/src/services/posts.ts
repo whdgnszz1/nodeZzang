@@ -18,7 +18,7 @@ class PostsService {
 
   getOnePost = async (
     postId: number,
-    userId: number
+    userId: number | undefined
   ): Promise<PostResponse> => {
     const result: PostResponse = await this.postsRepository.getOnePost(
       postId,

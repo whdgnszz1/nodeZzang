@@ -61,7 +61,6 @@ class PostsRepository {
       where: { postId },
       include: { user: true },
     });
-
     if (!post) {
       throw new CustomError(404, "해당하는 게시글을 찾을 수 없습니다.");
     }

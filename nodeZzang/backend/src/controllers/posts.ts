@@ -52,7 +52,7 @@ class PostsController {
     async (req: Request, res: Response, next: NextFunction) => {
       const postId: number = Number(req.params.postId);
       const user: Express.User = res.locals.decoded
-      const post: PostResponse = await this.postsService.getOnePost(postId, user.userId);
+      const post: PostResponse = await this.postsService.getOnePost(postId, user?.userId);
       res.json({ post: post });
     }
   );
