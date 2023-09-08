@@ -54,7 +54,7 @@ const Login: FC = () => {
       `${SERVER_URL}/api/kakao/callback`
     )}&client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}`;
     window.location.href = kakaoOauthURL;
-  }; 
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {

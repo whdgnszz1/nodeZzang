@@ -7,7 +7,7 @@ export default () => {
     new KaKaoStrategy(
       {
         clientID: process.env.KAKAO_ID!,
-        callbackURL: "/api/kakao/callback",
+        callbackURL: `${process.env.REDIRECT_URL}/api/kakao/callback`,
       },
       async (accessToken, refreshToken, profile, done) => {
         try {

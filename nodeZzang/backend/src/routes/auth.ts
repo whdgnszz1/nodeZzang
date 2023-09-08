@@ -14,13 +14,14 @@ router.post("/login", login);
 
 //카카오
 router.get("/kakao", passport.authenticate("kakao"));
+
 router.get(
   "/kakao/callback",
   passport.authenticate("kakao", {
     failureRedirect: "/login",
   }),
   (req, res) => {
-    res.redirect("https://nodezzang.com");
+    res.redirect(process.env.REDIRECT_URL!);
   }
 );
 // 로그아웃
