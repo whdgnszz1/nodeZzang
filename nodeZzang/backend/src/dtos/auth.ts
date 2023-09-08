@@ -30,7 +30,7 @@ declare global {
       nickname: string;
       password?: string | null;
       profileUrl?: string | null;
-      accessToken?: string | null;
+      kakaoLoggedInToken?: string | null;
     }
   }
 }
