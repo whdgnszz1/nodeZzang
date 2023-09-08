@@ -12,10 +12,12 @@ export default () => {
       async (accessToken, refreshToken, profile, done) => {
         try {
           const existUser = await prisma.users.findUnique({
-            where: { snsId_provider: { snsId: String(profile.id), provider: "kakao" } },
+            where: {
+              snsId_provider: { snsId: String(profile.id), provider: "kakao" },
+            },
           });
           if (existUser) {
-            done(null, existUser);
+            done(null, { user: existUser, accessToken });
           } else {
             const newUser = await prisma.users.create({
               data: {
@@ -25,7 +27,7 @@ export default () => {
                 provider: "kakao",
               },
             });
-            done(null, newUser);
+            done(null, { user: newUser, accessToken });
           }
         } catch (error) {
           console.error(error);
