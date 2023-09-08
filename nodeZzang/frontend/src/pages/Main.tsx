@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "src/components/Footer";
 import Navbar from "src/components/Navbar";
 import PostCard from "src/components/PostCard";
@@ -11,6 +11,25 @@ const Main = () => {
   const [content, setContent] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const createPostModal = useModal();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    console.log("main", urlParams);
+
+    const userId = urlParams.get("userId");
+    const nickname = urlParams.get("nickname");
+    const profileUrl = urlParams.get("profileUrl");
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        userId,
+        nickname,
+        profileUrl,
+      })
+    );
+    window.history.replaceState({}, document.title, "/");
+  }, []);
 
   const {
     data: posts,

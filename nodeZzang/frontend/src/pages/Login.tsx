@@ -57,8 +57,13 @@ const Login: FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    const SERVER_URL = process.env.REACT_APP_SERVER_URL || "http://localhost:8000";
-    const googleOauthURL = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=openid%20profile%20email&redirect_uri=${encodeURIComponent(`${SERVER_URL}/api/google/callback`)}&access_type=offline`;
+    const SERVER_URL =
+      process.env.REACT_APP_SERVER_URL || "http://localhost:8000";
+    const googleOauthURL = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${
+      process.env.REACT_APP_GOOGLE_CLIENT_ID
+    }&scope=openid%20profile%20email&redirect_uri=${encodeURIComponent(
+      `${SERVER_URL}/api/google/callback`
+    )}&access_type=offline`;
     window.location.href = googleOauthURL;
   };
 

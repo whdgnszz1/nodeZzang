@@ -47,7 +47,7 @@ function Profile() {
       }
     },
   });
-  
+
   const [localPosts, setLocalPosts] = useState(posts);
 
   useEffect(() => {
@@ -91,7 +91,7 @@ function Profile() {
                 <div className="relative w-[200px] h-[200px] rounded-full">
                   <img
                     src={
-                      user.profileUrl
+                      user.profileUrl && user.profileUrl.length > 0
                         ? user.profileUrl
                         : process.env.PUBLIC_URL + "/assets/default.png"
                     }

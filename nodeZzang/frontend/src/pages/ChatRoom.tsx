@@ -18,7 +18,7 @@ interface ProfileImageProps {
 const ProfileImage: React.FC<ProfileImageProps> = ({ profileUrl }) => (
   <img
     src={
-      profileUrl ? profileUrl : process.env.PUBLIC_URL + "/assets/default.png"
+      profileUrl && profileUrl.length > 0 ? profileUrl : process.env.PUBLIC_URL + "/assets/default.png"
     }
     alt="user profile"
     className="rounded-full w-8 h-8 self-center"

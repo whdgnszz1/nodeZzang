@@ -1,6 +1,6 @@
 import passport from "passport";
 import { verifyToken } from "./../middlewares/auth";
-import express from "express";
+import express, { Request, Response } from "express";
 import { login, logout, signUp, editProfile } from "../controllers/auth";
 import { ensureAuthenticated } from "../middlewares/ensureAuthenticated";
 import { imageUpload } from "../middlewares/imageUpload";
@@ -16,23 +16,30 @@ router.post("/login", login);
 
 /* 소셜로그인 시 토큰 발급 */
 // 토큰 발급 함수
-function issueToken(user: any) {
-  const { userId, nickname } = user;
-  return jwt.sign({ userId, nickname }, process.env.JWT_SECRET!, {
+function issueToken(user: Express.User) {
+  const { userId, nickname, profileUrl } = user;
+  return jwt.sign({ userId, nickname, profileUrl }, process.env.JWT_SECRET!, {
     expiresIn: "1h",
   });
 }
 
 // 응답 처리 함수
-function sendTokenResponse(req: any, res: any) {
+function sendTokenResponse(req: Request, res: Response) {
   if (req.user) {
+    const { userId, nickname, profileUrl } = req.user;
     const token = issueToken(req.user);
+
     res.cookie("accessToken", token, {
       httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60,
     });
-    res.redirect(process.env.CLIENT_URL!);
+
+    const redirectUrl = `${process.env
+      .CLIENT_URL!}?userId=${userId}&nickname=${encodeURIComponent(
+      nickname
+    )}&profileUrl=${encodeURIComponent(profileUrl || '')}`;
+    res.redirect(redirectUrl);
   } else {
     res.status(401).send("Unauthorized");
   }

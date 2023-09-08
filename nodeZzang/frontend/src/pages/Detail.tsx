@@ -161,7 +161,7 @@ const Detail: FC = () => {
                 <span className="flex gap-2">
                   <img
                     src={
-                      post?.profileUrl
+                      post?.profileUrl && post?.profileUrl.length > 0
                         ? post.profileUrl
                         : `${process.env.PUBLIC_URL}/assets/default.png`
                     }
