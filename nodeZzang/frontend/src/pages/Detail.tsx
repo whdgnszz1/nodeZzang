@@ -128,8 +128,6 @@ const Detail: FC = () => {
     deleteCommentMutation.mutate({ postId, commentId: String(commentId) });
   };
 
-
-
   const handleLikeClick = async () => {
     try {
       await postAPI(`/api/posts/${postId}/like`, {});
@@ -160,7 +158,18 @@ const Detail: FC = () => {
           ) : (
             <>
               <div className="w-full h-10 flex justify-between items-center border-b-2 border-b-black mt-4 p-2">
-                <div>작성자: {post?.nickname}</div>
+                <span className="flex gap-2">
+                  <img
+                    src={
+                      post?.profileUrl
+                        ? post.profileUrl
+                        : `${process.env.PUBLIC_URL}/assets/default.png`
+                    }
+                    alt="작성자 프로필"
+                    className="w-6 h-6 rounded-full"
+                  />
+                  {post?.nickname}
+                </span>
                 <div>{post?.createdAt && formatDate(post.createdAt)}</div>
               </div>
 
