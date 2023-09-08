@@ -20,12 +20,6 @@ export default () => {
           });
 
           if (existUser) {
-            // const googleLoggedInToken = jwt.sign(
-            //   { userId: existUser.userId, nickname: existUser.nickname },
-            //   process.env.JWT_SECRET!,
-            //   { expiresIn: "1h" }
-            // );
-
             return done(null, existUser);
           }
 
@@ -52,12 +46,6 @@ export default () => {
               provider: "google",
             },
           });
-
-          // const googleLoggedInToken = jwt.sign(
-          //   { userId: newUser.userId, nickname: newUser.nickname },
-          //   process.env.JWT_SECRET!,
-          //   { expiresIn: "1h" }
-          // );
 
           return done(null, newUser);
         } catch (error: any) {

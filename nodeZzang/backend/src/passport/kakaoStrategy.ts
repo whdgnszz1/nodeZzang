@@ -18,12 +18,7 @@ export default () => {
             },
           });
           if (existUser) {
-            const kakaoLoggedInToken = jwt.sign(
-              { userId: existUser.userId, nickname: existUser.nickname },
-              process.env.JWT_SECRET!,
-              { expiresIn: "1h" }
-            );
-            done(null, { user: existUser, kakaoLoggedInToken });
+            done(null, existUser);
           } else {
             const newUser = await prisma.users.create({
               data: {
@@ -33,12 +28,8 @@ export default () => {
                 provider: "kakao",
               },
             });
-            const kakaoLoggedInToken = jwt.sign(
-              { userId: newUser.userId, nickname: newUser.nickname },
-              process.env.JWT_SECRET!,
-              { expiresIn: "1h" }
-            );
-            done(null, { user: newUser, kakaoLoggedInToken });
+
+            done(null, newUser);
           }
         } catch (error) {
           console.error(error);
