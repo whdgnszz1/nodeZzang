@@ -19,6 +19,10 @@ env:
   MONGODB_URI: ${{ secrets.MONGODB_URI }}
   KAKAO_ID: ${{ secrets.KAKAO_ID }}
   REDIRECT_URL: ${{ secrets.REDIRECT_URL }}
+  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+  GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+
+  REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
   REACT_APP_KAKAO_CLIENT_ID: ${{ secrets.REACT_APP_KAKAO_CLIENT_ID }}
   REACT_APP_SERVER_URL: ${{ secrets.REACT_APP_SERVER_URL }}
 
@@ -39,13 +43,15 @@ jobs:
           echo 'MONGODB_URI=${{ secrets.MONGODB_URI }}' >> .env.production
           echo 'KAKAO_ID=${{ secrets.KAKAO_ID }}' >> .env.production
           echo 'REDIRECT_URL=${{ secrets.REDIRECT_URL }}' >> .env.production
-
+          echo 'GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}' >> .env.production
+          echo 'GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}' >> .env.production
 
 
       - name: Create frontend .env.production file
         run: |
           cd nodeZzang/frontend
           echo 'REACT_APP_SERVER_URL=${{ secrets.REACT_APP_SERVER_URL }}' > .env.production
+          echo 'REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}' >> .env.production
           echo 'REACT_APP_KAKAO_CLIENT_ID=${{ secrets.REACT_APP_KAKAO_CLIENT_ID }}' >> .env.production
 
       
