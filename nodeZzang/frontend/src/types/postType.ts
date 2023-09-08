@@ -7,9 +7,11 @@ export interface PostResponse {
   id: number;
   postId: number;
   userId: number;
+  profileUrl: string;
   nickname: string;
   title: string;
   content: string;
+  likeCount: number;
   isLiked: boolean;
   createdAt: string;
 }
