@@ -30,8 +30,8 @@ const Message = memo(({ message, isCurrentUser }: MessageProps) => {
   const formattedTime = formatTime(message.createdAt);
   if (isCurrentUser) {
     return (
-      <div className="flex justify-end my-2 max-w-3/5">
-        <div>
+      <div className="flex justify-end my-2 max-w-3/5 gap-2">
+        <div className="flex gap-1 flex-col">
           <div className="text-xs text-end">{message.nickname}</div>
           <div className="flex gap-1">
             <div className="ml-auto text-xs  flex items-end pb-[1px]">
@@ -48,10 +48,10 @@ const Message = memo(({ message, isCurrentUser }: MessageProps) => {
   } else {
     // 타 유저의 메시지
     return (
-      <div className="flex justify-start my-2 max-w-3/5">
+      <div className="flex justify-start my-2 max-w-3/5 gap-2">
         <ProfileImage profileUrl={message.profileUrl} />
 
-        <div>
+        <div className="flex gap-1 flex-col">
           <div className="text-xs">{message.nickname}</div>
           <div className="flex gap-1">
             <div className="p-2 rounded-lg bg-gray-200 text-black flex items-start">
@@ -182,7 +182,7 @@ function ChatRoom() {
             />
           </div>
         ) : (
-          <div className="w-full mt-16">
+          <div className="w-full mt-16 px-2">
             {[...localChatHistory]
               .reverse()
               .map((message: any, idx: number) => (
