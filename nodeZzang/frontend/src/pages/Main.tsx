@@ -84,7 +84,7 @@ const Main = () => {
               ;
             </>
           ) : (
-            <div className="w-full flex-1 mt-14 grid grid-cols-2 gap-2 overflow-auto">
+            <div className="w-full flex-1 mt-14 grid grid-cols-2 gap-2 overflow-auto pb-12">
               {posts?.map((post) => {
                 return (
                   <PostCard key={post.id} post={post} onLike={handleLike} />
