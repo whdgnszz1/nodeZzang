@@ -20,6 +20,8 @@ const Router = () => {
 
     if (kakaoToken || accessToken || googleToken) {
       setIsLoggedIn(true);
+    } else {
+      localStorage.removeItem('user')
     }
   }, [setIsLoggedIn]);
   
