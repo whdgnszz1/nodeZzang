@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userState } from "src/states/userState";
@@ -6,6 +7,11 @@ import { userState } from "src/states/userState";
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(userState);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("Login status changed:", isLoggedIn);
+  }, [isLoggedIn]);
+
 
   const logout = () => {
     setIsLoggedIn(false);
