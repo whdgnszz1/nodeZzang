@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, CookieOptions } from "express";
 import { LoginRequest, LoginResponse, SignUpRequest } from "../dtos/auth";
 import UsersService from "../services/auth";
 import jwt from "jsonwebtoken";
@@ -46,11 +46,10 @@ export const login = asyncHandler(
     }
 
     const user: LoginRequest = req.body;
-
     const loggedInUser: LoginResponse = await UsersService.login(user);
 
     const accessToken = jwt.sign(loggedInUser, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
+      expiresIn: process.env.NODE_ENV === "production" ? "1h" : "2h",
     });
 
     const refreshToken = jwt.sign(
@@ -59,12 +58,18 @@ export const login = asyncHandler(
       },
       process.env.REFRESH_TOKEN_SECRET as string,
       {
-        expiresIn: "7d",
+        expiresIn: process.env.NODE_ENV === "production" ? "7d" : "14d",
       }
     );
 
-    res.cookie("accessToken", accessToken, { httpOnly: false });
-    res.cookie("refreshToken", refreshToken, { httpOnly: false });
+    const cookieOptions: CookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", 
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    };
+
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
     res
       .status(200)
       .send({ token: accessToken, refreshToken, user: loggedInUser });

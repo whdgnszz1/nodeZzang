@@ -19,11 +19,21 @@ router.get(
   "/kakao/callback",
   passport.authenticate("kakao", {
     failureRedirect: "/login",
+    session: false, // 이 부분이 추가되면 passport는 내부 세션을 생성하지 않음.
   }),
   (req, res) => {
+    const accessToken = req.user?.accessToken;
+
+    res.cookie("kakao_token", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24,
+    });
+
     res.redirect(process.env.REDIRECT_URL!);
   }
 );
+
 // 로그아웃
 router.post("/logout", logout);
 
