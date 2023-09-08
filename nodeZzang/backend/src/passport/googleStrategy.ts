@@ -32,10 +32,12 @@ export default () => {
           let nickname = profile.displayName;
           let count = 1;
 
-          const existingNicknameUser = await prisma.users.findUnique({
-            where: { nickname: nickname },
-          });
-          while (existingNicknameUser) {
+          let existingNicknameUser;
+          while (true) {
+            existingNicknameUser = await prisma.users.findUnique({
+              where: { nickname: nickname },
+            });
+            if (!existingNicknameUser) break;
             nickname = `${profile.displayName}${count}`;
             count++;
           }
