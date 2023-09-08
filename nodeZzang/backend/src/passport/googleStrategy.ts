@@ -30,12 +30,22 @@ export default () => {
 
             done(null, existUser);
           } else {
+            let nickname = profile.displayName;
+            let count = 1;
+
+            while (
+              await prisma.users.findUnique({ where: { nickname: nickname } })
+            ) {
+              nickname = `${profile.displayName}${count}`;
+              count++;
+            }
+
             const newUser = await prisma.users.create({
               data: {
                 email: profile.emails
                   ? profile.emails[0].value
                   : "default@gmail.com",
-                nickname: profile.displayName,
+                nickname: nickname,
                 snsId: profile.id,
                 provider: "google",
               },
