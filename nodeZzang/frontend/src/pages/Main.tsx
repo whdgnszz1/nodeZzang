@@ -14,8 +14,6 @@ const Main = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    console.log("main", urlParams);
-
     const userId = urlParams.get("userId");
     const nickname = urlParams.get("nickname");
     const profileUrl = urlParams.get("profileUrl");

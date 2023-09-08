@@ -9,7 +9,6 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Login status changed:", isLoggedIn);
   }, [isLoggedIn]);
 
 
