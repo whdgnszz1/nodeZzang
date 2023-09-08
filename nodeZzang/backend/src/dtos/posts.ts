@@ -14,6 +14,7 @@ export type PostResponse = {
   postId: number;
   userId: number;
   nickname: string;
+  profileUrl: string | null;
   title: string;
   content: string;
   createdAt: Date;

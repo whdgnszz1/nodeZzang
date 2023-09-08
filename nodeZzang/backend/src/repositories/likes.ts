@@ -72,6 +72,7 @@ class LikesRepository {
         user: {
           select: {
             nickname: true,
+            profileUrl: true,
           },
         },
       },
@@ -81,6 +82,7 @@ class LikesRepository {
       ({ user, likeCount, ...rest }) => ({
         ...rest,
         nickname: user.nickname,
+        profileUrl: user.profileUrl,
         likeCount: likeCount,
         isLiked: true,
       })
